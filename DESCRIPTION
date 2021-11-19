@@ -23,8 +23,7 @@ Imports:
 	markdown
 Suggests: 
     rmarkdown,
-	testthat,
-	dplyr
+	testthat
 VignetteBuilder: 
     knitr,
 	ggplot2,
