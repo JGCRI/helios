@@ -2,7 +2,7 @@
 [![build](https://github.com/JGCRI/helios/workflows/build/badge.svg)](https://github.com/JGCRI/helios/workflows/build/badge.svg)
 [![test_coverage](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml)
 [![codecov](https://codecov.io/gh/JGCRI/helios/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/helios) 
-[![docs](https://github.com/JGCRI/helios/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/docs.yaml)
+[![docs](https://github.com/JGCRI/helios/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/JGCRI/helios/actions/workflows/pkgdown.yaml)
 [![Github All Releases](https://img.shields.io/github/downloads/JGCRI/helios/total.svg)]()
 <!-- badges: end -->
 
