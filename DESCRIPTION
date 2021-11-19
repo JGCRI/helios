@@ -16,8 +16,8 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports: 
 	knitr,
-	graphics,
 	ggplot2,
+	RColorBrewer
 	dplyr,
 	tidyr,
 	markdown
