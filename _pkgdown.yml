@@ -2,10 +2,9 @@ title: helios
 
 template:
   params:
-    bootswatch: slate
+    bootswatch: cosmo
 
 navbar:
-  type: inverse
   left:
     - icon: fa-home
       href: index.html
