@@ -9,5 +9,8 @@
 
 hdcd <- function(palx=NULL, alpha=NULL) {
 
+  print(palx)
+  print(alpha)
 
+  return(1)
 }
