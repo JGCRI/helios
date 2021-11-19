@@ -2,7 +2,7 @@ title: helios
 
 template:
   params:
-    bootswatch: cosmo
+    bootswatch: slate
 
 navbar:
   type: inverse
