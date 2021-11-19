@@ -1,0 +1,25 @@
+title: helios
+
+template:
+  params:
+    bootswatch: cosmo
+
+navbar:
+  type: inverse
+  left:
+    - icon: fa-home
+      href: index.html
+    - text: "Guide"
+      icon: fas fa-book
+      href: articles/vignette_examples.html
+    - icon: fa-file-code-o
+      text: "Reference"
+      href: reference/index.html
+    - text: "Contribute"
+      href: CONTRIBUTING.html
+    - icon: fa-newspaper-o
+      text: "News"
+      href: news/index.html
+      
+toc:
+  depth: 2

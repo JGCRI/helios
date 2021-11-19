@@ -1,0 +1,32 @@
+Package: helios
+Title: Process heating and cooling degrees for GCAM
+Version: 1.0.0
+Authors@R: c(person("Zarrar", "Khan", email = "zarrar.khan@pnnl.gov", role = c("aut", "cre"),
+		   comment = c(ORCID ="0000-0002-8147-8553")),
+		   person("Kalyn", "Dorheim", role = c("aut"), comment = c(ORCID="0000-0001-8093-8397")),
+		   person("Paul", "Wolfram", role = c("aut")),
+		   person("Chris", "Vernon", role = c("aut"), comment = c(ORCID="0000-0002-3406-6214")))
+Description: Color palettes used by the Pacific Northwest National Laboratory - Joint Global Change Research Institute for maps and charts.
+URL: https://github.com/JGCRI/helios
+BugReports: https://github.com/JGCRI/helios/issues
+Depends: R (>= 2.10)
+License: BSD_2_clause + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Imports: 
+	knitr,
+	graphics,
+	ggplot2,
+	dplyr,
+	tidyr,
+	markdown
+Suggests: 
+    rmarkdown,
+	testthat,
+	dplyr
+VignetteBuilder: 
+    knitr,
+	ggplot2,
+	RColorBrewer
+	
