@@ -20,7 +20,13 @@ Imports:
 	RColorBrewer,
 	dplyr,
 	tidyr,
-	markdown
+	markdown,
+	raster,
+	lubridate,
+	tibble,
+	ncdf4,
+	magrittr,
+	data.table
 Suggests: 
     rmarkdown,
 	testthat

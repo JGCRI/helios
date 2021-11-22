@@ -4,15 +4,30 @@
 \alias{hdcd}
 \title{hdcd}
 \usage{
-hdcd(palx = NULL, alpha = NULL)
+hdcd(
+  ncdf = NULL,
+  spatial = NULL,
+  temporal = NULL,
+  population = NULL,
+  reference_temp_F = 65,
+  folder = paste0(getwd(), "/output"),
+  diagnostics = T
+)
 }
 \arguments{
-\item{palx}{Default}
+\item{ncdf}{Default = NULL. Path to ncdf file.}
 
-\item{alpha}{Default = NULL. Parameter to add transparency.}
-}
-\value{
-A list of color palettes.
+\item{spatial}{Default = NULL.  "gcamusa"}
+
+\item{temporal}{Default = NULL}
+
+\item{population}{Default = NULL}
+
+\item{reference_temp_F}{Default = 65}
+
+\item{folder}{Default = paste0(getwd(),"/output").}
+
+\item{diagnostics}{Default = F.}
 }
 \description{
 Heating and Cooling Degree processing for GCAM from various sources such as WRF and CMIP
