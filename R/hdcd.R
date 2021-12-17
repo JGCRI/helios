@@ -3,9 +3,9 @@
 #' Heating and Cooling Degree processing for GCAM from various sources such as WRF and CMIP
 #'
 #' @param ncdf Default = NULL. Path to ncdf file.
-#' @param spatial Default = NULL.  "gcamusa"
-#' @param temporal Default = NULL
-#' @param population Default = NULL
+#' @param spatial Default = NULL. Options: "gcamusa". Aggregate to different spatial boundaries.
+#' @param temporal Default = NULL. Options: "gcamusa". Aggregate to timesteps.
+#' @param population Default = NULL. Path to population files to population weight data.
 #' @param reference_temp_F Default = 65
 #' @param folder Default = paste0(getwd(),"/output").
 #' @param diagnostics Default = F.
@@ -20,14 +20,16 @@ hdcd <- function(ncdf = NULL,
                  folder = paste0(getwd(),"/output"),
                  diagnostics = T) {
 
-  #............
-  # For Testing
-  #............
-  # ncdf = "wrfout_d01_1979-01-01_00%3A00%3A00"
-  # spatial = "gcamusa"
-  # temporal = "gcamusa"
-  # population = NULL
-  # reference_temp_F = 65
+#............
+# For Testing
+#............
+# ncdf = "wrfout_d01_1979-01-01_00%3A00%3A00"
+# spatial = "gcamusa"
+# temporal = "gcamusa"
+# population = NULL
+# reference_temp_F = 65
+# folder = paste0(getwd(),"/output")
+# diagnostics = T
 
   print("Starting function process_hdcd...")
 
@@ -35,15 +37,20 @@ hdcd <- function(ncdf = NULL,
   # Initialize
   #......................
 
+  if(T){
+
   NULL -> ID -> V3 -> building.node.input -> day -> day_night -> gcam.consumer ->
     hour -> is_super_peak -> month -> nodeInput -> read.csv -> region -> segment ->
     state ->  subRegion -> thermal.building.service.input -> value -> values ->
     x -> y -> year -> filename_diagnostics_i -> heatcool
 
-  if(!dir.exists(folder)){dir.create(folder)}
   if(is.null(folder)){folder <- paste0(getwd(),"/output")}
+  if(!dir.exists(folder)){dir.create(folder)}
+  if(is.null(population)){population == "No population"}
   # Pick up on intermediate files if program crashed before.
   hdcd_comb <- tibble::tibble()
+
+  }
 
   #......................
   # Loop over each ncdf file
@@ -57,6 +64,32 @@ hdcd <- function(ncdf = NULL,
 
     if(file.exists(ncdf_i)){
 
+      for(j in 1:length(population)){
+
+        population_j = population[j]
+
+        if(population != "No Population") {
+
+        # If isn't a dataframe check if file exists
+        if(class(population_j) == "character"){
+          if(file.exists(population_j)){
+            population_j_raw = data.table::fread(population_j)
+          } else {
+            print(paste0("Population file provided: ",population_j," does not exist."))
+            population_j_raw = "No population"
+          }
+        } else if(grepl("tbl_df|tbl|data.frame",class(population_j))){
+          population_j_raw = population_j
+        }
+
+        # Rename latitude and longitude if needed
+        if(!any(grepl("\\<latitude\\>",names(population_j_raw),ignore.case = T))){}else{
+          population_j_raw <- population_j_raw %>% dplyr::rename(!!"lat" := (names(population_j_raw)[grepl("\\<latitude\\>",names(population_j_raw),ignore.case = T)])[1])}
+        if(!any(grepl("\\<longitude\\>",names(population_j_raw),ignore.case = T))){}else{
+          population_j_raw <- population_j_raw %>% dplyr::rename(!!"lon" := (names(population_j_raw)[grepl("\\<longitude\\>",names(population_j_raw),ignore.case = T)])[1])}
+
+        }
+
       print(".........................................")
       print(paste0("Running hdcd for file: ", ncdf_i))
 
@@ -67,11 +100,20 @@ hdcd <- function(ncdf = NULL,
       ncdf_in <- ncdf4::nc_open(ncdf_i)
       ncdf_brick <- raster::brick(ncdf_i,varname="T2",ncdf=TRUE)
 
+      # Index of Times available
+      ncdf_times <-  ncdf4::ncvar_get(ncdf_in,"Times")
+      # Assign time_periods
+      if(is.null(temporal)){time_periods = ncdf_times} else {
+        if(temporal=="gcamusa"){time_periods = seq(2020,2100,by=5)}
+      }
+      years = unique(substr(ncdf_times,1,4))
+
       #......................
       # Step 1: Map grid (lat/lon) to each shape in the polygons being mapped to
       #......................
       # Base raster
       ncdf_ras <- ncdf_brick[[1]]
+      extent(ncdf_brick) <- extent(ncdf_ras) # Fix the resolution and extent of the brick
       # Shape with polygons to map to raster
       if(spatial=="gcamusa"){ shape <- helios::mapUS52}
       # Assign IDs to Polygon Names
@@ -80,7 +122,7 @@ hdcd <- function(ncdf = NULL,
       shape$ID <- nam_df$ID[match(shape$subRegion,nam_df$nam)]
       # Define raster extent
       raster::extent(ncdf_ras) <- raster::extent(shape)
-      # Rasterize
+      # Get Raster ID by Polygon Shape
       ras <- raster::rasterize(x = shape, y = ncdf_ras, field = "ID")
       ras_points <- cbind(raster::xyFromCell(ras, 1:raster::ncell(ras)), raster::values(ras)) %>%
         as.data.frame() %>%
@@ -92,21 +134,85 @@ hdcd <- function(ncdf = NULL,
       #......................
       # Step 2: Population weighted grid
       #......................
-      # population in cell/population in region
-      # Apply population weight to each grid
+
+      # Create population weighted raster if any population years in ncdf years
+      if(any(names(population_j_raw) %in% as.character(years))){
+      # Rasterize the population grid to the underlying data grid
+      lat_index <- grep("lat", colnames(population_j_raw), ignore.case = T)
+      lon_index <- grep("lon", colnames(population_j_raw), ignore.case = T)
+      population_j_raw_matrix <- as.matrix(population_j_raw)
+      colnames(population_j_raw_matrix) <- names(population_j_raw)
+      # you need to provide a function 'fun' for when there are multiple points per cell
+      print("rasterizing population data ...")
+      population_raster <- raster::rasterize(population_j_raw_matrix[,lon_index:lat_index],
+                                     ncdf_ras,
+                                     population_j_raw_matrix[,-c(lon_index:lat_index)],
+                                     fun=sum)
+      print("Completed rasterizing population data.")
+
+      # Get Raster ID by Polygon Shape
+      ras_population_polygon <- raster::rasterize(x = shape, y = population_raster, field = "ID")
+      ras_points_population_polygon <- cbind(raster::xyFromCell(ras_population_polygon,
+                                                                1:raster::ncell(ras_population_polygon)),
+                                             raster::values(ras_population_polygon)) %>%
+        as.data.frame() %>%
+        tibble::as_tibble() %>%
+        dplyr::rename(ID=V3)
+
+      df_polygrid_population_polygon <- ras_points_population_polygon  %>%
+        dplyr::left_join(shape@data %>% dplyr::select(subRegion,ID), by="ID")
+
+
+      # Population raster on climate grid as tibble
+      population_j_ncdf_grid <- population_raster %>%
+        raster::as.data.frame() %>%
+        tibble::as_tibble() %>%
+        dplyr::bind_cols(tibble::as_tibble(raster::xyFromCell(population_raster,
+                                                              1:raster::ncell(population_raster)))) %>%
+        tidyr::gather(key="year",value="value",-RID,-x,-y) %>%
+        tibble::as_tibble(); population_j_ncdf_grid
+
+      # Weighted population tibble
+      print("Starting population weighting ...")
+      population_j_weighted <- population_j_ncdf_grid %>%
+        dplyr::left_join(df_polygrid_population_polygon, by=c("x","y")) %>%
+        dplyr::group_by(ID,subRegion,year) %>%
+        dplyr::mutate(subRegion_total_value = sum(value,na.rm=T)) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(pop_weight = value/subRegion_total_value); population_j_weighted
+      print("Completed population weighting.")
+
+      # Weighted population raster
+
+      # Transform to wide
+      population_j_weighted_wide <- population_j_weighted %>%
+        dplyr::select(-subRegion_total_value, -value, -subRegion, -RID, -ID) %>%
+        dplyr::mutate(pop_weight = dplyr::if_else(is.na(pop_weight),0,pop_weight),
+                      year = gsub("X","",year,ignore.case = T)) %>%
+        tidyr::spread(key="year",value="pop_weight");population_j_weighted_wide
+
+      # Rasterize the population grid to the underlying data grid
+      lat_index_weighted <- grep("y", colnames(population_j_weighted_wide), ignore.case = T)
+      lon_index_weighted <- grep("x", colnames(population_j_weighted_wide), ignore.case = T)
+      population_j_weighted_wide_matrix <- as.matrix(population_j_weighted_wide)
+      colnames(population_j_weighted_wide_matrix) <- names(population_j_weighted_wide)
+      # you need to provide a function 'fun' for when there are multiple points per cell
+      print("rasterizing weighted population data ...")
+      population_weighted_raster <- raster::rasterize(population_j_weighted_wide_matrix[,lon_index_weighted:lat_index_weighted],
+                                             ncdf_ras,
+                                             population_j_weighted_wide_matrix[,-c(lon_index_weighted:lat_index_weighted)],
+                                             fun=mean)
+      print("Completed rasterizing weighted population data.")
+      }
 
       #......................
       # Step 3: Subset for time periods chosen
       #......................
-      # Index of Times available
-      ncdf_times <-  ncdf4::ncvar_get(ncdf_in,"Times")
-      # Assign time_periods
-      if(is.null(temporal)){time_periods = ncdf_times} else {
-        if(temporal=="gcamusa"){time_periods = seq(2020,2100,by=5)}
-      }
       indices <- as.integer(grepl(paste0(time_periods,collapse="|"),ncdf_times))
+      ncdf_times_subset <- ncdf_times[grepl(paste0(time_periods,collapse="|"),ncdf_times)]
       index_subset <- c(1:length(ncdf_times))*indices
       index_subset <- index_subset[!index_subset %in% 0]
+
       # Subset raster brick to selected times
       if(length(index_subset)>0){
 
@@ -121,7 +227,55 @@ hdcd <- function(ncdf = NULL,
         # Step 5: Population weight for each year by multiplying with weights
         #......................
         # Population wieght if population grid provided
-        if(!is.null(population)){
+
+        pop_weighted = 0
+
+        if(any(names(population_j_raw) %in% as.character(years))){
+
+          ncdf_brick_hdcd_pop <- raster::brick()
+
+          # If population data for year exists mulitply by population weight for that year
+          years = unique(substr(ncdf_times,1,4))
+          for(year_i in years){
+
+            # Subset ncdf_brick_hdcd
+            indices_pop <- as.integer(grepl(paste0(year_i,collapse="|"),ncdf_times_subset))
+            index_subset_pop <- c(1:length(ncdf_times))*indices_pop
+            index_subset_pop <- index_subset_pop[!index_subset_pop %in% 0]
+            ncdf_brick_hdcd_pop_i <- ncdf_brick_hdcd[[index_subset_pop]]
+
+            # Subset population to the year
+            indices_pop_w <- as.integer(grepl(paste0(year_i,collapse="|"),names(population_weighted_raster)))
+            index_subset_pop_w <- c(1:length(names(population_weighted_raster)))*indices_pop_w
+            index_subset_pop_w <- index_subset_pop_w[!index_subset_pop_w %in% 0]
+
+            if(length(index_subset_pop_w)>0){
+
+            population_weighted_raster_i <- population_weighted_raster[[index_subset_pop_w]]
+            # Create a brick for population data with same dimensions as ncdf_brick_hdcd
+            population_weighted_raster_i_brick <- raster::brick(replicate(length(names(ncdf_brick_hdcd_pop_i)),population_weighted_raster_i))
+
+            # Check dimensions
+            if(all(dim(ncdf_brick_hdcd_pop_i)==dim(population_weighted_raster_i_brick))){
+              # Multiple ncdf_brick_hdcd with population year
+              ncdf_brick_hdcd_pop_i_weighted <- ncdf_brick_hdcd_pop_i * population_weighted_raster_i_brick
+              names(ncdf_brick_hdcd_pop_i_weighted) <- names(ncdf_brick_hdcd_pop_i)
+
+              # Append to brick
+              ncdf_brick_hdcd_pop <- raster::brick(raster::stack(ncdf_brick_hdcd_pop,ncdf_brick_hdcd_pop_i_weighted))
+              pop_weighted = 1
+
+            } else {
+              print(paste0("Dimensions of population and hdcd rasters do not match. Skipping population weighting."))
+            }
+
+            } else { # Close if(length(index_subset_pop_w)>0){
+
+              print(paste0("Year: ", year_i," in hdcd raster does not exist in population raster. Skipping population weighting."))
+
+            }
+
+          }
 
         } else {
           ncdf_brick_hdcd_pop <- ncdf_brick_hdcd
@@ -131,15 +285,27 @@ hdcd <- function(ncdf = NULL,
         # Step 6: Aggregate to regions
         #......................
         # Combine with ncdf_grid and aggregate to regions
-        hdcd_region <- df_polygrid %>%
-          dplyr::bind_cols(
-            ncdf_brick_hdcd_pop %>%
-              raster::as.data.frame() %>%
-              tibble::as_tibble()) %>%
-          dplyr::select(-x,-y) %>%
-          dplyr::group_by(subRegion, ID) %>%
-          dplyr::summarise_all(list(~mean(.,na.rm=T))) %>%
-          tidyr::gather(key="x",value="value", -ID,-subRegion)
+        if(pop_weighted == 1){
+          hdcd_region <- df_polygrid %>%
+            dplyr::bind_cols(
+              ncdf_brick_hdcd_pop %>%
+                raster::as.data.frame() %>%
+                tibble::as_tibble()) %>%
+            dplyr::select(-x,-y) %>%
+            dplyr::group_by(subRegion, ID) %>%
+            dplyr::summarise_all(list(~sum(.,na.rm=T))) %>%
+            tidyr::gather(key="x",value="value", -ID,-subRegion)}
+
+        if(pop_weighted == 0){
+          hdcd_region <- df_polygrid %>%
+            dplyr::bind_cols(
+              ncdf_brick_hdcd_pop %>%
+                raster::as.data.frame() %>%
+                tibble::as_tibble()) %>%
+            dplyr::select(-x,-y) %>%
+            dplyr::group_by(subRegion, ID) %>%
+            dplyr::summarise_all(list(~mean(.,na.rm=T))) %>%
+            tidyr::gather(key="x",value="value", -ID,-subRegion)}
 
         #......................
         # Step 7: Aggregate over Segments
@@ -180,12 +346,14 @@ hdcd <- function(ncdf = NULL,
         print(paste0("are available in the selected ncdf file chosen: ", ncdf_i))
       }
 
-    } else { # Close if(file.exists(ncdf_i)){
+    }} else { # Close if(file.exists(ncdf_i)){
       print(paste0("Skipping hdcd for file which does not exist: ", ncdf_i))
     }
 
     #......................
     # Step 9: Save as combined csv files in Level 2 XML format for US or GCAM regions
+    # L2441.HDDCDD_Fixed_rcp4p5_gcamusa.csv, L2441.HDDCDD_Fixed_rcp8p5_gcamusa.csv,
+    # L2441.HDDCDD_Fixed_gcamusa.csv
     #......................
 
     hdcd_comb <- hdcd_comb %>%
@@ -237,6 +405,7 @@ hdcd <- function(ncdf = NULL,
                        "Sep_day","Sep_night","Oct_day","Oct_night",
                        "Nov_day","Nov_night","Dec_day","Dec_night","superpeak")
 
+    # Individul Years
     for(year_i in (hdcd_comb_diagnostics$year) %>% unique()) {
       ggplot2::ggplot(data = hdcd_comb_diagnostics %>%
                         dplyr::filter(year == year_i) %>%
@@ -249,20 +418,70 @@ hdcd <- function(ncdf = NULL,
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
                                                              0.5))+
         ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
-                                                 "dodgerblue"))
-        #ggplot2::scale_x_discrete(drop=FALSE)
+                                                 "dodgerblue")) +
+        ggplot2::scale_x_discrete(drop=FALSE)
 
         filename_diagnostics_i <-
           paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_", year_i, ".png")
 
         ggplot2::ggsave(filename =  filename_diagnostics_i,
-                        width = 13,
-                        height = 10) # save plot
+                        width = 25,
+                        height = 15) # save plot
 
         print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
     }
 
-    print("Doagnostics complete.")
+    # Combined years free scale
+    if(T) {
+      ggplot2::ggplot(data = hdcd_comb_diagnostics %>%
+                        dplyr::mutate(segment = factor(segment, levels = segment_levels))) +
+        ggplot2::aes(x = segment, y = value, group = year) +
+        ggplot2::geom_line(ggplot2::aes(color = heatcool)) +
+        ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
+        ggplot2::ggtitle(paste0("HDCD WRF to GCAM ")) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
+                                                             0.5))+
+        ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
+                                                 "dodgerblue"))+
+      ggplot2::scale_x_discrete(drop=FALSE)
+
+      filename_diagnostics_i <-
+        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_allYears_freeScale.png")
+
+      ggplot2::ggsave(filename =  filename_diagnostics_i,
+                      width = 25,
+                      height = 15) # save plot
+
+      print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
+    }
+
+    # Combined years fixed scale
+    if(T) {
+      ggplot2::ggplot(data = hdcd_comb_diagnostics %>%
+                        dplyr::mutate(segment = factor(segment, levels = segment_levels))) +
+        ggplot2::aes(x = segment, y = value, group = year) +
+        ggplot2::geom_line(ggplot2::aes(color = heatcool)) +
+        ggplot2::facet_wrap(subRegion ~ ., scales = "fixed") +
+        ggplot2::ggtitle(paste0("HDCD WRF to GCAM ")) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
+                                                             0.5))+
+        ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
+                                                 "dodgerblue"))+
+        ggplot2::scale_x_discrete(drop=FALSE)
+
+      filename_diagnostics_i <-
+        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_allYears_fixedScale.png")
+
+      ggplot2::ggsave(filename =  filename_diagnostics_i,
+                      width = 25,
+                      height = 15) # save plot
+
+      print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
+    }
+
+    print("Diagnostics complete.")
 
   }
 

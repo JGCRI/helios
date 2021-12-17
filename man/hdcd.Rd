@@ -17,11 +17,11 @@ hdcd(
 \arguments{
 \item{ncdf}{Default = NULL. Path to ncdf file.}
 
-\item{spatial}{Default = NULL.  "gcamusa"}
+\item{spatial}{Default = NULL. Options: "gcamusa". Aggregate to different spatial boundaries.}
 
-\item{temporal}{Default = NULL}
+\item{temporal}{Default = NULL. Options: "gcamusa". Aggregate to timesteps.}
 
-\item{population}{Default = NULL}
+\item{population}{Default = NULL. Path to population files to population weight data.}
 
 \item{reference_temp_F}{Default = 65}
 
