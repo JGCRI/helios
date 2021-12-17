@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">helios</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
       </span>
     </div>
 
@@ -70,7 +72,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/JGCRI/helios/">
+  <a href="https://github.com/JGCRI/helios/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -91,43 +93,46 @@
 
 <!-- ------------------------>
 <!-- ------------------------>
-<div id="introduction" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a><a name="Introduction"></a>Introduction</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="introduction">
+<a name="Introduction"></a>Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h1></div>
 <!-- ------------------------>
 <!-- ------------------------>
 <p><code>helios</code> is an R package to process heating and cooling degrees for GCAM from various sources such as WRF and CMIP.</p>
 <p><br></p>
 <p align="center">
-<a href="https://jgcri.github.io/helios/articles/vignette_userguide.html" target="_blank"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" alt="https://jgcri.github.io/helios/articles/vignette_userguide.html" height="60"></a> <img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_divider.PNG?raw=true" height="40"></p>
+<a href="https://jgcri.github.io/helios/articles/vignette_userguide.html" target="_blank" class="external-link"><img src="https://github.com/JGCRI/jgcricolors/blob/main/articles/button_user_guide.PNG?raw=true" alt="https://jgcri.github.io/helios/articles/vignette_userguide.html" height="60"></a> <img src="https://github.com/JGCRI/jgcricolors/blob/main/articles/button_divider.PNG?raw=true" height="40"></p>
 <!-- ------------------------>
 <!-- ------------------------>
 </div>
-<div id="citation" class="section level1">
-<h1 class="hasAnchor">
-<a href="#citation" class="anchor"></a><a name="Citation"></a>Citation</h1>
+<div class="section level1">
+<h1 id="citation">
+<a name="Citation"></a>Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+</h1>
 <!-- ------------------------>
 <!-- ------------------------>
 <p>Khan, Z., Dorheim, K., Wolfram, P., Vernon, C., 2021. helios - An R package to process heating and cooling degrees for GCAM. (In progress) Journal of Open Source Software, DOI: XXXX</p>
 <!-- ------------------------>
 <!-- ------------------------>
 </div>
-<div id="installation-guide" class="section level1">
-<h1 class="hasAnchor">
-<a href="#installation-guide" class="anchor"></a><a name="InstallGuide"></a>Installation Guide</h1>
+<div class="section level1">
+<h1 id="installation-guide">
+<a name="InstallGuide"></a>Installation Guide<a class="anchor" aria-label="anchor" href="#installation-guide"></a>
+</h1>
 <!-- ------------------------>
 <!-- ------------------------>
-<ol>
+<ol style="list-style-type: decimal">
 <li>Download and install:
 <ul>
-<li>R (<a href="https://www.r-project.org/" class="uri">https://www.r-project.org/</a>)</li>
-<li>R studio (<a href="https://www.rstudio.com/" class="uri">https://www.rstudio.com/</a>)</li>
+<li>R (<a href="https://www.r-project.org/" class="external-link uri">https://www.r-project.org/</a>)</li>
+<li>R studio (<a href="https://www.rstudio.com/" class="external-link uri">https://www.rstudio.com/</a>)</li>
 </ul>
 </li>
 <li>Open R studio:</li>
 </ol>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"JGCRI/helios"</span><span class="op">)</span></code></pre></div>
 <p>Additional steps for UBUNTU from a terminal</p>
 <pre><code>sudo add-apt-repository ppa:ubuntugis/ppa
@@ -139,9 +144,10 @@ brew install gdal</code></pre>
 <!-- ------------------------>
 <!-- ------------------------>
 </div>
-<div id="related-publications" class="section level1">
-<h1 class="hasAnchor">
-<a href="#related-publications" class="anchor"></a><a name="Publications"></a>Related Publications</h1>
+<div class="section level1">
+<h1 id="related-publications">
+<a name="Publications"></a>Related Publications<a class="anchor" aria-label="anchor" href="#related-publications"></a>
+</h1>
 <!-- ------------------------>
 <!-- ------------------------>
 <ul>
@@ -153,58 +159,69 @@ brew install gdal</code></pre>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/JGCRI/helios/">https://​github.com/​JGCRI/​helios/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/JGCRI/helios/issues">https://​github.com/​JGCRI/​helios/​issues</a>
-</li>
+<li><a href="https://github.com/JGCRI/helios/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/JGCRI/helios/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://opensource.org/licenses/BSD-2-Clause">BSD_2_clause</a> + file <a href="LICENSE-text.html">LICENSE</a>
+<a href="https://opensource.org/licenses/BSD-2-Clause" class="external-link">BSD_2_clause</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CONTRIBUTING.html">Contributing guide</a></li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Zarrar Khan <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-8147-8553" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Kalyn Dorheim <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-8093-8397" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Paul Wolfram <br><small class="roles"> Author </small>  </li>
-<li>Chris Vernon <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-3406-6214" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html#citation">Citing helios</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/JGCRI/helios/workflows/build/badge.svg"><img src="https://github.com/JGCRI/helios/workflows/build/badge.svg" alt="build"></a></li>
-<li><a href="https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml"><img src="https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml/badge.svg?branch=main" alt="test_coverage"></a></li>
-<li><a href="https://codecov.io/gh/JGCRI/helios"><img src="https://codecov.io/gh/JGCRI/helios/branch/main/graph/badge.svg?token=XQ913U4IYM" alt="codecov"></a></li>
-<li><a href="https://github.com/JGCRI/helios/actions/workflows/pkgdown.yaml"><img src="https://github.com/JGCRI/helios/actions/workflows/pkgdown.yaml/badge.svg" alt="docs"></a></li>
+<li>Zarrar Khan <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0002-8147-8553" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Kalyn Dorheim <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0001-8093-8397" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Paul Wolfram <br><small class="roles"> Author </small>  </li>
+<li>Chris Vernon <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-3406-6214" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+</ul>
+</div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/JGCRI/helios/workflows/build/badge.svg" class="external-link"><img src="https://github.com/JGCRI/helios/workflows/build/badge.svg" alt="build"></a></li>
+<li><a href="https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml" class="external-link"><img src="https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml/badge.svg?branch=main" alt="test_coverage"></a></li>
+<li><a href="https://codecov.io/gh/JGCRI/helios" class="external-link"><img src="https://codecov.io/gh/JGCRI/helios/branch/main/graph/badge.svg?token=XQ913U4IYM" alt="codecov"></a></li>
+<li><a href="https://github.com/JGCRI/helios/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/JGCRI/helios/actions/workflows/pkgdown.yaml/badge.svg" alt="docs"></a></li>
 <li><a href=""><img src="https://img.shields.io/github/downloads/JGCRI/helios/total.svg" alt="Github All Releases"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Zarrar Khan, Kalyn Dorheim, Paul Wolfram, Chris Vernon.</p>
+  <p></p>
+<p>Developed by Zarrar Khan, Kalyn Dorheim, Paul Wolfram, Chris Vernon.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -212,6 +229,8 @@ brew install gdal</code></pre>
 
   
 
+
+  
 
   </body>
 </html>
