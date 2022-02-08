@@ -9,6 +9,7 @@
 #' @param reference_temp_F Default = 65
 #' @param folder Default = paste0(getwd(),"/output").
 #' @param diagnostics Default = F.
+#' @param xml Default = F. Whether to create GCAM XML or not.
 #' @importFrom magrittr %>%
 #' @export
 
@@ -18,15 +19,16 @@ hdcd <- function(ncdf = NULL,
                  population = NULL,
                  reference_temp_F = 65,
                  folder = paste0(getwd(),"/output"),
-                 diagnostics = T) {
+                 diagnostics = F,
+                 xml = F) {
 
 #............
 # For Testing
 #............
-# ncdf = "wrfout_d01_1979-01-01_00%3A00%3A00"
+# ncdf = "C:/Z/projects/current/00_IM3/tests/process_hdhcdh/wrfout_d01_1979-01-01_00%3A00%3A00"
 # spatial = "gcamusa"
 # temporal = "gcamusa"
-# population = NULL
+# population = "C:/Z/projects/current/00_IM3/tests/process_hdhcdh/pop_1km/population_conus_total_ssp3_2020-2100_wrf_wgs84.csv"
 # reference_temp_F = 65
 # folder = paste0(getwd(),"/output")
 # diagnostics = T
@@ -49,6 +51,7 @@ hdcd <- function(ncdf = NULL,
   if(is.null(population)){population == "No population"}
   # Pick up on intermediate files if program crashed before.
   hdcd_comb <- tibble::tibble()
+  hdcd_comb_monthly <- tibble::tibble()
 
   }
 
@@ -203,6 +206,11 @@ hdcd <- function(ncdf = NULL,
                                              population_j_weighted_wide_matrix[,-c(lon_index_weighted:lat_index_weighted)],
                                              fun=mean)
       print("Completed rasterizing weighted population data.")
+      }else{
+        print(paste0("Population data provided: ",population))
+        print(paste0("does not contain data for any of the years in the ncdf data."))
+        print(paste0("Population data years: ", paste(names(population_j_raw)[!grepl("RID|lat|lon",names(population_j_raw))],collapse=",")))
+        print(paste0("ncdf data years: ",as.character(years)))
       }
 
       #......................
@@ -226,7 +234,7 @@ hdcd <- function(ncdf = NULL,
         #......................
         # Step 5: Population weight for each year by multiplying with weights
         #......................
-        # Population wieght if population grid provided
+        # Population weight if population grid provided
 
         pop_weighted = 0
 
@@ -258,6 +266,7 @@ hdcd <- function(ncdf = NULL,
             # Check dimensions
             if(all(dim(ncdf_brick_hdcd_pop_i)==dim(population_weighted_raster_i_brick))){
               # Multiple ncdf_brick_hdcd with population year
+              extent(population_weighted_raster_i_brick) <- extent(ncdf_brick_hdcd_pop_i) # Fix the resolution and extent of the brick
               ncdf_brick_hdcd_pop_i_weighted <- ncdf_brick_hdcd_pop_i * population_weighted_raster_i_brick
               names(ncdf_brick_hdcd_pop_i_weighted) <- names(ncdf_brick_hdcd_pop_i)
 
@@ -285,6 +294,7 @@ hdcd <- function(ncdf = NULL,
         # Step 6: Aggregate to regions
         #......................
         # Combine with ncdf_grid and aggregate to regions
+        # If population weighted then sum the wieghted grids
         if(pop_weighted == 1){
           hdcd_region <- df_polygrid %>%
             dplyr::bind_cols(
@@ -296,6 +306,7 @@ hdcd <- function(ncdf = NULL,
             dplyr::summarise_all(list(~sum(.,na.rm=T))) %>%
             tidyr::gather(key="x",value="value", -ID,-subRegion)}
 
+        # If not population weighted then take the mean of the grids for the total region
         if(pop_weighted == 0){
           hdcd_region <- df_polygrid %>%
             dplyr::bind_cols(
@@ -315,6 +326,7 @@ hdcd <- function(ncdf = NULL,
           ncdf_times = ncdf_times[index_subset],
           x = paste0("X",index_subset))
 
+        # hdcd segments
         hdcd_region_segments <- hdcd_region %>%
           dplyr::left_join(temporal_subset, by="x") %>%
           dplyr::mutate(year = substr(ncdf_times,1,4),
@@ -327,6 +339,21 @@ hdcd <- function(ncdf = NULL,
           dplyr::summarize(value=sum(value,na.rm=T)) %>%
           dplyr::ungroup() %>%
           dplyr::filter(!is.na(subRegion))
+
+        # hdcd monthly
+        if(diagnostics){
+        hdcd_region_monthly <- hdcd_region %>%
+          dplyr::left_join(temporal_subset, by="x") %>%
+          dplyr::mutate(year = substr(ncdf_times,1,4),
+                        month = substr(ncdf_times,6,7),
+                        day = substr(ncdf_times,9,10),
+                        hour = substr(ncdf_times,12,13)) %>%
+          dplyr::select(subRegion,year,month,value) %>%
+          dplyr::group_by(subRegion,year, month) %>%
+          dplyr::summarize(value=sum(value,na.rm=T)) %>%
+          dplyr::ungroup() %>%
+          dplyr::filter(!is.na(subRegion))
+        }
 
         #......................
         # Step 8: Add in building components for GCAMUSA
@@ -351,7 +378,7 @@ hdcd <- function(ncdf = NULL,
     }
 
     #......................
-    # Step 9: Save as combined csv files in Level 2 XML format for US or GCAM regions
+    # Step 9a: Save segment data as combined csv files in Level 2 XML format for US or GCAM regions
     # L2441.HDDCDD_Fixed_rcp4p5_gcamusa.csv, L2441.HDDCDD_Fixed_rcp8p5_gcamusa.csv,
     # L2441.HDDCDD_Fixed_gcamusa.csv
     #......................
@@ -374,15 +401,70 @@ hdcd <- function(ncdf = NULL,
     if(i < length(ncdf)){
       filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate.csv")
       } else {
-        filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,".csv")}
+        filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,".csv")
+        }
 
     data.table::fwrite(hdcd_comb, file=filename_i)
     print(paste0("File saved as : ", filename_i))
 
+
+    #......................
+    # Step 9b: Save monthly as combined csv files
+    #......................
+
+    if(diagnostics){
+    hdcd_comb_monthly <- hdcd_comb_monthly %>%
+      dplyr::bind_rows(hdcd_region_monthly) %>%
+      dplyr::ungroup() %>%
+      dplyr::group_by(subRegion,year,month) %>%
+      dplyr::summarize(value=sum(value,na.rm=T)) %>%
+      dplyr::ungroup() %>%
+      dplyr::filter(!is.na(subRegion),
+                    !is.na(year),
+                    !is.na(month))
+
+    year_min_i <- min(hdcd_comb_monthly$year,na.rm=T)
+    year_max_i <- max(hdcd_comb_monthly$year,na.rm=T)
+
+    if(i < length(ncdf)){
+      filename_i_monthly <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate_monthly.csv")
+    } else {
+      filename_i_monthly <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,"_monthly.csv")}
+
+    data.table::fwrite(hdcd_comb_monthly, file=filename_i_monthly)
+    print(paste0("File saved as : ", filename_i_monthly))
+    }
+
   } # Close for(i in 1:length(ncdf)){
 
+
   #......................
-  # Step 10: Diagnostics
+  # Step 10: Save XML
+  #......................
+
+  if(xml){
+  # Format to match GCAM output file L2441.HDDCDD_Fixed_rcp4p5_gcamusa.csv
+  hdcd_comb_xml <- hdcd_comb %>%
+    dplyr::select(region=subRegion,
+                  gcam.consumer,
+                  nodeInput,
+                  building.node.input,
+                  thermal.building.service.input,
+                  year,
+                  degree.days=value)
+
+  filename_i_xml <- gsub(".csv",".xml",filename_i)
+
+  gcamdata::create_xml(filename_i_xml) %>%
+    add_xml_data(hdcd_comb_xml, "HDDCDD")%>%
+    run_xml_conversion()
+
+  print(paste0("File saved as : ", filename_i_xml))
+  }
+
+
+  #......................
+  # Step 11: Diagnostics
   #......................
 
   if(diagnostics){

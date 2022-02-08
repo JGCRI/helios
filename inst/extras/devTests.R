@@ -12,6 +12,7 @@ population_i = "C:/Z/projects/current/00_IM3/tests/process_hdhcdh/pop_1km/popula
 reference_temp_F_i = 65
 folder_i="C:/Z/projects/current/00_IM3/tests/process_hdhcdh/outputs"
 diagnostics_i = T
+xml_i = T
 
 hdcd(ncdf = ncdf_i,
      spatial = spatial_i,
@@ -19,7 +20,8 @@ hdcd(ncdf = ncdf_i,
      population = population_i,
      reference_temp_F = reference_temp_F_i,
      folder = folder_i,
-     diagnostics= diagnostics_i)
+     diagnostics= diagnostics_i,
+     xml= xml_i)
 
 
 ncdf = ncdf_i

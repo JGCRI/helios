@@ -30,6 +30,8 @@ Imports:
 Suggests: 
     rmarkdown,
 	testthat
+Remotes: 
+	github::JGCRI/gcamdata
 VignetteBuilder: 
     knitr,
 	ggplot2,
