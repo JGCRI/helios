@@ -24,7 +24,8 @@ hdcd(ncdf = ncdf_i,
      folder = folder_i,
      diagnostics= diagnostics_i,
      xml= xml_i,
-     name_append = name_append_i)
+     name_append = name_append_i,
+     save = F) -> test_hdcd
 
 
 ncdf = ncdf_i

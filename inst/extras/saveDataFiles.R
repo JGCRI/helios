@@ -191,5 +191,3 @@ population_conus_total_ssp5_2020_2100_wrf_wgs84 <- data.table::fread("C:/Z/proje
   tibble::as_tibble(); population_conus_total_ssp5_2020_2100_wrf_wgs84
 use_data(population_conus_total_ssp5_2020_2100_wrf_wgs84, version=3, overwrite=T)
 
-
-
