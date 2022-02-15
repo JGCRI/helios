@@ -45,3 +45,50 @@
 #'  mapUS52 <- helios::mapUS52
 #' }
 "mapUS52"
+
+#.................................
+# NOAA HDDCDD data
+#................................
+
+#' noaa_hddcdd
+#'
+#' @source https://ftp.cpc.ncep.noaa.gov/htdocs/products/analysis_monitoring/cdus/degree_days/archives/
+#' @format dataframe
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  noaa_hddcdd <- helios::noaa_hddcdd
+#' }
+"noaa_hddcdd"
+
+#.................................
+# Pre-processed Population Files
+#................................
+
+#' population_conus_total_ssp3_2020_2100_wrf_wgs84
+#'
+#' @source Processed by Chris Vernon from:
+#' Paper: Jiang, L., O’Neill, B. C., Zoraghein, H., & Dahlke, S. (2020). Population scenarios for US states consistent with shared socioeconomic pathways. Environmental Research Letters, 15(9), 094097. https://iopscience.iop.org/article/10.1088/1748-9326/aba5b1
+#' Data: https://zenodo.org/record/3956412#.YgqKOd_MJPZ
+#' Processing Scripts: https://zenodo.org/record/3956703#.YgqKPt_MJPZ
+#' @format dataframe
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  population_conus_total_ssp3_2020_2100_wrf_wgs84 <- helios::population_conus_total_ssp3_2020_2100_wrf_wgs84
+#' }
+"population_conus_total_ssp3_2020_2100_wrf_wgs84"
+
+#' population_conus_total_ssp5_2020_2100_wrf_wgs84
+#'
+#' @source Processed by Chris Vernon from:
+#' Paper: Jiang, L., O’Neill, B. C., Zoraghein, H., & Dahlke, S. (2020). Population scenarios for US states consistent with shared socioeconomic pathways. Environmental Research Letters, 15(9), 094097. https://iopscience.iop.org/article/10.1088/1748-9326/aba5b1
+#' Data: https://zenodo.org/record/3956412#.YgqKOd_MJPZ
+#' Processing Scripts: https://zenodo.org/record/3956703#.YgqKPt_MJPZ
+#' @format dataframe
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  population_conus_total_ssp5_2020_2100_wrf_wgs84 <- helios::population_conus_total_ssp5_2020_2100_wrf_wgs84
+#' }
+"population_conus_total_ssp5_2020_2100_wrf_wgs84"

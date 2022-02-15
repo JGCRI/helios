@@ -12,7 +12,8 @@ hdcd(
   reference_temp_F = 65,
   folder = paste0(getwd(), "/output"),
   diagnostics = F,
-  xml = F
+  xml = F,
+  name_append = ""
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ hdcd(
 \item{diagnostics}{Default = F.}
 
 \item{xml}{Default = F. Whether to create GCAM XML or not.}
+
+\item{name_append}{Default = "". Name to append to all filenames}
 }
 \description{
 Heating and Cooling Degree processing for GCAM from various sources such as WRF and CMIP

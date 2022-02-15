@@ -10,6 +10,7 @@
 #' @param folder Default = paste0(getwd(),"/output").
 #' @param diagnostics Default = F.
 #' @param xml Default = F. Whether to create GCAM XML or not.
+#' @param name_append Default = "". Name to append to all filenames
 #' @importFrom magrittr %>%
 #' @export
 
@@ -20,7 +21,8 @@ hdcd <- function(ncdf = NULL,
                  reference_temp_F = 65,
                  folder = paste0(getwd(),"/output"),
                  diagnostics = F,
-                 xml = F) {
+                 xml = F,
+                 name_append = "") {
 
 #............
 # For Testing
@@ -48,11 +50,10 @@ hdcd <- function(ncdf = NULL,
 
   if(is.null(folder)){folder <- paste0(getwd(),"/output")}
   if(!dir.exists(folder)){dir.create(folder)}
-  if(is.null(population)){population == "No population"}
   # Pick up on intermediate files if program crashed before.
   hdcd_comb <- tibble::tibble()
   hdcd_comb_monthly <- tibble::tibble()
-
+  if(any(grepl("tbl_df|tbl|data.frame",class(population)))){population <- list("pop"=population)}
   }
 
   #......................
@@ -69,21 +70,22 @@ hdcd <- function(ncdf = NULL,
 
       for(j in 1:length(population)){
 
-        population_j = population[j]
+        population_j = population[[j]]
 
-        if(population != "No Population") {
+        if(!is.null(population)) {
 
         # If isn't a dataframe check if file exists
-        if(class(population_j) == "character"){
-          if(file.exists(population_j)){
-            population_j_raw = data.table::fread(population_j)
-          } else {
-            print(paste0("Population file provided: ",population_j," does not exist."))
-            population_j_raw = "No population"
+        if(length(population_j) == 1){
+          if(any(class(population_j) == "character")){
+            if(file.exists(population_j)){
+              population_j_raw = data.table::fread(population_j)
+            } else {
+              print(paste0("Population file provided: ",population_j," does not exist."))
+              population_j_raw = "No population"
+            }
+          }} else if(any(grepl("tbl_df|tbl|data.frame",class(population_j)))){
+            population_j_raw = population_j
           }
-        } else if(grepl("tbl_df|tbl|data.frame",class(population_j))){
-          population_j_raw = population_j
-        }
 
         # Rename latitude and longitude if needed
         if(!any(grepl("\\<latitude\\>",names(population_j_raw),ignore.case = T))){}else{
@@ -138,6 +140,7 @@ hdcd <- function(ncdf = NULL,
       # Step 2: Population weighted grid
       #......................
 
+      if(!is.null(population)) {
       # Create population weighted raster if any population years in ncdf years
       if(any(names(population_j_raw) %in% as.character(years))){
       # Rasterize the population grid to the underlying data grid
@@ -207,10 +210,10 @@ hdcd <- function(ncdf = NULL,
                                              fun=mean)
       print("Completed rasterizing weighted population data.")
       }else{
-        print(paste0("Population data provided: ",population))
-        print(paste0("does not contain data for any of the years in the ncdf data."))
+        print(paste0("Population data provided does not contain data for any of the years in the ncdf data."))
         print(paste0("Population data years: ", paste(names(population_j_raw)[!grepl("RID|lat|lon",names(population_j_raw))],collapse=",")))
         print(paste0("ncdf data years: ",as.character(years)))
+      }
       }
 
       #......................
@@ -238,6 +241,7 @@ hdcd <- function(ncdf = NULL,
 
         pop_weighted = 0
 
+        if(!is.null(population)) {
         if(any(names(population_j_raw) %in% as.character(years))){
 
           ncdf_brick_hdcd_pop <- raster::brick()
@@ -287,6 +291,8 @@ hdcd <- function(ncdf = NULL,
           }
 
         } else {
+          ncdf_brick_hdcd_pop <- ncdf_brick_hdcd
+        }} else {
           ncdf_brick_hdcd_pop <- ncdf_brick_hdcd
         }
 
@@ -399,9 +405,9 @@ hdcd <- function(ncdf = NULL,
     year_max_i <- max(hdcd_comb$year,na.rm=T)
 
     if(i < length(ncdf)){
-      filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate.csv")
+      filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate",name_append,".csv")
       } else {
-        filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,".csv")
+        filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,name_append,".csv")
         }
 
     data.table::fwrite(hdcd_comb, file=filename_i)
@@ -427,9 +433,9 @@ hdcd <- function(ncdf = NULL,
     year_max_i <- max(hdcd_comb_monthly$year,na.rm=T)
 
     if(i < length(ncdf)){
-      filename_i_monthly <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate_monthly.csv")
+      filename_i_monthly <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate_monthly",name_append,".csv")
     } else {
-      filename_i_monthly <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,"_monthly.csv")}
+      filename_i_monthly <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,"_monthly",name_append,".csv")}
 
     data.table::fwrite(hdcd_comb_monthly, file=filename_i_monthly)
     print(paste0("File saved as : ", filename_i_monthly))
@@ -456,8 +462,8 @@ hdcd <- function(ncdf = NULL,
   filename_i_xml <- gsub(".csv",".xml",filename_i)
 
   gcamdata::create_xml(filename_i_xml) %>%
-    add_xml_data(hdcd_comb_xml, "HDDCDD")%>%
-    run_xml_conversion()
+    gcamdata::add_xml_data(hdcd_comb_xml, "HDDCDD")%>%
+    gcamdata::run_xml_conversion()
 
   print(paste0("File saved as : ", filename_i_xml))
   }
@@ -474,6 +480,11 @@ hdcd <- function(ncdf = NULL,
 
     folder_diagnostics <- paste0(folder,"/diagnostics")
     if(!dir.exists(folder_diagnostics)){dir.create(folder_diagnostics)}
+
+
+    #..............
+    # By Segment
+    #.............
 
     hdcd_comb_diagnostics <- hdcd_comb %>%
       dplyr::select(subRegion,year,segment,value) %>%
@@ -504,7 +515,7 @@ hdcd <- function(ncdf = NULL,
         ggplot2::scale_x_discrete(drop=FALSE)
 
         filename_diagnostics_i <-
-          paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_", year_i, ".png")
+          paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_", year_i,name_append,".png")
 
         ggplot2::ggsave(filename =  filename_diagnostics_i,
                         width = 25,
@@ -529,7 +540,7 @@ hdcd <- function(ncdf = NULL,
       ggplot2::scale_x_discrete(drop=FALSE)
 
       filename_diagnostics_i <-
-        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_allYears_freeScale.png")
+        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_allYears_freeScale",name_append,".png")
 
       ggplot2::ggsave(filename =  filename_diagnostics_i,
                       width = 25,
@@ -554,7 +565,7 @@ hdcd <- function(ncdf = NULL,
         ggplot2::scale_x_discrete(drop=FALSE)
 
       filename_diagnostics_i <-
-        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_allYears_fixedScale.png")
+        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_allYears_fixedScale",name_append,".png")
 
       ggplot2::ggsave(filename =  filename_diagnostics_i,
                       width = 25,
@@ -562,6 +573,86 @@ hdcd <- function(ncdf = NULL,
 
       print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
     }
+
+    #..............
+    # By Month compare against NOAA
+    #.............
+
+    if(T) {
+    months = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    monthNums = c("01","02","03","04","05","06","07","08","09","10","11","12")
+    monthsShort<- c("JA","FB","MR","AP","MY","JN","JL","AG","SP","OC","NV","DC")
+    months_df <- data.frame(month=months,
+                            monthNums = monthNums,
+                            monthsShort = monthsShort)
+
+    hdcd_comb_monthly_diagnostics <- hdcd_comb_monthly %>%
+      dplyr::select(subRegion,year,monthNums = month,value) %>%
+      unique() %>%
+      dplyr::mutate(HDDCDD = dplyr::if_else(value < 0, "HDD","CDD")) %>%
+      dplyr::mutate(value = abs(value),
+                    scenario = "ncdf") %>%
+      dplyr::left_join(months_df, by=c("monthNums")) %>%
+      dplyr::bind_rows(helios::noaa_hddcdd %>%
+                         dplyr::select(subRegion=stateCode, year, month, HDDCDD, value) %>%
+                         dplyr::mutate(scenario ="noaa",
+                                       year = as.character(year)) %>%
+                         dplyr::left_join(months_df, by=c("month"))) %>%
+      dplyr::mutate(month = factor(month, levels = months))
+
+    # Find closest matching years
+    current_years <- as.integer(unique(hdcd_comb_monthly$year))
+    noaa_years <- as.integer(unique(noaa_hddcdd$year))
+
+    # Individul Years
+    for(year_i in current_years) {
+
+      noaa_year_i <- noaa_years[which(abs(noaa_years - year_i) == min(abs(noaa_years - year_i)))]
+
+      hdcd_comb_monthly_diagnostics %>%
+        dplyr::filter((year == year_i & scenario == "ncdf") |
+                        (year == noaa_year_i & scenario == "noaa")) %>%
+        dplyr::mutate(scenario = paste0(scenario,"_",year)) %>%
+        dplyr::select(subRegion, scenario, year, month,HDDCDD, value)->
+        hdcd_comb_monthly_diagnostics_i
+
+      # Expand to include all year months
+      all <- hdcd_comb_monthly_diagnostics_i %>%
+        tidyr::expand(subRegion,scenario,year,month,HDDCDD)
+      hdcd_comb_monthly_diagnostics_i %>%
+        dplyr::right_join(all) %>%
+        dplyr::filter((year == year_i & scenario == paste0("ncdf_",year_i)) |
+                        (year == noaa_year_i & scenario == paste0("noaa_",noaa_year_i))) %>%
+        dplyr::mutate(scenario_hddcdd = paste0(scenario,HDDCDD)) %>%
+        tidyr::replace_na(list(value=0))->
+        hdcd_comb_monthly_diagnostics_i
+
+      ggplot2::ggplot(data = hdcd_comb_monthly_diagnostics_i,
+                      ggplot2::aes(x = month, y = value, group=scenario_hddcdd)) +
+        ggplot2::geom_line(ggplot2::aes(color = HDDCDD, linetype = scenario)) +
+        ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
+        ggplot2::ggtitle(paste0("NCDF_", year_i," NOAA_",noaa_year_i)) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
+                                                             0.5))+
+        ggplot2::scale_color_manual(values = c("HDD" = "firebrick",
+                                               "CDD" = "dodgerblue")) +
+        ggplot2::scale_linetype_manual(values = c(1,2)) +
+        ggplot2::scale_x_discrete(drop=FALSE)
+
+      filename_monthly_diagnostics_i <-
+        paste0(folder_diagnostics, "/monthly_ncdf_", year_i,"_noaa_",noaa_year_i,name_append,".png")
+
+      ggplot2::ggsave(filename =  filename_monthly_diagnostics_i,
+                      width = 25,
+                      height = 15) # save plot
+
+      print(paste0("Diagnostic figure saved as ", filename_monthly_diagnostics_i))
+    }
+
+    }
+
+    #...............
 
     print("Diagnostics complete.")
 
