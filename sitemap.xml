@@ -40,6 +40,15 @@
     <loc>/reference/mapUS52.html</loc>
   </url>
   <url>
+    <loc>/reference/noaa_hddcdd.html</loc>
+  </url>
+  <url>
+    <loc>/reference/population_conus_total_ssp3_2020_2100_wrf_wgs84.html</loc>
+  </url>
+  <url>
+    <loc>/reference/population_conus_total_ssp5_2020_2100_wrf_wgs84.html</loc>
+  </url>
+  <url>
     <loc>/reference/segment_map_utc.html</loc>
   </url>
 </urlset>

@@ -77,16 +77,22 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">hdcd</span><span class="op">(</span>
-  ncdf <span class="op">=</span> <span class="cn">NULL</span>,
-  spatial <span class="op">=</span> <span class="cn">NULL</span>,
-  temporal <span class="op">=</span> <span class="cn">NULL</span>,
-  population <span class="op">=</span> <span class="cn">NULL</span>,
-  reference_temp_F <span class="op">=</span> <span class="fl">65</span>,
-  folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/output"</span><span class="op">)</span>,
-  diagnostics <span class="op">=</span> <span class="cn">F</span>,
-  xml <span class="op">=</span> <span class="cn">F</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre><code>hdcd(
+  ncdf = NULL,
+  spatial = NULL,
+  temporal = NULL,
+  population = NULL,
+  reference_temp_F = 65,
+  folder = paste0(getwd(), "/output"),
+  diagnostics = F,
+  xml = F,
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+  name_append = "",
+  save = T
+=======
+  name_append = ""
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; c30a5c85ed68151111aa734f742cbd93fbe37a4b
+)</code></pre></div>
     </div>
 
     <div id="arguments">
@@ -107,7 +113,14 @@
 <dd><p>Default = F.</p></dd>
 <dt>xml</dt>
 <dd><p>Default = F. Whether to create GCAM XML or not.</p></dd>
-</dl></div>
+<dt>name_append</dt>
+<dd><p>Default = "". Name to append to all filenames</p></dd>
+</dl><p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
+<dl><dt>save</dt>
+<dd><p>Default = T. Whether to save outputs or not.</p></dd>
+</dl><p>=======
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; c30a5c85ed68151111aa734f742cbd93fbe37a4b</p>
+    </div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
