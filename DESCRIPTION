@@ -26,7 +26,8 @@ Imports:
 	tibble,
 	ncdf4,
 	magrittr,
-	data.table
+	data.table,
+	gcamdata
 Suggests: 
     rmarkdown,
 	testthat
