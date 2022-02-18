@@ -28,6 +28,9 @@
     <loc>/reference/L2441.HDDCDD_Fixed_gcamusa_seg.html</loc>
   </url>
   <url>
+    <loc>/reference/diagnostics.html</loc>
+  </url>
+  <url>
     <loc>/reference/hdcd.html</loc>
   </url>
   <url>
@@ -41,6 +44,9 @@
   </url>
   <url>
     <loc>/reference/noaa_hddcdd.html</loc>
+  </url>
+  <url>
+    <loc>/reference/save_xml.html</loc>
   </url>
   <url>
     <loc>/reference/segment_map_utc.html</loc>
