@@ -45,6 +45,7 @@ hdcd <- function(ncdf = NULL,
   # Pick up on intermediate files if program crashed before.
   hdcd_comb <- tibble::tibble()
   hdcd_comb_monthly <- tibble::tibble()
+  hdcd_region_segments_bld <- tibble::tibble()
   if(any(grepl("tbl_df|tbl|data.frame",class(population)))){population <- list("pop"=population)}
   }
 
@@ -381,38 +382,41 @@ hdcd <- function(ncdf = NULL,
     # L2441.HDDCDD_Fixed_gcamusa.csv
     #......................
 
-    hdcd_comb <- hdcd_comb %>%
-      dplyr::bind_rows(hdcd_region_segments_bld) %>%
-      dplyr::ungroup() %>%
-      dplyr::group_by(subRegion,year,segment,gcam.consumer,
-                      nodeInput, building.node.input,
-                      thermal.building.service.input) %>%
-      dplyr::summarize(value=sum(value,na.rm=T)) %>%
-      dplyr::ungroup() %>%
-      dplyr::filter(!is.na(subRegion),
-                    !is.na(year),
-                    !is.na(segment))
+    if(nrow(hdcd_comb)>0){
+      hdcd_comb <- hdcd_comb %>%
+        dplyr::bind_rows(hdcd_region_segments_bld) %>%
+        dplyr::ungroup() %>%
+        dplyr::group_by(subRegion,year,segment,gcam.consumer,
+                        nodeInput, building.node.input,
+                        thermal.building.service.input) %>%
+        dplyr::summarize(value=sum(value,na.rm=T)) %>%
+        dplyr::ungroup() %>%
+        dplyr::filter(!is.na(subRegion),
+                      !is.na(year),
+                      !is.na(segment))
 
-    year_min_i <- min(hdcd_comb$year,na.rm=T)
-    year_max_i <- max(hdcd_comb$year,na.rm=T)
+      year_min_i <- min(hdcd_comb$year,na.rm=T)
+      year_max_i <- max(hdcd_comb$year,na.rm=T)
 
-    if(i < length(ncdf)){
-      filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate",name_append,".csv")
-      } else {
-        filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,name_append,".csv")
+      if(i < length(ncdf)){
+        filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate",name_append,".csv")
+        } else {
+          filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,name_append,".csv")
+          }
+
+      if(save){
+        data.table::fwrite(hdcd_comb, file=filename_i)
+        print(paste0("File saved as : ", filename_i))
         }
-
-    if(save){
-      data.table::fwrite(hdcd_comb, file=filename_i)
-      print(paste0("File saved as : ", filename_i))
       }
-
 
     #......................
     # Step 9b: Save monthly as combined csv files
     #......................
 
     if(diagnostics){
+     if(nrow(hdcd_comb_monthly)>0){
+
     hdcd_comb_monthly <- hdcd_comb_monthly %>%
       dplyr::bind_rows(hdcd_region_monthly) %>%
       dplyr::ungroup() %>%
@@ -435,7 +439,8 @@ hdcd <- function(ncdf = NULL,
     data.table::fwrite(hdcd_comb_monthly, file=filename_i_monthly)
     print(paste0("File saved as : ", filename_i_monthly))
     }
-    }
+
+    }}
 
   } # Close for(i in 1:length(ncdf)){
 
@@ -446,7 +451,8 @@ hdcd <- function(ncdf = NULL,
 
   if(xml){
   # Format to match GCAM output file L2441.HDDCDD_Fixed_rcp4p5_gcamusa.csv
-  hdcd_comb_xml <- hdcd_comb %>%
+  if(nrow(hdcd_comb)>0){
+    hdcd_comb_xml <- hdcd_comb %>%
     dplyr::select(region=subRegion,
                   gcam.consumer,
                   nodeInput,
@@ -463,6 +469,7 @@ hdcd <- function(ncdf = NULL,
 
   print(paste0("File saved as : ", filename_i_xml))
   }
+    }
 
 
   #......................
@@ -477,6 +484,7 @@ hdcd <- function(ncdf = NULL,
     folder_diagnostics <- paste0(folder,"/diagnostics")
     if(!dir.exists(folder_diagnostics)){dir.create(folder_diagnostics)}
 
+    if(nrow(hdcd_comb)>0){
 
     #..............
     # By Segment
@@ -570,11 +578,13 @@ hdcd <- function(ncdf = NULL,
       print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
     }
 
+    }
+
     #..............
     # By Month compare against NOAA
     #.............
 
-    if(T) {
+    if(nrow(hdcd_comb_monthly)>0){
     months = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
     monthNums = c("01","02","03","04","05","06","07","08","09","10","11","12")
     monthsShort<- c("JA","FB","MR","AP","MY","JN","JL","AG","SP","OC","NV","DC")
