@@ -340,7 +340,6 @@ hdcd <- function(ncdf = NULL,
           dplyr::filter(!is.na(subRegion))
 
         # hdcd monthly
-        if(diagnostics){
         hdcd_region_monthly <- hdcd_region %>%
           dplyr::left_join(temporal_subset, by="x") %>%
           dplyr::mutate(year = substr(ncdf_times,1,4),
@@ -352,7 +351,6 @@ hdcd <- function(ncdf = NULL,
           dplyr::summarize(value=sum(value,na.rm=T)) %>%
           dplyr::ungroup() %>%
           dplyr::filter(!is.na(subRegion))
-        }
 
         #......................
         # Step 8: Add in building components for GCAMUSA
@@ -382,7 +380,7 @@ hdcd <- function(ncdf = NULL,
     # L2441.HDDCDD_Fixed_gcamusa.csv
     #......................
 
-    if(nrow(hdcd_comb)>0){
+    if(nrow(hdcd_region_segments_bld)>0){
       hdcd_comb <- hdcd_comb %>%
         dplyr::bind_rows(hdcd_region_segments_bld) %>%
         dplyr::ungroup() %>%
@@ -414,8 +412,7 @@ hdcd <- function(ncdf = NULL,
     # Step 9b: Save monthly as combined csv files
     #......................
 
-    if(diagnostics){
-     if(nrow(hdcd_comb_monthly)>0){
+  if(nrow(hdcd_region_monthly)>0){
 
     hdcd_comb_monthly <- hdcd_comb_monthly %>%
       dplyr::bind_rows(hdcd_region_monthly) %>%
@@ -440,7 +437,7 @@ hdcd <- function(ncdf = NULL,
     print(paste0("File saved as : ", filename_i_monthly))
     }
 
-    }}
+    }
 
   } # Close for(i in 1:length(ncdf)){
 
@@ -450,25 +447,10 @@ hdcd <- function(ncdf = NULL,
   #......................
 
   if(xml){
-  # Format to match GCAM output file L2441.HDDCDD_Fixed_rcp4p5_gcamusa.csv
-  if(nrow(hdcd_comb)>0){
-    hdcd_comb_xml <- hdcd_comb %>%
-    dplyr::select(region=subRegion,
-                  gcam.consumer,
-                  nodeInput,
-                  building.node.input,
-                  thermal.building.service.input,
-                  year,
-                  degree.days=value)
-
-  filename_i_xml <- gsub(".csv",".xml",filename_i)
-
-  gcamdata::create_xml(filename_i_xml) %>%
-    gcamdata::add_xml_data(hdcd_comb_xml, "HDDCDD")%>%
-    gcamdata::run_xml_conversion()
-
-  print(paste0("File saved as : ", filename_i_xml))
-  }
+    save_xml(hdcd = hdcd_comb,
+             folder = folder,
+             filename = filename_i,
+             name_append = name_append)
     }
 
 
@@ -478,190 +460,12 @@ hdcd <- function(ncdf = NULL,
 
   if(diagnostics){
 
-    print(".........................................")
-    print("Starting doagnostics ...")
-
-    folder_diagnostics <- paste0(folder,"/diagnostics")
-    if(!dir.exists(folder_diagnostics)){dir.create(folder_diagnostics)}
-
-    if(nrow(hdcd_comb)>0){
-
-    #..............
-    # By Segment
-    #.............
-
-    hdcd_comb_diagnostics <- hdcd_comb %>%
-      dplyr::select(subRegion,year,segment,value) %>%
-      unique() %>%
-      dplyr::mutate(heatcool = dplyr::if_else(value < 0, "heat","cool"))
-
-    segment_levels = c("Jan_day","Jan_night","Feb_day","Feb_night",
-                       "Mar_day","Mar_night","Apr_day","Apr_night",
-                       "May_day","May_night","Jun_day","Jun_night",
-                       "Jul_day","Jul_night","Aug_day","Aug_night",
-                       "Sep_day","Sep_night","Oct_day","Oct_night",
-                       "Nov_day","Nov_night","Dec_day","Dec_night","superpeak")
-
-    # Individul Years
-    for(year_i in (hdcd_comb_diagnostics$year) %>% unique()) {
-      ggplot2::ggplot(data = hdcd_comb_diagnostics %>%
-                        dplyr::filter(year == year_i) %>%
-                        dplyr::mutate(segment = factor(segment, levels = segment_levels))) +
-        ggplot2::aes(x = segment, y = value, group = heatcool) +
-        ggplot2::geom_line(ggplot2::aes(color = heatcool)) +
-        ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
-        ggplot2::ggtitle(paste0("HDCD WRF to GCAM ", year_i , " ")) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
-                                                             0.5))+
-        ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
-                                                 "dodgerblue")) +
-        ggplot2::scale_x_discrete(drop=FALSE)
-
-        filename_diagnostics_i <-
-          paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_", year_i,name_append,".png")
-
-        ggplot2::ggsave(filename =  filename_diagnostics_i,
-                        width = 25,
-                        height = 15) # save plot
-
-        print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
-    }
-
-    # Combined years free scale
-    if(T) {
-      ggplot2::ggplot(data = hdcd_comb_diagnostics %>%
-                        dplyr::mutate(segment = factor(segment, levels = segment_levels))) +
-        ggplot2::aes(x = segment, y = value, group = year) +
-        ggplot2::geom_line(ggplot2::aes(color = heatcool)) +
-        ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
-        ggplot2::ggtitle(paste0("HDCD WRF to GCAM ")) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
-                                                             0.5))+
-        ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
-                                                 "dodgerblue"))+
-      ggplot2::scale_x_discrete(drop=FALSE)
-
-      filename_diagnostics_i <-
-        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_allYears_freeScale",name_append,".png")
-
-      ggplot2::ggsave(filename =  filename_diagnostics_i,
-                      width = 25,
-                      height = 15) # save plot
-
-      print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
-    }
-
-    # Combined years fixed scale
-    if(T) {
-      ggplot2::ggplot(data = hdcd_comb_diagnostics %>%
-                        dplyr::mutate(segment = factor(segment, levels = segment_levels))) +
-        ggplot2::aes(x = segment, y = value, group = year) +
-        ggplot2::geom_line(ggplot2::aes(color = heatcool)) +
-        ggplot2::facet_wrap(subRegion ~ ., scales = "fixed") +
-        ggplot2::ggtitle(paste0("HDCD WRF to GCAM ")) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
-                                                             0.5))+
-        ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
-                                                 "dodgerblue"))+
-        ggplot2::scale_x_discrete(drop=FALSE)
-
-      filename_diagnostics_i <-
-        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename_i)), "_allYears_fixedScale",name_append,".png")
-
-      ggplot2::ggsave(filename =  filename_diagnostics_i,
-                      width = 25,
-                      height = 15) # save plot
-
-      print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
-    }
-
-    }
-
-    #..............
-    # By Month compare against NOAA
-    #.............
-
-    if(nrow(hdcd_comb_monthly)>0){
-    months = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
-    monthNums = c("01","02","03","04","05","06","07","08","09","10","11","12")
-    monthsShort<- c("JA","FB","MR","AP","MY","JN","JL","AG","SP","OC","NV","DC")
-    months_df <- data.frame(month=months,
-                            monthNums = monthNums,
-                            monthsShort = monthsShort)
-
-    hdcd_comb_monthly_diagnostics <- hdcd_comb_monthly %>%
-      dplyr::select(subRegion,year,monthNums = month,value) %>%
-      unique() %>%
-      dplyr::mutate(HDDCDD = dplyr::if_else(value < 0, "HDD","CDD")) %>%
-      dplyr::mutate(value = abs(value),
-                    scenario = "ncdf") %>%
-      dplyr::left_join(months_df, by=c("monthNums")) %>%
-      dplyr::bind_rows(helios::noaa_hddcdd %>%
-                         dplyr::select(subRegion=stateCode, year, month, HDDCDD, value) %>%
-                         dplyr::mutate(scenario ="noaa",
-                                       year = as.character(year)) %>%
-                         dplyr::left_join(months_df, by=c("month"))) %>%
-      dplyr::mutate(month = factor(month, levels = months))
-
-    # Find closest matching years
-    current_years <- as.integer(unique(hdcd_comb_monthly$year))
-    noaa_years <- as.integer(unique(noaa_hddcdd$year))
-
-    # Individul Years
-    for(year_i in current_years) {
-
-      noaa_year_i <- noaa_years[which(abs(noaa_years - year_i) == min(abs(noaa_years - year_i)))]
-
-      hdcd_comb_monthly_diagnostics %>%
-        dplyr::filter((year == year_i & scenario == "ncdf") |
-                        (year == noaa_year_i & scenario == "noaa")) %>%
-        dplyr::mutate(scenario = paste0(scenario,"_",year)) %>%
-        dplyr::select(subRegion, scenario, year, month,HDDCDD, value)->
-        hdcd_comb_monthly_diagnostics_i
-
-      # Expand to include all year months
-      all <- hdcd_comb_monthly_diagnostics_i %>%
-        tidyr::expand(subRegion,scenario,year,month,HDDCDD)
-      hdcd_comb_monthly_diagnostics_i %>%
-        dplyr::right_join(all) %>%
-        dplyr::filter((year == year_i & scenario == paste0("ncdf_",year_i)) |
-                        (year == noaa_year_i & scenario == paste0("noaa_",noaa_year_i))) %>%
-        dplyr::mutate(scenario_hddcdd = paste0(scenario,HDDCDD)) %>%
-        tidyr::replace_na(list(value=0))->
-        hdcd_comb_monthly_diagnostics_i
-
-      ggplot2::ggplot(data = hdcd_comb_monthly_diagnostics_i,
-                      ggplot2::aes(x = month, y = value, group=scenario_hddcdd)) +
-        ggplot2::geom_line(ggplot2::aes(color = HDDCDD, linetype = scenario)) +
-        ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
-        ggplot2::ggtitle(paste0("NCDF_", year_i," NOAA_",noaa_year_i)) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
-                                                             0.5))+
-        ggplot2::scale_color_manual(values = c("HDD" = "firebrick",
-                                               "CDD" = "dodgerblue")) +
-        ggplot2::scale_linetype_manual(values = c(1,2)) +
-        ggplot2::scale_x_discrete(drop=FALSE)
-
-      filename_monthly_diagnostics_i <-
-        paste0(folder_diagnostics, "/monthly_ncdf_", year_i,"_noaa_",noaa_year_i,name_append,".png")
-
-      ggplot2::ggsave(filename =  filename_monthly_diagnostics_i,
-                      width = 25,
-                      height = 15) # save plot
-
-      print(paste0("Diagnostic figure saved as ", filename_monthly_diagnostics_i))
-    }
-
-    }
-
-    #...............
-
-    print("Diagnostics complete.")
-
+    diagnostics(
+      hdcd = hdcd_comb,
+      hdcd_monthly = hdcd_comb_monthly,
+      folder = folder,
+      filename = filename_i,
+      name_append = name_append)
   }
 
 

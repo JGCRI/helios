@@ -5,8 +5,9 @@ library(helios); library(dplyr); library(raster)
 #...............
 
 list.files()
-ncdf_i = c("C:/Z/projects/current/00_IM3/tests/process_hdhcdh/wrfout_d01_1979-01-01_00%3A00%3A00",
-           "C:/Z/projects/current/00_IM3/tests/process_hdhcdh/wrfout_d01_1994-12-17_01%3A00%3A00.nc")
+ncdf_i = c(#"C:/Z/projects/current/00_IM3/tests/process_hdhcdh/wrfout_d01_1979-01-01_00%3A00%3A00",
+           #"C:/Z/projects/current/00_IM3/tests/process_hdhcdh/wrfout_d01_1994-12-17_01%3A00%3A00.nc",
+           "C:/Z/projects/current/00_IM3/tests/process_hdhcdh/wrfout_d01_2020-01-01_01%3A00%3A00")
 spatial_i = "gcamusa"
 temporal_i = "gcamusa"
 #population_i = helios::population_conus_total_ssp5_2020_2100_wrf_wgs84
@@ -16,6 +17,7 @@ folder_i="C:/Z/projects/current/00_IM3/tests/process_hdhcdh/outputs"
 diagnostics_i = T
 xml_i = T
 name_append_i = "_ssp5pop"
+save_i = T
 
 hdcd(ncdf = ncdf_i,
      spatial = spatial_i,
@@ -26,7 +28,7 @@ hdcd(ncdf = ncdf_i,
      diagnostics= diagnostics_i,
      xml= xml_i,
      name_append = name_append_i,
-     save = F) -> test_hdcd
+     save = save_i) -> test_hdcd
 
 
 ncdf = ncdf_i
@@ -38,4 +40,4 @@ folder = folder_i
 diagnostics= diagnostics_i
 xml= xml_i
 name_append = name_append_i
-save = F
+save = save_i
