@@ -46,6 +46,7 @@ hdcd <- function(ncdf = NULL,
   hdcd_comb <- tibble::tibble()
   hdcd_comb_monthly <- tibble::tibble()
   hdcd_region_segments_bld <- tibble::tibble()
+  hdcd_region_monthly <- tibble::tibble()
   if(any(grepl("tbl_df|tbl|data.frame",class(population)))){population <- list("pop"=population)}
   }
 
