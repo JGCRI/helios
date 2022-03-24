@@ -36,7 +36,7 @@ hdcd <- function(ncdf = NULL,
   if(T){
 
   NULL -> RID -> subRegion_total_value -> pop_weight -> stateCode ->
-      HDDCDD -> noaa_hddcdd -> scenario -> scenario_hddcdd -> ID -> V3 ->
+      HDDCDD -> scenario -> scenario_hddcdd -> ID -> V3 -> day ->
       building.node.input->gcam.consumer->heatcool->month->nodeInput->
       segment->subRegion->thermal.building.service.input->value->x->y->year
 
@@ -304,7 +304,8 @@ hdcd <- function(ncdf = NULL,
             dplyr::select(-x,-y) %>%
             dplyr::group_by(subRegion, ID) %>%
             dplyr::summarise_all(list(~sum(.,na.rm=T))) %>%
-            tidyr::gather(key="x",value="value", -ID,-subRegion)}
+            tidyr::gather(key="x",value="value", -ID,-subRegion)
+          }
 
         # If not population weighted then take the mean of the grids for the total region
         if(pop_weighted == 0){
@@ -317,6 +318,12 @@ hdcd <- function(ncdf = NULL,
             dplyr::group_by(subRegion, ID) %>%
             dplyr::summarise_all(list(~mean(.,na.rm=T))) %>%
             tidyr::gather(key="x",value="value", -ID,-subRegion)}
+
+
+        # Assign HDDCDD categories
+        hdcd_region <- hdcd_region %>%
+          dplyr::mutate(HDDCDD = dplyr::if_else(value<0,"HDD","CDD"))%>%
+          dplyr::filter(value!=0)
 
         #......................
         # Step 7: Aggregate over Segments
@@ -334,8 +341,11 @@ hdcd <- function(ncdf = NULL,
                         day = substr(ncdf_times,9,10),
                         hour = substr(ncdf_times,12,13)) %>%
           dplyr::left_join(helios::segment_map_utc, by=c("subRegion", "month", "day", "hour")) %>%
-          dplyr::select(subRegion,segment,year,value) %>%
-          dplyr::group_by(subRegion,year,segment) %>%
+          dplyr::select(subRegion,year,segment,day,HDDCDD,value) %>%
+          dplyr::group_by(subRegion,year,segment,day,HDDCDD) %>%
+          dplyr::summarize(value=mean(value,na.rm=T)) %>%
+          dplyr::select(subRegion,segment,HDDCDD,year,value) %>%
+          dplyr::group_by(subRegion,year,HDDCDD,segment) %>%
           dplyr::summarize(value=sum(value,na.rm=T)) %>%
           dplyr::ungroup() %>%
           dplyr::filter(!is.na(subRegion))
@@ -347,8 +357,11 @@ hdcd <- function(ncdf = NULL,
                         month = substr(ncdf_times,6,7),
                         day = substr(ncdf_times,9,10),
                         hour = substr(ncdf_times,12,13)) %>%
-          dplyr::select(subRegion,year,month,value) %>%
-          dplyr::group_by(subRegion,year, month) %>%
+          dplyr::select(subRegion,year,month,day,HDDCDD,value) %>%
+          dplyr::group_by(subRegion,year,day,HDDCDD,month) %>%
+          dplyr::summarize(value=mean(value,na.rm=T)) %>%
+          dplyr::select(subRegion,year,month,HDDCDD,value) %>%
+          dplyr::group_by(subRegion,year,HDDCDD,month) %>%
           dplyr::summarize(value=sum(value,na.rm=T)) %>%
           dplyr::ungroup() %>%
           dplyr::filter(!is.na(subRegion))
@@ -361,7 +374,8 @@ hdcd <- function(ncdf = NULL,
           dplyr::left_join(helios::L2441.HDDCDD_Fixed_gcamusa_seg, by = c("subRegion","segment")) %>%
           # Remove columns with -ve hdcd/cooling and +ve/heating
           dplyr::filter(!((value < 0) & grepl("cool",thermal.building.service.input, ignore.case=T)),
-                        !((value > 0) & grepl("heat",thermal.building.service.input, ignore.case=T)))
+                        !((value > 0) & grepl("heat",thermal.building.service.input, ignore.case=T))) %>%
+          dplyr::select(-HDDCDD)
 
         print(paste0("Processing hdcd completed for file: ", ncdf_i))
 
@@ -448,7 +462,7 @@ hdcd <- function(ncdf = NULL,
   #......................
 
   if(xml){
-    save_xml(hdcd = hdcd_comb,
+    helios::save_xml(hdcd = hdcd_comb,
              folder = folder,
              filename = filename_i,
              name_append = name_append)
@@ -461,7 +475,7 @@ hdcd <- function(ncdf = NULL,
 
   if(diagnostics){
 
-    diagnostics(
+    helios::diagnostics(
       hdcd = hdcd_comb,
       hdcd_monthly = hdcd_comb_monthly,
       folder = folder,

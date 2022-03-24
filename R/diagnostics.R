@@ -146,6 +146,17 @@ diagnostics <- function(hdcd = tibble::tibble(),
                             monthsShort = monthsShort)
 
     hdcd_comb_monthly_diagnostics <- hdcd_monthly %>%
+      dplyr::mutate(month = as.character(month),
+                    month = dplyr::if_else(month=="1","01",month),
+                    month = dplyr::if_else(month=="2","02",month),
+                    month = dplyr::if_else(month=="3","03",month),
+                    month = dplyr::if_else(month=="4","04",month),
+                    month = dplyr::if_else(month=="5","05",month),
+                    month = dplyr::if_else(month=="6","06",month),
+                    month = dplyr::if_else(month=="7","07",month),
+                    month = dplyr::if_else(month=="8","08",month),
+                    month = dplyr::if_else(month=="9","09",month),
+                    year = as.character(year)) %>%
       dplyr::select(subRegion,year,monthNums = month,value) %>%
       unique() %>%
       dplyr::mutate(HDDCDD = dplyr::if_else(value < 0, "HDD","CDD")) %>%
