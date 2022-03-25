@@ -331,21 +331,33 @@ hdcd <- function(ncdf = NULL,
 
         temporal_subset <- data.frame(
           ncdf_times = ncdf_times[index_subset],
-          x = paste0("X",index_subset))
+          x = paste0("X",index_subset)) %>%
+          dplyr::mutate(datetime = as.POSIXct(ncdf_times,format = "%Y-%m-%d_%H:%M:%S", tz = "UTC")
+                        #datetime =  lubridate::with_tz(datetime,tz="EST")
+                        ) %>%
+          dplyr::mutate(year = lubridate::year(datetime),
+                        month = lubridate::month(datetime),
+                        day = lubridate::day(datetime),
+                        hour = lubridate::hour(datetime),
+                        timezone = lubridate::tz(datetime)) %>%
+          dplyr::mutate(year = as.character(year),
+                        month = dplyr::if_else(month<10,paste0("0",month),paste0(month)),
+                        day = dplyr::if_else(day<10,paste0("0",day),paste0(day)),
+                        hour = dplyr::if_else(hour<10,paste0("0",hour),paste0(hour)))
 
         # hdcd segments
         hdcd_region_segments <- hdcd_region %>%
           dplyr::left_join(temporal_subset, by="x") %>%
-          dplyr::mutate(year = substr(ncdf_times,1,4),
-                        month = substr(ncdf_times,6,7),
-                        day = substr(ncdf_times,9,10),
-                        hour = substr(ncdf_times,12,13)) %>%
           dplyr::left_join(helios::segment_map_utc, by=c("subRegion", "month", "day", "hour")) %>%
-          dplyr::select(subRegion,year,segment,day,HDDCDD,value) %>%
-          dplyr::group_by(subRegion,year,segment,day,HDDCDD) %>%
+          dplyr::group_by(year,month,segment) %>%
+          dplyr::mutate(num_days = length(unique(day))) %>%
+          dplyr::ungroup() %>%
+          dplyr::select(subRegion,year,segment,day,HDDCDD,num_days,value) %>%
+          dplyr::group_by(subRegion,year,segment,day,HDDCDD, num_days) %>%
           dplyr::summarize(value=mean(value,na.rm=T)) %>%
-          dplyr::select(subRegion,segment,HDDCDD,year,value) %>%
-          dplyr::group_by(subRegion,year,HDDCDD,segment) %>%
+          dplyr::ungroup() %>%
+          dplyr::select(subRegion,segment,HDDCDD,year,num_days,value) %>%
+          dplyr::group_by(subRegion,year,HDDCDD,segment, num_days) %>%
           dplyr::summarize(value=sum(value,na.rm=T)) %>%
           dplyr::ungroup() %>%
           dplyr::filter(!is.na(subRegion))
@@ -353,15 +365,15 @@ hdcd <- function(ncdf = NULL,
         # hdcd monthly
         hdcd_region_monthly <- hdcd_region %>%
           dplyr::left_join(temporal_subset, by="x") %>%
-          dplyr::mutate(year = substr(ncdf_times,1,4),
-                        month = substr(ncdf_times,6,7),
-                        day = substr(ncdf_times,9,10),
-                        hour = substr(ncdf_times,12,13)) %>%
-          dplyr::select(subRegion,year,month,day,HDDCDD,value) %>%
-          dplyr::group_by(subRegion,year,day,HDDCDD,month) %>%
+          dplyr::group_by(year,month) %>%
+          dplyr::mutate(num_days = length(unique(day))) %>%
+          dplyr::ungroup()%>%
+          dplyr::select(subRegion,year,month,day,HDDCDD,num_days,value) %>%
+          dplyr::group_by(subRegion,year,day,HDDCDD,month, num_days) %>%
           dplyr::summarize(value=mean(value,na.rm=T)) %>%
-          dplyr::select(subRegion,year,month,HDDCDD,value) %>%
-          dplyr::group_by(subRegion,year,HDDCDD,month) %>%
+          dplyr::ungroup() %>%
+          dplyr::select(subRegion,year,month,HDDCDD,num_days,value) %>%
+          dplyr::group_by(subRegion,year,HDDCDD,month,num_days) %>%
           dplyr::summarize(value=sum(value,na.rm=T)) %>%
           dplyr::ungroup() %>%
           dplyr::filter(!is.na(subRegion))
@@ -401,7 +413,7 @@ hdcd <- function(ncdf = NULL,
         dplyr::ungroup() %>%
         dplyr::group_by(subRegion,year,segment,gcam.consumer,
                         nodeInput, building.node.input,
-                        thermal.building.service.input) %>%
+                        thermal.building.service.input, num_days) %>%
         dplyr::summarize(value=sum(value,na.rm=T)) %>%
         dplyr::ungroup() %>%
         dplyr::filter(!is.na(subRegion),
@@ -432,7 +444,7 @@ hdcd <- function(ncdf = NULL,
     hdcd_comb_monthly <- hdcd_comb_monthly %>%
       dplyr::bind_rows(hdcd_region_monthly) %>%
       dplyr::ungroup() %>%
-      dplyr::group_by(subRegion,year,month) %>%
+      dplyr::group_by(subRegion,year,month, num_days) %>%
       dplyr::summarize(value=sum(value,na.rm=T)) %>%
       dplyr::ungroup() %>%
       dplyr::filter(!is.na(subRegion),

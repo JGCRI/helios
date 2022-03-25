@@ -16,9 +16,9 @@ population_i = "C:/Z/projects/current/00_IM3/tests/process_hdhcdh/pop_1km/popula
 reference_temp_F_i = 65
 folder_i="C:/Z/projects/current/00_IM3/tests/process_hdhcdh/outputs"
 diagnostics_i = T
-xml_i = F
+xml_i = T
 name_append_i = "_ssp5pop"
-save_i = F
+save_i = T
 
 helios::hdcd(ncdf = ncdf_i,
      spatial = spatial_i,
