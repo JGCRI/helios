@@ -62,6 +62,21 @@
 "noaa_hddcdd"
 
 #.................................
+# WRF Grid to US49 Mapping
+#................................
+
+#' mapping_wrf_us49
+#'
+#' @source
+#' @format tibble
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  mapping_wrf_us49 <- helios::mapping_wrf_us49
+#' }
+"mapping_wrf_us49"
+
+#.................................
 # Pre-processed Population Files
 #................................
 

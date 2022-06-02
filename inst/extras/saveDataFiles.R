@@ -1,6 +1,6 @@
 
 library(tibble);library(dplyr);library(rgdal);library(devtools);library(rmap); library(raster);
-library(lubridate); library(httr); library(ggplot2); library(rchart)
+library(lubridate); library(httr); library(ggplot2); library(rchart); library(usethis)
 
 #-----------------
 # Initialize
@@ -191,3 +191,57 @@ population_conus_total_ssp5_2020_2100_wrf_wgs84 <- data.table::fread("C:/Z/proje
   tibble::as_tibble(); population_conus_total_ssp5_2020_2100_wrf_wgs84
 use_data(population_conus_total_ssp5_2020_2100_wrf_wgs84, version=3, overwrite=T)
 
+
+#----------------------
+# Map WRF grid to US states
+#-----------------------
+library(raster)
+library(sf)
+library(dplyr)
+library(ncdf4)
+library(rmap)
+library(usethis)
+
+# Path to ncdf file
+# Source:
+ncdf_file <- "C:/Users/zhao924/OneDrive - PNNL/WorkSpace/IM3/helios/example_nersc_data/wrfout_d01_2020-01-01_01%3A00%3A00.nc"
+
+# Read ncdf file
+ncdf <- ncdf4::nc_open(ncdf_file)
+
+# Load shapefile from helios dataset
+shape <- rmap::mapUS49
+
+# Get raster brick for Temperature
+ncdf_brick <- raster::brick(ncdf_file, varname = 'T2', ncdf = TRUE)
+ncdf_ras <- ncdf_brick[[1]] # Base raster
+ncdf_lat <- (raster::brick(ncdf_file, varname = 'XLAT', ncdf = TRUE))[[1]]
+ncdf_lon <- (raster::brick(ncdf_file, varname = 'XLONG', ncdf = TRUE))[[1]]
+
+
+# Convert raster in to an sf object ============================================
+# Step 0: Get Lat long
+ncdf_lat_df <- raster::as.data.frame(ncdf_lat, xy = TRUE, na.rm = TRUE) %>%
+  dplyr::rename(lat = X1); ncdf_lat_df %>% head()
+ncdf_lon_df <- as.data.frame(ncdf_lon, xy = TRUE, na.rm = TRUE) %>%
+  dplyr::rename(lon = X1); ncdf_lon_df %>% head()
+
+# Step 1: convert to a table with lat, lon, and z
+ncdf_ras_df <- raster::as.data.frame(ncdf_ras, xy = TRUE, na.rm = TRUE) %>%
+  dplyr::rename(z = X1) %>%
+  dplyr::left_join(ncdf_lat_df, by=c("x","y")) %>%
+  dplyr::left_join(ncdf_lon_df, by=c("x","y")) %>%
+  dplyr::select(lat,lon,z) %>%
+  dplyr::mutate(latx = lat,
+                lonx = lon); ncdf_ras_df %>% head()
+
+# Step 2: convert to sf object using sf::st_as_sf
+ncdf_sf <- ncdf_ras_df %>%
+  sf::st_as_sf(coords = c("lon", "lat"), crs = 4326)
+
+mapping_wrf_us49 <- sf::st_intersection(ncdf_sf, shape)
+mapping_wrf_us49 <- mapping_wrf_us49 %>%
+  tibble::as_tibble() %>%
+  dplyr::select(region, subRegion, lat = latx, lon = lonx)
+
+usethis::use_data(mapping_wrf_us49, overwrite=T)
