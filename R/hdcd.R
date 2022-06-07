@@ -124,7 +124,7 @@ hdcd <- function(ncdf = NULL,
       ncdf_lon_df <- raster::as.data.frame(ncdf_lon, xy = TRUE, na.rm = TRUE) %>%
         dplyr::rename(lon = X1)
 
-      # Convert to a table with lat, lon, and temperature for all time periods
+      # Convert to a table with original ids (x,y)
       ncdf_dim <- ncdf_lat_df %>%
         dplyr::select(x, y)
 
@@ -135,6 +135,13 @@ hdcd <- function(ncdf = NULL,
       if(!is.null(spatial) && spatial=="gcamusa"){
         shape <- rmap::mapUS49
       }
+
+
+      #TODO: SAVE df_polygrid as helios::mapping_wrf_us49
+      ## Add IDS to helios::mapping_wrf_us49 so then this wont be needed
+      ## Change the helios::mapping_wrf_us4 lat/lon to be round to 5 decimals
+      ## Then we'll round all data being read in to 5 decimals at reading in point.
+
       # Assign IDs to subRegions
       nam <- unique(shape$subRegion)
       nam_df <- data.frame(ID = 1:length(nam), subRegion = nam)
@@ -148,6 +155,8 @@ hdcd <- function(ncdf = NULL,
         dplyr::select(-x, -y) %>%
         dplyr::mutate(across(c(lat, lon), ~round(., 5)))
 
+
+      #TODO: After updating helios::mapping_wrf_us49 we can skip these two sections
       ncdf_ras_df <- raster::as.data.frame(ncdf_ras, xy = TRUE, na.rm = TRUE) %>%
         dplyr::rename(z = X1) %>%
         dplyr::left_join(ncdf_lat_df, by = c("x", "y")) %>%
@@ -159,7 +168,9 @@ hdcd <- function(ncdf = NULL,
         dplyr::left_join(nam_df, by = 'subRegion') %>%
         dplyr::mutate(across(c(lat, lon), ~round(., 5))) %>%
         dplyr::select(ID, subRegion, lat, lon)
+      #..................................
 
+      #TODO: Replace df_polygrid with helios::mapping_wrf_us49
       ncdf_grid <- ncdf_brick_df %>%
         dplyr::rename(setNames(c(name_brick, 'lat', 'lon'), c(ncdf_times, 'lat', 'lon'))) %>%
         dplyr::left_join(df_polygrid, by = c('lat', 'lon')) %>%
@@ -174,43 +185,8 @@ hdcd <- function(ncdf = NULL,
       if(!is.null(population)) {
         # Create population weighted raster if any population years in ncdf years
         if(any(names(population_j_raw) %in% as.character(years))){
-          # # Rasterize the population grid to the underlying data grid
-          # lat_index <- grep("lat", colnames(population_j_raw), ignore.case = T)
-          # lon_index <- grep("lon", colnames(population_j_raw), ignore.case = T)
-          # population_j_raw_matrix <- as.matrix(population_j_raw)
-          # colnames(population_j_raw_matrix) <- names(population_j_raw)
-          # # you need to provide a function 'fun' for when there are multiple points per cell
-          # print("rasterizing population data ...")
-          # population_raster <- raster::rasterize(
-          #   population_j_raw_matrix[, lon_index:lat_index],
-          #   ncdf_ras,
-          #   population_j_raw_matrix[, -c(lon_index:lat_index)],
-          #   fun = sum)
-          # print("Completed rasterizing population data.")
-          #
-          # # Get Raster ID by Polygon Shape
-          # ras_population_polygon <- raster::rasterize(x = shape, y = population_raster, field = "ID")
-          # ras_points_population_polygon <- cbind(raster::xyFromCell(ras_population_polygon,
-          #                                                           1:raster::ncell(ras_population_polygon)),
-          #                                        raster::values(ras_population_polygon)) %>%
-          #   as.data.frame() %>%
-          #   tibble::as_tibble() %>%
-          #   dplyr::rename(ID=V3)
-          #
-          # df_polygrid_population_polygon <- ras_points_population_polygon  %>%
-          #   dplyr::left_join(shape@data %>% dplyr::select(subRegion,ID), by="ID")
 
-
-
-          # Population raster on climate grid as tibble
-          # population_j_ncdf_grid <- population_raster %>%
-          #   raster::as.data.frame() %>%
-          #   tibble::as_tibble() %>%
-          #   dplyr::bind_cols(tibble::as_tibble(raster::xyFromCell(population_raster,
-          #                                                         1:raster::ncell(population_raster)))) %>%
-          #   tidyr::gather(key="year",value="value",-RID,-x,-y) %>%
-          #   tibble::as_tibble(); population_j_ncdf_grid
-
+          # Replace with helios::mapping_wrf_us49
           population_j_ncdf_grid <- df_polygrid %>%
             dplyr::select(ID, subRegion, lat, lon) %>%
             dplyr::left_join(population_j_raw %>%
@@ -244,28 +220,6 @@ hdcd <- function(ncdf = NULL,
 
           # End of New Code ====================================================
 
-
-          # Weighted population raster
-
-          # # Transform to wide
-          # population_j_weighted_wide <- population_j_weighted %>%
-          #   dplyr::select(-subRegion_total_value, -value, -subRegion, -RID, -ID) %>%
-          #   dplyr::mutate(pop_weight = dplyr::if_else(is.na(pop_weight), 0, pop_weight),
-          #                 year = gsub("X", "", year, ignore.case = T)) %>%
-          #   tidyr::spread(key = "year", value = "pop_weight");population_j_weighted_wide
-          #
-          # # Rasterize the population grid to the underlying data grid
-          # lat_index_weighted <- grep("lat", colnames(population_j_weighted_wide), ignore.case = T)
-          # lon_index_weighted <- grep("lon", colnames(population_j_weighted_wide), ignore.case = T)
-          # population_j_weighted_wide_matrix <- as.matrix(population_j_weighted_wide)
-          # colnames(population_j_weighted_wide_matrix) <- names(population_j_weighted_wide)
-          # # you need to provide a function 'fun' for when there are multiple points per cell
-          # print("rasterizing weighted population data ...")
-          # population_weighted_raster <- raster::rasterize(population_j_weighted_wide_matrix[,lon_index_weighted:lat_index_weighted],
-          #                                        ncdf_ras,
-          #                                        population_j_weighted_wide_matrix[,-c(lon_index_weighted:lat_index_weighted)],
-          #                                        fun=mean)
-          # print("Completed rasterizing weighted population data.")
         }else{
           print(paste0("Population data provided does not contain data for any of the years in the ncdf data."))
           print(paste0("Population data years: ", paste(names(population_j_raw)[!grepl("RID|lat|lon",names(population_j_raw))],collapse=",")))
@@ -285,104 +239,6 @@ hdcd <- function(ncdf = NULL,
       # Subset raster brick to selected times
       if(length(index_subset) > 0){
 
-        # ncdf_brick_subset <- ncdf_brick[[index_subset]]
-
-        #......................
-        # Step 4: Calculate Heating and Cooling Degrees (Kelvin to F)
-        #......................
-        # ncdf_brick_hdcd <- (((ncdf_brick_subset - 273.15) * 9/5) + 32) - reference_temp_F
-
-        #......................
-        # Step 5: Population weight for each year by multiplying with weights
-        #......................
-        # Population weight if population grid provided
-
-        # pop_weighted = 0
-
-        # if(!is.null(population)) {
-        #   if(any(names(population_j_raw) %in% as.character(years))){
-        #
-        #     ncdf_brick_hdcd_pop <- raster::brick()
-        #
-        #     # If population data for year exists multiply by population weight for that year
-        #     years = unique(substr(ncdf_times,1,4))
-        #     for(year_i in years){
-        #
-        #       # Subset ncdf_brick_hdcd
-        #       indices_pop <- as.integer(grepl(paste0(year_i, collapse = "|"), ncdf_times_subset))
-        #       index_subset_pop <- c(1:length(ncdf_times))*indices_pop
-        #       index_subset_pop <- index_subset_pop[!index_subset_pop %in% 0]
-        #       ncdf_brick_hdcd_pop_i <- ncdf_brick_hdcd[[index_subset_pop]]
-        #
-        #       # Subset population to the year
-        #       indices_pop_w <- as.integer(grepl(paste0(year_i, collapse = "|"), names(population_weighted_raster)))
-        #       index_subset_pop_w <- c(1:length(names(population_weighted_raster)))*indices_pop_w
-        #       index_subset_pop_w <- index_subset_pop_w[!index_subset_pop_w %in% 0]
-        #
-        #       if(length(index_subset_pop_w)>0){
-        #
-        #         population_weighted_raster_i <- population_weighted_raster[[index_subset_pop_w]]
-        #         # Create a brick for population data with same dimensions as ncdf_brick_hdcd
-        #         population_weighted_raster_i_brick <- raster::brick(replicate(length(names(ncdf_brick_hdcd_pop_i)),population_weighted_raster_i))
-        #
-        #         # Check dimensions
-        #         if(all(dim(ncdf_brick_hdcd_pop_i)==dim(population_weighted_raster_i_brick))){
-        #           # Multiple ncdf_brick_hdcd with population year
-        #           raster::extent(population_weighted_raster_i_brick) <- raster::extent(ncdf_brick_hdcd_pop_i) # Fix the resolution and extent of the brick
-        #           ncdf_brick_hdcd_pop_i_weighted <- ncdf_brick_hdcd_pop_i * population_weighted_raster_i_brick
-        #           names(ncdf_brick_hdcd_pop_i_weighted) <- names(ncdf_brick_hdcd_pop_i)
-        #
-        #           # Append to brick
-        #           ncdf_brick_hdcd_pop <- raster::brick(raster::stack(ncdf_brick_hdcd_pop,ncdf_brick_hdcd_pop_i_weighted))
-        #           pop_weighted = 1
-        #
-        #         } else {
-        #         print(paste0("Dimensions of population and hdcd rasters do not match. Skipping population weighting."))
-        #         }
-        #
-        #       } else { # Close if(length(index_subset_pop_w)>0){
-        #         print(paste0("Year: ", year_i," in hdcd raster does not exist in population raster. Skipping population weighting."))
-        #
-        #       }
-        #
-        #     }
-        #
-        #   } else {
-        #     ncdf_brick_hdcd_pop <- ncdf_brick_hdcd
-        #   }} else {
-        #     ncdf_brick_hdcd_pop <- ncdf_brick_hdcd
-        #   }
-
-        #......................
-        # Step 6: Aggregate to regions
-        #......................
-        # Combine with ncdf_grid and aggregate to regions
-        # If population weighted then sum the wieghted grids
-        # if(pop_weighted == 1){
-        #   hdcd_region <- df_polygrid %>%
-        #     dplyr::bind_cols(
-        #       ncdf_brick_hdcd_pop %>%
-        #         raster::as.data.frame() %>%
-        #         tibble::as_tibble()) %>%
-        #     dplyr::select(-x,-y) %>%
-        #     dplyr::group_by(subRegion, ID) %>%
-        #     dplyr::summarise_all(list(~sum(.,na.rm=T))) %>%
-        #     tidyr::gather(key="x",value="value", -ID,-subRegion)
-        #   }
-        #
-        # # If not population weighted then take the mean of the grids for the total region
-        # if(pop_weighted == 0){
-        #   hdcd_region <- df_polygrid %>%
-        #     dplyr::bind_cols(
-        #       ncdf_brick_hdcd_pop %>%
-        #         raster::as.data.frame() %>%
-        #         tibble::as_tibble()) %>%
-        #     dplyr::select(-x,-y) %>%
-        #     dplyr::group_by(subRegion, ID) %>%
-        #     dplyr::summarise_all(list(~mean(.,na.rm=T))) %>%
-        #     tidyr::gather(key="x",value="value", -ID,-subRegion)}
-
-
         # Start of New Code ====================================================
 
         # Equivalent to step 6: Aggregate to regions
@@ -394,7 +250,6 @@ hdcd <- function(ncdf = NULL,
           dplyr::ungroup()
 
         # End of New Code ======================================================
-
 
 
         # Assign HDDCDD categories

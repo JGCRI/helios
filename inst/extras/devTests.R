@@ -5,16 +5,16 @@ library(helios); library(dplyr); library(raster)
 #...............
 
 list.files()
-ncdf_i = c(#"C:/Z/projects/current/00_IM3/tests/process_hdhcdh/wrfout_d01_1979-01-01_00%3A00%3A00",
-           #"C:/Z/projects/current/00_IM3/tests/process_hdhcdh/wrfout_d01_1994-12-17_01%3A00%3A00.nc"#,
-           "C:/Z/projects/current/00_IM3/tests/process_hdhcdh/wrfout_d01_2020-01-01_01%3A00%3A00"
+ncdf_i = c(#"C:/Z/projects/current/00_IM3/process_hdhcdh/wrfout_d01_1979-01-01_00%3A00%3A00",
+           #"C:/Z/projects/current/00_IM3/process_hdhcdh/wrfout_d01_1994-12-17_01%3A00%3A00.nc"#,
+           "C:/Z/projects/current/00_IM3/process_hdhcdh/wrfout_d01_2020-01-01_01%3A00%3A00"
            )
 spatial_i = "gcamusa"
 temporal_i = "gcamusa"
 #population_i = helios::population_conus_total_ssp5_2020_2100_wrf_wgs84
-population_i = "C:/Z/projects/current/00_IM3/tests/process_hdhcdh/pop_1km/population_conus_total_ssp5_2020_2100_wrf_wgs84.csv"
+population_i = "C:/Z/projects/current/00_IM3/process_hdhcdh/pop_1km/population_conus_total_ssp5_2020_2100_wrf_wgs84.csv"
 reference_temp_F_i = 65
-folder_i="C:/Z/projects/current/00_IM3/tests/process_hdhcdh/outputs"
+folder_i="C:/Z/projects/current/00_IM3/process_hdhcdh/outputs"
 diagnostics_i = T
 xml_i = T
 name_append_i = "_ssp5pop"
