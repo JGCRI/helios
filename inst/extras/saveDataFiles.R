@@ -204,13 +204,17 @@ library(usethis)
 
 # Path to ncdf file
 # Source:
-ncdf_file <- "C:/Users/zhao924/OneDrive - PNNL/WorkSpace/IM3/helios/example_nersc_data/wrfout_d01_2020-01-01_01%3A00%3A00.nc"
+ncdf_file <- "C:/WorkSpace/IM3/helios/example_nersc_data/wrfout_d01_2020-01-01_01%3A00%3A00.nc"
 
 # Read ncdf file
 ncdf <- ncdf4::nc_open(ncdf_file)
 
 # Load shapefile from helios dataset
 shape <- rmap::mapUS49
+
+# Assign IDs to subRegions
+nam <- unique(shape$subRegion)
+nam_df <- data.frame(ID = 1:length(nam), subRegion = nam)
 
 # Get raster brick for Temperature
 ncdf_brick <- raster::brick(ncdf_file, varname = 'T2', ncdf = TRUE)
@@ -242,6 +246,8 @@ ncdf_sf <- ncdf_ras_df %>%
 mapping_wrf_us49 <- sf::st_intersection(ncdf_sf, shape)
 mapping_wrf_us49 <- mapping_wrf_us49 %>%
   tibble::as_tibble() %>%
-  dplyr::select(region, subRegion, lat = latx, lon = lonx)
+  dplyr::select(region, subRegion, lat = latx, lon = lonx) %>%
+  dplyr::mutate(across(c(lat, lon), ~round(., 5))) %>%
+  dplyr::left_join(nam_df, by = 'subRegion')
 
 usethis::use_data(mapping_wrf_us49, overwrite=T)
