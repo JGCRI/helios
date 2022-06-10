@@ -131,11 +131,6 @@ hdcd <- function(ncdf = NULL,
       # Get layer names
       name_brick <- names(ncdf_brick)
 
-      # Get US map if spatial == 'gcamusa
-      if(!is.null(spatial) && spatial=="gcamusa"){
-        shape <- rmap::mapUS49
-      }
-
       ncdf_brick_df <- cbind(
         raster::as.data.frame(raster::extract(x = ncdf_brick, y = ncdf_dim, sp = T)),
         ncdf_dim) %>%
@@ -144,7 +139,6 @@ hdcd <- function(ncdf = NULL,
         dplyr::left_join(ncdf_lon_df, by = c("x", "y")) %>%
         dplyr::select(-x, -y) %>%
         dplyr::mutate(across(c(lat, lon), ~round(., 5)))
-
 
       ncdf_grid <- ncdf_brick_df %>%
         dplyr::rename(setNames(c(name_brick, 'lat', 'lon'), c(ncdf_times, 'lat', 'lon'))) %>%
@@ -180,9 +174,6 @@ hdcd <- function(ncdf = NULL,
             dplyr::mutate(pop_weight = value/subRegion_total_value); population_j_weighted
           print("Completed population weighting.")
 
-
-          # Start of New Code ==================================================
-
           #......................
           # Step 4: Calculate Heating and Cooling Degrees (Kelvin to F)
           # Step 5: Population weight for each grid for each year
@@ -192,8 +183,6 @@ hdcd <- function(ncdf = NULL,
                              by = c('ID', 'subRegion', 'lat', 'lon', 'year')) %>%
             dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
                           value = dplyr::if_else(is.na(pop_weight), value, value*pop_weight))
-
-          # End of New Code ====================================================
 
         }else{
           print(paste0("Population data provided does not contain data for any of the years in the ncdf data."))
@@ -214,8 +203,6 @@ hdcd <- function(ncdf = NULL,
       # Subset raster brick to selected times
       if(length(index_subset) > 0){
 
-        # Start of New Code ====================================================
-
         # Equivalent to step 6: Aggregate to regions
         hdcd_region <- ncdf_hdcd_pop_weighted %>%
           dplyr::filter(!is.na(subRegion)) %>%
@@ -223,9 +210,6 @@ hdcd <- function(ncdf = NULL,
           dplyr::group_by(subRegion, ID, year, datetime) %>%
           dplyr::summarise(value = dplyr::if_else(any(is.na(pop_weight)), mean(value), sum(value))) %>%
           dplyr::ungroup()
-
-        # End of New Code ======================================================
-
 
         # Assign HDDCDD categories
         hdcd_region <- hdcd_region %>%
