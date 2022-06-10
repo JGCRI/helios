@@ -131,23 +131,8 @@ hdcd <- function(ncdf = NULL,
       # Get layer names
       name_brick <- names(ncdf_brick)
 
-      # Get US map if spatial == 'gcamusa
-      if(!is.null(spatial) && spatial=="gcamusa"){
-        shape <- rmap::mapUS49
-      }
-
-
-      #TODO: SAVE df_polygrid as helios::mapping_wrf_us49
-      ## Add IDS to helios::mapping_wrf_us49 so then this wont be needed
-      ## Change the helios::mapping_wrf_us4 lat/lon to be round to 5 decimals
-      ## Then we'll round all data being read in to 5 decimals at reading in point.
-
-      # Assign IDs to subRegions
-      nam <- unique(shape$subRegion)
-      nam_df <- data.frame(ID = 1:length(nam), subRegion = nam)
-
       ncdf_brick_df <- cbind(
-        raster::as.data.frame(raster::extract(x = ncdf_brick, y = ncdf_dim, sp=T)),
+        raster::as.data.frame(raster::extract(x = ncdf_brick, y = ncdf_dim, sp = T)),
         ncdf_dim) %>%
         tibble::as_tibble() %>%
         dplyr::left_join(ncdf_lat_df, by = c("x", "y")) %>%
@@ -155,26 +140,10 @@ hdcd <- function(ncdf = NULL,
         dplyr::select(-x, -y) %>%
         dplyr::mutate(across(c(lat, lon), ~round(., 5)))
 
-
-      #TODO: After updating helios::mapping_wrf_us49 we can skip these two sections
-      ncdf_ras_df <- raster::as.data.frame(ncdf_ras, xy = TRUE, na.rm = TRUE) %>%
-        dplyr::rename(z = X1) %>%
-        dplyr::left_join(ncdf_lat_df, by = c("x", "y")) %>%
-        dplyr::left_join(ncdf_lon_df, by = c("x", "y")) %>%
-        dplyr::select(lat, lon, z)
-
-      df_polygrid <- ncdf_ras_df %>%
-        dplyr::left_join(helios::mapping_wrf_us49, by = c('lat', 'lon')) %>%
-        dplyr::left_join(nam_df, by = 'subRegion') %>%
-        dplyr::mutate(across(c(lat, lon), ~round(., 5))) %>%
-        dplyr::select(ID, subRegion, lat, lon)
-      #..................................
-
-      #TODO: Replace df_polygrid with helios::mapping_wrf_us49
       ncdf_grid <- ncdf_brick_df %>%
         dplyr::rename(setNames(c(name_brick, 'lat', 'lon'), c(ncdf_times, 'lat', 'lon'))) %>%
-        dplyr::left_join(df_polygrid, by = c('lat', 'lon')) %>%
-        tidyr::gather(key = 'datetime', value = 'value', -lat, -lon, -ID, -subRegion) %>%
+        dplyr::left_join(helios::mapping_wrf_us49, by = c('lat', 'lon')) %>%
+        tidyr::gather(key = 'datetime', value = 'value', -lat, -lon, -ID, -subRegion, -region) %>%
         dplyr::mutate(datetime = as.POSIXct(datetime,format = "%Y-%m-%d_%H:%M:%S", tz = "UTC")) %>%
         dplyr::mutate(year = as.character(lubridate::year(datetime)))
 
@@ -187,7 +156,7 @@ hdcd <- function(ncdf = NULL,
         if(any(names(population_j_raw) %in% as.character(years))){
 
           # Replace with helios::mapping_wrf_us49
-          population_j_ncdf_grid <- df_polygrid %>%
+          population_j_ncdf_grid <- helios::mapping_wrf_us49 %>%
             dplyr::select(ID, subRegion, lat, lon) %>%
             dplyr::left_join(population_j_raw %>%
                                dplyr::mutate(across(c(lat, lon), ~round(., 5))),
@@ -205,9 +174,6 @@ hdcd <- function(ncdf = NULL,
             dplyr::mutate(pop_weight = value/subRegion_total_value); population_j_weighted
           print("Completed population weighting.")
 
-
-          # Start of New Code ==================================================
-
           #......................
           # Step 4: Calculate Heating and Cooling Degrees (Kelvin to F)
           # Step 5: Population weight for each grid for each year
@@ -217,8 +183,6 @@ hdcd <- function(ncdf = NULL,
                              by = c('ID', 'subRegion', 'lat', 'lon', 'year')) %>%
             dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
                           value = dplyr::if_else(is.na(pop_weight), value, value*pop_weight))
-
-          # End of New Code ====================================================
 
         }else{
           print(paste0("Population data provided does not contain data for any of the years in the ncdf data."))
@@ -239,8 +203,6 @@ hdcd <- function(ncdf = NULL,
       # Subset raster brick to selected times
       if(length(index_subset) > 0){
 
-        # Start of New Code ====================================================
-
         # Equivalent to step 6: Aggregate to regions
         hdcd_region <- ncdf_hdcd_pop_weighted %>%
           dplyr::filter(!is.na(subRegion)) %>%
@@ -248,9 +210,6 @@ hdcd <- function(ncdf = NULL,
           dplyr::group_by(subRegion, ID, year, datetime) %>%
           dplyr::summarise(value = dplyr::if_else(any(is.na(pop_weight)), mean(value), sum(value))) %>%
           dplyr::ungroup()
-
-        # End of New Code ======================================================
-
 
         # Assign HDDCDD categories
         hdcd_region <- hdcd_region %>%
