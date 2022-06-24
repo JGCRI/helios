@@ -25,8 +25,8 @@ diagnostics <- function(hdcd = tibble::tibble(),
 
   if(T){
 
-  NULL -> subRegion -> year -> segment -> value ->heatcool ->
-    month -> stateCode -> HDDCDD -> scenario -> scenario_hddcdd
+    NULL -> subRegion -> year -> segment -> value -> heatcool ->
+      month -> stateCode -> HDDCDD -> scenario -> scenario_hddcdd
 
   }
 
@@ -37,16 +37,17 @@ diagnostics <- function(hdcd = tibble::tibble(),
     folder_diagnostics <- paste0(folder,"/diagnostics",name_append)
     if(!dir.exists(folder_diagnostics)){dir.create(folder_diagnostics)}
 
-    if(nrow(hdcd)>0){
+    if(nrow(hdcd) > 0){
 
     #..............
     # By Segment
     #.............
 
     hdcd_comb_diagnostics <- hdcd %>%
-      dplyr::select(subRegion,year,segment,value) %>%
+      dplyr::select(subRegion, year, segment, value) %>%
       unique() %>%
-      dplyr::mutate(heatcool = dplyr::if_else(value < 0, "heat","cool"))
+      dplyr::mutate(heatcool = dplyr::if_else(value < 0, "heat","cool"),
+                    value = abs(value))
 
     segment_levels = c("Jan_day","Jan_night","Feb_day","Feb_night",
                        "Mar_day","Mar_night","Apr_day","Apr_night",
@@ -55,7 +56,7 @@ diagnostics <- function(hdcd = tibble::tibble(),
                        "Sep_day","Sep_night","Oct_day","Oct_night",
                        "Nov_day","Nov_night","Dec_day","Dec_night","superpeak")
 
-    # Individul Years
+    # Individual Years
     for(year_i in (hdcd_comb_diagnostics$year) %>% unique()) {
       ggplot2::ggplot(data = hdcd_comb_diagnostics %>%
                         dplyr::filter(year == year_i) %>%
@@ -64,12 +65,12 @@ diagnostics <- function(hdcd = tibble::tibble(),
         ggplot2::geom_line(ggplot2::aes(color = heatcool)) +
         ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
         ggplot2::ggtitle(paste0("HDCD WRF to GCAM ", year_i , " ")) +
+        ggplot2::scale_color_manual(values = c("heat" = "firebrick",
+                                               "cool" = "dodgerblue")) +
+        ggplot2::scale_x_discrete(drop = FALSE) +
         ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
-                                                             0.5))+
-        ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
-                                                 "dodgerblue")) +
-        ggplot2::scale_x_discrete(drop=FALSE)
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                                           vjust = 0.5))
 
         filename_diagnostics_i <-
           paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename)), "_", year_i,name_append,".png")
@@ -85,16 +86,20 @@ diagnostics <- function(hdcd = tibble::tibble(),
     if(T) {
       ggplot2::ggplot(data = hdcd_comb_diagnostics %>%
                         dplyr::mutate(segment = factor(segment, levels = segment_levels))) +
-        ggplot2::aes(x = segment, y = value, group = year) +
-        ggplot2::geom_line(ggplot2::aes(color = heatcool)) +
+        ggplot2::aes(x = segment, y = value,
+                     group = interaction(year, heatcool),
+                     color = interaction(heatcool)) +
+        ggplot2::geom_line() +
         ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
         ggplot2::ggtitle(paste0("HDCD WRF to GCAM ")) +
+        ggplot2::scale_color_manual(values = c("heat" = "firebrick",
+                                               "cool" = "dodgerblue")) +
+        ggplot2::scale_x_discrete(drop = FALSE) +
+        ggplot2::guides(color = ggplot2::guide_legend(title = 'heatcool')) +
         ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
-                                                             0.5))+
-        ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
-                                                 "dodgerblue"))+
-      ggplot2::scale_x_discrete(drop=FALSE)
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                                           vjust = 0.5),
+                       legend.position = 'right')
 
       filename_diagnostics_i <-
         paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename)), "_allYears_freeScale",name_append,".png")
@@ -110,16 +115,19 @@ diagnostics <- function(hdcd = tibble::tibble(),
     if(T) {
       ggplot2::ggplot(data = hdcd_comb_diagnostics %>%
                         dplyr::mutate(segment = factor(segment, levels = segment_levels))) +
-        ggplot2::aes(x = segment, y = value, group = year) +
-        ggplot2::geom_line(ggplot2::aes(color = heatcool)) +
+        ggplot2::aes(x = segment, y = value,
+                     group = interaction(year, heatcool),
+                     color = interaction(heatcool)) +
+        ggplot2::geom_line() +
         ggplot2::facet_wrap(subRegion ~ ., scales = "fixed") +
         ggplot2::ggtitle(paste0("HDCD WRF to GCAM ")) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
-                                                             0.5))+
         ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
-                                                 "dodgerblue"))+
-        ggplot2::scale_x_discrete(drop=FALSE)
+                                                 "dodgerblue")) +
+        ggplot2::scale_x_discrete(drop = FALSE) +
+        ggplot2::guides(color = ggplot2::guide_legend(title = 'heatcool')) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                                           vjust = 0.5))
 
       filename_diagnostics_i <-
         paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename)), "_allYears_fixedScale",name_append,".png")
@@ -137,7 +145,7 @@ diagnostics <- function(hdcd = tibble::tibble(),
     # By Month compare against NOAA
     #.............
 
-    if(nrow(hdcd_monthly)>0){
+    if(nrow(hdcd_monthly) > 0){
     months = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
     monthNums = c("01","02","03","04","05","06","07","08","09","10","11","12")
     monthsShort<- c("JA","FB","MR","AP","MY","JN","JL","AG","SP","OC","NV","DC")
@@ -174,41 +182,44 @@ diagnostics <- function(hdcd = tibble::tibble(),
     current_years <- as.integer(unique(hdcd_monthly$year))
     noaa_years <- as.integer(unique(helios::noaa_hddcdd$year))
 
-    # Individul Years
+    # Individual Years
     for(year_i in current_years) {
 
       noaa_year_i <- noaa_years[which(abs(noaa_years - year_i) == min(abs(noaa_years - year_i)))]
 
       hdcd_comb_monthly_diagnostics %>%
         dplyr::filter((year == year_i & scenario == "ncdf") |
-                        (year == noaa_year_i & scenario == "noaa")) %>%
-        dplyr::mutate(scenario = paste0(scenario,"_",year)) %>%
-        dplyr::select(subRegion, scenario, year, month,HDDCDD, value)->
+                        (year == noaa_year_i &
+                           scenario == "noaa")) %>%
+        dplyr::mutate(scenario = paste0(scenario, "_", year)) %>%
+        dplyr::select(subRegion, scenario, year, month, HDDCDD, value) ->
         hdcd_comb_monthly_diagnostics_i
 
       # Expand to include all year months
       all <- hdcd_comb_monthly_diagnostics_i %>%
-        tidyr::expand(subRegion,scenario,year,month,HDDCDD)
+        tidyr::expand(subRegion, scenario, year, month, HDDCDD)
       hdcd_comb_monthly_diagnostics_i %>%
         dplyr::right_join(all) %>%
-        dplyr::filter((year == year_i & scenario == paste0("ncdf_",year_i)) |
-                        (year == noaa_year_i & scenario == paste0("noaa_",noaa_year_i))) %>%
-        dplyr::mutate(scenario_hddcdd = paste0(scenario,HDDCDD)) %>%
-        tidyr::replace_na(list(value=0))->
+        dplyr::filter((year == year_i &
+                         scenario == paste0("ncdf_", year_i)) |
+                        (year == noaa_year_i &
+                           scenario == paste0("noaa_", noaa_year_i))) %>%
+        dplyr::mutate(scenario_hddcdd = paste0(scenario, HDDCDD)) %>%
+        tidyr::replace_na(list(value = 0)) ->
         hdcd_comb_monthly_diagnostics_i
 
       ggplot2::ggplot(data = hdcd_comb_monthly_diagnostics_i,
-                      ggplot2::aes(x = month, y = value, group=scenario_hddcdd)) +
+                      ggplot2::aes(x = month, y = value, group = scenario_hddcdd)) +
         ggplot2::geom_line(ggplot2::aes(color = HDDCDD, linetype = scenario)) +
         ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
-        ggplot2::ggtitle(paste0("NCDF_", year_i," NOAA_",noaa_year_i)) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90, vjust =
-                                                             0.5))+
+        ggplot2::ggtitle(paste0("NCDF_", year_i, " NOAA_", noaa_year_i)) +
         ggplot2::scale_color_manual(values = c("HDD" = "firebrick",
                                                "CDD" = "dodgerblue")) +
-        ggplot2::scale_linetype_manual(values = c(1,2)) +
-        ggplot2::scale_x_discrete(drop=FALSE)
+        ggplot2::scale_linetype_manual(values = c(1, 2)) +
+        ggplot2::scale_x_discrete(drop = FALSE) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                                           vjust = 0.5))
 
       filename_monthly_diagnostics_i <-
         paste0(folder_diagnostics, "/monthly_ncdf_", year_i,"_noaa_",noaa_year_i,name_append,".png")

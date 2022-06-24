@@ -238,38 +238,23 @@ hdcd <- function(ncdf = NULL,
 
         # hdcd segments
         hdcd_region_segments <- hdcd_region %>%
-          # dplyr::left_join(temporal_subset, by="x") %>%
           dplyr::left_join(temporal_subset, by=c("datetime", "year")) %>%
           dplyr::left_join(helios::segment_map_utc, by=c("subRegion", "month", "day", "hour")) %>%
-          dplyr::group_by(year,month,segment) %>%
-          dplyr::mutate(num_days = length(unique(day))) %>%
-          dplyr::ungroup() %>%
-          dplyr::select(subRegion,year,segment,day,HDDCDD,num_days,value) %>%
-          dplyr::group_by(subRegion,year,segment,day,HDDCDD, num_days) %>%
-          dplyr::summarize(value=mean(value,na.rm=T)) %>%
-          dplyr::ungroup() %>%
-          dplyr::select(subRegion,segment,HDDCDD,year,num_days,value) %>%
-          dplyr::group_by(subRegion,year,HDDCDD,segment, num_days) %>%
-          dplyr::summarize(value=sum(value,na.rm=T)) %>%
-          dplyr::ungroup() %>%
-          dplyr::filter(!is.na(subRegion))
+          dplyr::group_by(subRegion, year, segment, HDDCDD) %>%
+          dplyr::summarise(value = sum(value, na.rm=T))
 
         # hdcd monthly
         hdcd_region_monthly <- hdcd_region %>%
-          # dplyr::left_join(temporal_subset, by="x") %>%
           dplyr::left_join(temporal_subset, by=c("datetime", "year")) %>%
-          dplyr::group_by(year,month) %>%
-          dplyr::mutate(num_days = length(unique(day))) %>%
-          dplyr::ungroup()%>%
-          dplyr::select(subRegion,year,month,day,HDDCDD,num_days,value) %>%
-          dplyr::group_by(subRegion,year,day,HDDCDD,month, num_days) %>%
-          dplyr::summarize(value=mean(value,na.rm=T)) %>%
+          dplyr::group_by(subRegion, year, month, day) %>%
+          dplyr::summarise(value = (max(value) + min(value))/2) %>%
           dplyr::ungroup() %>%
-          dplyr::select(subRegion,year,month,HDDCDD,num_days,value) %>%
-          dplyr::group_by(subRegion,year,HDDCDD,month,num_days) %>%
-          dplyr::summarize(value=sum(value,na.rm=T)) %>%
+          dplyr::group_by(subRegion, year, month) %>%
+          dplyr::summarise(HDD = sum(value[value < 0]),
+                           CDD = sum(value[value > 0])) %>%
           dplyr::ungroup() %>%
-          dplyr::filter(!is.na(subRegion))
+          tidyr::gather(key = 'HDDCDD', value = 'value', HDD, CDD)
+
 
         #......................
         # Step 8: Add in building components for GCAMUSA
@@ -304,26 +289,26 @@ hdcd <- function(ncdf = NULL,
       hdcd_comb <- hdcd_comb %>%
         dplyr::bind_rows(hdcd_region_segments_bld) %>%
         dplyr::ungroup() %>%
-        dplyr::group_by(subRegion,year,segment,gcam.consumer,
+        dplyr::group_by(subRegion, year, segment, gcam.consumer,
                         nodeInput, building.node.input,
-                        thermal.building.service.input, num_days) %>%
-        dplyr::summarize(value=sum(value,na.rm=T)) %>%
+                        thermal.building.service.input) %>%
+        dplyr::summarize(value = sum(value, na.rm = T)) %>%
         dplyr::ungroup() %>%
         dplyr::filter(!is.na(subRegion),
                       !is.na(year),
                       !is.na(segment))
 
-      year_min_i <- min(hdcd_comb$year,na.rm=T)
-      year_max_i <- max(hdcd_comb$year,na.rm=T)
+      year_min_i <- min(hdcd_comb$year, na.rm = T)
+      year_max_i <- max(hdcd_comb$year, na.rm = T)
 
       if(i < length(ncdf)){
-        filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate",name_append,".csv")
+        filename_i <- paste0(folder, "/hdcd_wrf_to_gcam_intermediate", name_append, ".csv")
         } else {
-          filename_i <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,name_append,".csv")
+          filename_i <- paste0(folder, "/hdcd_wrf_to_gcam_", year_min_i, "_", year_max_i, name_append, ".csv")
           }
 
       if(save){
-        data.table::fwrite(hdcd_comb, file=filename_i)
+        data.table::fwrite(hdcd_comb, file = filename_i)
         print(paste0("File saved as : ", filename_i))
         }
       }
@@ -337,15 +322,15 @@ hdcd <- function(ncdf = NULL,
       hdcd_comb_monthly <- hdcd_comb_monthly %>%
         dplyr::bind_rows(hdcd_region_monthly) %>%
         dplyr::ungroup() %>%
-        dplyr::group_by(subRegion,year,month, num_days) %>%
-        dplyr::summarize(value=sum(value,na.rm=T)) %>%
+        dplyr::group_by(subRegion, year, month, HDDCDD) %>%
+        dplyr::summarize(value = sum(value, na.rm = T)) %>%
         dplyr::ungroup() %>%
         dplyr::filter(!is.na(subRegion),
                       !is.na(year),
                       !is.na(month))
 
-      year_min_i <- min(hdcd_comb_monthly$year,na.rm=T)
-      year_max_i <- max(hdcd_comb_monthly$year,na.rm=T)
+      year_min_i <- min(hdcd_comb_monthly$year, na.rm = T)
+      year_max_i <- max(hdcd_comb_monthly$year, na.rm = T)
 
       if(i < length(ncdf)){
         filename_i_monthly <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate_monthly",name_append,".csv")
@@ -368,9 +353,9 @@ hdcd <- function(ncdf = NULL,
 
   if(xml){
     helios::save_xml(hdcd = hdcd_comb,
-             folder = folder,
-             filename = filename_i,
-             name_append = name_append)
+                     folder = folder,
+                     filename = filename_i,
+                     name_append = name_append)
     }
 
 
