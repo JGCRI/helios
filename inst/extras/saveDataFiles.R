@@ -107,7 +107,7 @@ for (year_i in years){
         }
         }
       }
-    tmp<-read.fwf(file = url_i, skip=15,nrows=48,widths = c(17, 6, 1000)) %>%
+    tmp<-read.fwf(file = url_i, skip=15,nrows=51,widths = c(17, 6, 1000)) %>%
       dplyr::mutate(stateName=gsub(" ","", V1, perl=T),
                     value=V2)%>%
       left_join(stateCodes, by="stateName")%>%
@@ -136,7 +136,7 @@ for (year_i in years){
           }
         }
       }
-    tmp<-read.fwf(file = url_i, skip=15,nrows=48,widths = c(17, 6, 1000)) %>%
+    tmp<-read.fwf(file = url_i, skip=15,nrows=51,widths = c(17, 6, 1000)) %>%
       dplyr::mutate(stateName=gsub(" ","", V1, perl=T),
                     value=V2)%>%
       left_join(stateCodes, by="stateName")%>%
@@ -148,7 +148,7 @@ for (year_i in years){
   }
   }
 
-noaa_hddcdd <- tbl%>%
+ noaa_hddcdd <- tbl%>%
   left_join(monthCodes, by="month")%>%
   dplyr::mutate(monthCode=monthsShort)%>%dplyr::select(-monthsShort)%>%
   dplyr::mutate(monthCode=factor(monthCode,levels=monthsShort)) %>%
