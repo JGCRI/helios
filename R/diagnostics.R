@@ -99,65 +99,69 @@ diagnostics <- function(hdcd = tibble::tibble(),
         print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
     }
 
-    # Combined years free scale
-    if(T) {
+    # combined years with color gradients with free scale
+    if(T){
       data_plot <- hdcd_comb_diagnostics %>%
         dplyr::mutate(segment = factor(segment, levels = segment_levels))
 
-      ggplot2::ggplot(data = data_plot) +
-        ggplot2::aes(x = segment, y = value,
-                     group = interaction(year, heatcool),
-                     color = interaction(heatcool)) +
-        ggplot2::geom_line() +
-        ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
-        ggplot2::ggtitle(paste0("HDCD WRF to GCAM ")) +
-        ggplot2::scale_color_manual(values = c("heat" = "firebrick",
-                                               "cool" = "dodgerblue")) +
-        ggplot2::scale_x_discrete(drop = FALSE) +
-        ggplot2::guides(color = ggplot2::guide_legend(title = 'heatcool')) +
-        ggplot2::theme_bw() +
-        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
-                                                           vjust = 0.5),
-                       legend.position = 'right')
+      n_color <- length(unique(hdcd_comb_diagnostics$year))
+      pal_hd <- colorRampPalette(RColorBrewer::brewer.pal(9, 'YlOrRd'))
+      pal_cd <-  colorRampPalette(RColorBrewer::brewer.pal(9, 'YlGnBu'))
+      pal <- c(rev(pal_hd(n_color)), rev(pal_cd(n_color)))
 
       filename_diagnostics_i <-
-        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename)), "_allYears_freeScale", name_append, '.png')
-
-      # save plot
-      ggplot2::ggsave(filename = filename_diagnostics_i,
-                      width = 25,
-                      height = 15)
-
-      print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
-    }
-
-    # Combined years fixed scale
-    if(T) {
-      data_plot <- hdcd_comb_diagnostics %>%
-        dplyr::mutate(segment = factor(segment, levels = segment_levels))
+        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename)), "_allYears_gradient_freeScale_", name_append,".png")
 
       ggplot2::ggplot(data = data_plot) +
-        ggplot2::aes(x = segment, y = value,
-                     group = interaction(year, heatcool),
-                     color = interaction(heatcool)) +
-        ggplot2::geom_line() +
-        ggplot2::facet_wrap(subRegion ~ ., scales = "fixed") +
+        ggplot2::geom_line(ggplot2::aes(x = segment, y = value,
+                                        group = interaction(year, heatcool),
+                                        color = interaction(year, heatcool))) +
+        ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
         ggplot2::ggtitle(paste0("HDCD WRF to GCAM ")) +
-        ggplot2::scale_color_manual(values = c("heat" = "firebrick", "cool" =
-                                                 "dodgerblue")) +
+        ggplot2::ylab('Degree-Hours') +
+        ggplot2::scale_color_manual(values = pal,
+                                    guide = ggplot2::guide_legend(title = 'HDCD (All Years)')) +
         ggplot2::scale_x_discrete(drop = FALSE) +
-        ggplot2::guides(color = ggplot2::guide_legend(title = 'heatcool')) +
         ggplot2::theme_bw() +
         ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
                                                            vjust = 0.5))
 
-      filename_diagnostics_i <-
-        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename)), "_allYears_fixedScale",name_append,".png")
-
-      ggplot2::ggsave(filename =  filename_diagnostics_i,
+      ggplot2::ggsave(filename = filename_diagnostics_i,
                       width = 25,
-                      height = 15) # save plot
+                      height = 15)
+      print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
+    }
 
+    # combined years with color gradients with fixed scale
+    if(T){
+      data_plot <- hdcd_comb_diagnostics %>%
+        dplyr::mutate(segment = factor(segment, levels = segment_levels))
+
+      n_color <- length(unique(hdcd_comb_diagnostics$year))
+      pal_hd <- colorRampPalette(RColorBrewer::brewer.pal(9, 'YlOrRd'))
+      pal_cd <-  colorRampPalette(RColorBrewer::brewer.pal(9, 'YlGnBu'))
+      pal <- c(rev(pal_hd(n_color)), rev(pal_cd(n_color)))
+
+      filename_diagnostics_i <-
+        paste0(folder_diagnostics, "/", basename(gsub(".csv", "", filename)), "_allYears_gradient_fixedScale_", name_append,".png")
+
+      ggplot2::ggplot(data = data_plot) +
+        ggplot2::geom_line(ggplot2::aes(x = segment, y = value,
+                                        group = interaction(year, heatcool),
+                                        color = interaction(year, heatcool))) +
+        ggplot2::facet_wrap(subRegion ~ ., scales = "fixed") +
+        ggplot2::ggtitle(paste0("HDCD WRF to GCAM ")) +
+        ggplot2::ylab('Degree-Hours') +
+        ggplot2::scale_color_manual(values = pal,
+                                    guide = ggplot2::guide_legend(title = 'HDCD (All Years)')) +
+        ggplot2::scale_x_discrete(drop = FALSE) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                                           vjust = 0.5))
+
+      ggplot2::ggsave(filename = filename_diagnostics_i,
+                      width = 25,
+                      height = 15)
       print(paste0("Diagnostic figure saved as ", filename_diagnostics_i))
     }
 
