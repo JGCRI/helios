@@ -1,8 +1,8 @@
 <!-- badges: start -->
-[![build](https://github.com/JGCRI/helios/workflows/build/badge.svg)](https://github.com/JGCRI/helios/workflows/build/badge.svg)
+[![build](https://github.com/JGCRI/helios/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/build.yml)
 [![test_coverage](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml)
+[![docs](https://github.com/JGCRI/helios/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/docs.yaml)
 [![codecov](https://codecov.io/gh/JGCRI/helios/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/helios) 
-[![docs](https://github.com/JGCRI/helios/actions/workflows/docs.yaml/badge.svg)](https://github.com/JGCRI/helios/actions/workflows/docs.yaml)
 [![Github All Releases](https://img.shields.io/github/downloads/JGCRI/helios/total.svg)]()
 <!-- badges: end -->
 
