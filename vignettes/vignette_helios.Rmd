@@ -1,0 +1,124 @@
+---
+title: "Introduction"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+<!-------------------------->
+<!-------------------------->
+# Input Data
+<!-------------------------->
+<!-------------------------->
+<p align="center"> <img src="vignetteFigs/divider.png"></p>
+
+`helios` is an R package that calculates heating and cooling degrees based on high temporal and spatial resolution of climate data (ourly and 12km resolution) and population data (yearly and 12km resolution). Currently, `helios` only supports climate data over CONUS from WRF or those with the same format. Data are available on NERSC if users have access. [Table 1](#table1) shows more details on the climate and population data supported by `helios`.
+
+<br />
+
+<a name="table1"></a>
+**Table 1:** Description of required input data for CONUS.
+
+| Specification | WRF Climate Data | Population Data |
+|---|---|---|
+| Input Format | NetCDF File | CSV File |
+| Spatial Resolution | WRF Resolution: 12 x 12 km | WRF Resolution: 12 x 12 km |
+| Temporal Resolution | Yearly | Hourly |
+| Required Variable | Temperature (K) | Population (Capita) |
+| Cluster Location | (NERSC) /global/cfs/cdirs/m2702/gsharing/tgw-wrf-conus | (NERSC) /global/cfs/cdirs/m2702/gcamusa/hddcdd/pop_1km |
+| Public Download | N/A | https://zenodo.org/record/3756179#.Y5fLK3bMKUl |
+| More Information | https://www.mmm.ucar.edu/models/wrf | https://www.mdpi.com/2071-1050/12/8/3374 |
+
+Please note that `helios` can process one climate NetCDF file with one population CSV file for each run. Parallelization may be needed for large dataset with longer time coverage.
+
+<br />
+
+<!-------------------------->
+<!-------------------------->
+# Workflow
+<!-------------------------->
+<!-------------------------->
+<p align="center"> <img src="vignetteFigs/divider.png"></p>
+
+`helios` includes 6 major steps in its workflow ([Figure 1](#figure1)),
+
+* Step 1: Process climate NetCDF.
+* Step 2: Calculate weighted population.
+* Step 3: Calculate heating and cooling degree-hours at grid resolution.
+* Step 4: Aggregate heating and cooling degree-hours to CONUS States scale.
+* Step 5: Aggregate heating and cooling degree-hours to dispatch segment scale and monthly scale.
+* Step 6: Post-process for diagnostic and convert to GCAM required format.
+
+***Note:** Dispatch segments are defined as 24 day and night segments in each month of the year, plus a "super-peak" segment that has the top 10% of loads within a year for each grid region. Dispatch segments are specifically used in GCAM-USA.
+
+<br />
+
+<p align="center"> <img src="vignetteFigs/helios_workflow.jpg"></p>
+<a name="figure1"></a>
+<p align="center" style="font-size:14px;"> *Figure 1:* Helios Workflow. </p>
+
+<br />
+
+<!-------------------------->
+<!-------------------------->
+# Examples
+<!-------------------------->
+<!-------------------------->
+<p align="center"> <img src="vignetteFigs/divider.png"></p>
+
+`helios` has many functionalities under development. Currently, the usage of `helios` are limited to spatial and temporal resolution designed for GCAM-USA. Here is an example using one WRF climate input data (hourly data from 2020-01-01 01:00:00 to 2020-01-08 00:00:00) and population data.
+
+```{r eval=FALSE}
+library(helios)
+
+output <- helios::hdcd(ncdf = 'path_to_wrf_data/wrfout_d01_2020-01-01_01%3A00%3A00.nc',
+                       spatial = 'gcamusa',
+                       temporal = 'gcamusa',
+                       population = 'path_to_pop_data/population_conus_total_ssp2_2020-2100_wrf_wgs84.csv',
+                       reference_temp_F = 65,
+                       folder = paste0(getwd(), "/output"),
+                       diagnostics = F,
+                       xml = F,
+                       name_append = "",
+                       save = F)
+```
+
+<br />
+
+The output is a list containing two tables.
+
+```{r eval=FALSE}
+# Heating and cooling degree-hours at dispatch segment scale for CONUS
+hdcd_segment <- output$hdcd_comb
+head(hdcd_segment)
+
+# Heating and cooling degree-hours at dispatch monthly scale for CONUS
+hdcd_monthly <- output$hdcd_comb_monthly
+head(hdcd_monthly)
+```
+
+<br />
+
+After getting the data table for heating and cooling degrees, users can perform diagnostics and compare with NOAA observations. The following example is only for demonstration of how to use `helios::diagnostic`.
+
+
+```{r eval=FALSE}
+# Perform monthly diagnostic
+helios::diagnostics(hdcd_monthly = hdcd_monthly,
+                    folder = paste0(getwd(), "/output"))
+```
+
+
+```{r eval=FALSE}
+# Perform segment diagnostic
+helios::diagnostics(hdcd = hdcd_segment,
+                    folder = paste0(getwd(), "/output"))
+
+```
+
+<br />
+
+***Note:** Please note that if users are following the example provided here, we use one WRF input climate NetCDF data, which only covers 7 days. Thus, the diagnostic will not show the full picture of heating and cooling degrees over a year. To get heating and cooling degrees for a complete year, users need to repeatly run climate NetCDF files in `helios` that cover the length of a year. For example, if each climate NetCDF is for 7-days, then user need to run about 52 climate NetCDF through `helios` to cover a whole year of climate. Then, users can combine all the output tables from `helios` and run `helios::diagnostic` to create the heating and cooling degree behavior throughout a year.
