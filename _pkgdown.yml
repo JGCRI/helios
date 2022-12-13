@@ -1,17 +1,18 @@
 title: helios
 
-template:
-  params:
-    bootswatch: cosmo
+home:
+  sidebar:
+    structure: [links, license, community, authors, dev]
 
 navbar:
+  type: inverse
   left:
     - icon: fa-home
       href: index.html
     - text: "Guide"
       icon: fas fa-book
-      href: articles/vignette_examples.html
-    - icon: fa-file-code-o
+      href: articles/vignette_helios.html
+    - icon: fas fa-code-branch
       text: "Reference"
       href: reference/index.html
     - text: "Contribute"
@@ -19,6 +20,24 @@ navbar:
     - icon: fa-newspaper-o
       text: "News"
       href: news/index.html
-      
+
+reference:
+- title: "Functions"
+- contents:
+  - hdcd
+  - diagnostics
+  - save_xml
+- title: "Pre-loaded Data"
+- contents:
+  - L2441.HDDCDD_Fixed_gcamusa_seg
+  - mapping_wrf_us49
+  - mapUS52
+  - noaa_hddcdd
+  - segment_map_utc
+- title: "Package File"
+- contents:
+  - helios
+
+
 toc:
-  depth: 2
+  depth: 3
