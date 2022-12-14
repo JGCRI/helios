@@ -32,16 +32,18 @@ vignette: >
 | Available Download | N/A | (Pre-processed) https://zenodo.org/record/3756179#.Y5fLK3bMKUl |
 | More Information | https://www.mmm.ucar.edu/models/wrf | https://www.mdpi.com/2071-1050/12/8/3374 |
 
-Please note that `helios` can process one climate NetCDF file with one population CSV file for each run. Parallelization may be needed for large dataset with longer time coverage.
+Please note that `helios` can process multiple climate NetCDF files with one population CSV file for each run. However, parallelizing grouped climate data can improve calculation efficiency for large dataset.
 
 <br />
 
 <!-------------------------->
 <!-------------------------->
-# Workflow
+# Structure
 <!-------------------------->
 <!-------------------------->
 <p align="center"> <img src="vignetteFigs/divider.png"></p>
+
+## Workflow
 
 `helios` includes 6 major steps in its workflow ([Figure 1](#figure1)),
 
@@ -49,16 +51,31 @@ Please note that `helios` can process one climate NetCDF file with one populatio
 * Step 2: Calculate weighted population.
 * Step 3: Calculate heating and cooling degree-hours at grid resolution.
 * Step 4: Aggregate heating and cooling degree-hours to CONUS States scale.
-* Step 5: Aggregate heating and cooling degree-hours to dispatch segment scale and monthly scale.
+* Step 5: Calculate heating and cooling degree-days at monthly and annual scale.
 * Step 6: Post-process for diagnostic and convert to GCAM required format.
 
-***Note:** Dispatch segments are defined as 24 day and night segments in each month of the year, plus a "super-peak" segment that has the top 10% of loads within a year for each grid region. Dispatch segments are specifically used in GCAM-USA.
+***Note:** Dispatch segments are defined as 24 day and night segments in each month of the year (e.g., Jan-day, Jan-night, Feb-day, Feb-night, etc), plus a "super-peak" segment that has the top 10% of loads within a year for each grid region. Dispatch segments are specifically used in GCAM-USA.
 
 <br />
 
 <p align="center"> <img src="vignetteFigs/helios_workflow.jpg"></p>
 <a name="figure1"></a>
-<p align="center" style="font-size:14px;"> *Figure 1:* Helios Workflow. </p>
+<p align="left" style="font-size:14px;"> **Figure 1:** Helios Workflow. </p>
+
+<br />
+
+## Method
+
+`helios` calculates different units of heating and cooling degrees for different temporal scale. [Table 2](#table2) shows more details of the method
+
+<a name="table2"></a>
+**Table 2:** Methods for calculating heating and cooling degrees at different temporal scales.
+
+| Temporal Scale | Unit | Method |
+|----------------|----------------|----------------------------------------------------------------|
+| Dispatch Segment | Degree-hours | 1. Calcualte heating degree-hours (HDH) and cooling degree-hours (CDH) as the difference from hourly temperature to comfortable temperature (65F). <br /> $$HDH = T_i - T_{comfort}, \ if \ T_i < T_{comfort}$$ <br /> $$CDH = T_i - T_{comfort}, \ if \ T_i > T_{comfort}$$ <br /> where, $T_i$ is the hourly temperature at a grid cell; $T_{comfort}$ is the comfortable temperature (usually 65F for USA). <br /> 2. Aggregate hourly HDH and CDH by dispatch segment. |
+| Monthly | Degree-days | 1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br /> 2. Calculate heating degree-days (HDD) and cooling degree-days (HDD) as the difference from mean temperature to comfortable temperature (65F). <br /> 3. Aggregate daily HDD and CDD by month. |
+| Annual | Degree-days | 1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br /> 2. Calculate heating degree-days (HDD) and cooling degree-days (HDD) as the difference from mean temperature to comfortable temperature (65F). <br /> 3. Aggregate daily HDD and CDD by year. |
 
 <br />
 
@@ -88,16 +105,24 @@ output <- helios::hdcd(ncdf = 'path_to_wrf_data/wrfout_d01_2020-01-01_01%3A00%3A
 
 <br />
 
-The output is a list containing two tables.
+The output is a list containing three tables. Please note the different units (degree-hours or degree-days) for different outputs.
+
+* Heating and cooling **degree-hours** by dispatch segment for CONUS.
+* Heating and cooling **degree-days** by month for CONUS.
+* Heating and cooling **degree-days** by year for CONUS.
 
 ```{r eval=FALSE}
 # Heating and cooling degree-hours at dispatch segment scale for CONUS
 hdcd_segment <- output$hdcd_comb
 head(hdcd_segment)
 
-# Heating and cooling degree-hours at dispatch monthly scale for CONUS
+# Heating and cooling degree-days at monthly scale for CONUS
 hdcd_monthly <- output$hdcd_comb_monthly
 head(hdcd_monthly)
+
+# Heating and cooling degree-days at annual scale for CONUS
+hdcd_annual <- output$hdcd_comb_annual
+head(hdcd_annual)
 ```
 
 <br />
@@ -121,4 +146,4 @@ helios::diagnostics(hdcd = hdcd_segment,
 
 <br />
 
-***Note:** Please note that if users are following the example provided here, we use one WRF input climate NetCDF data, which only covers 7 days. Thus, the diagnostic will not show the full picture of heating and cooling degrees over a year. To get heating and cooling degrees for a complete year, users need to repeatly run climate NetCDF files in `helios` that cover the length of a year. For example, if each climate NetCDF is for 7-days, then user need to run about 52 climate NetCDF through `helios` to cover a whole year of climate. Then, users can combine all the output tables from `helios` and run `helios::diagnostic` to create the heating and cooling degree behavior throughout a year.
+***Note:** Please note that if users are following the example provided here, we use one WRF input climate NetCDF data, which only covers 7 days. Thus, the diagnostic will not show the full picture of heating and cooling degrees over a year. To get heating and cooling degrees for a complete year, users need to run climate NetCDF files using `helios` that cover the length of a year. For example, if each climate NetCDF is for 7-days, then user need to include about 52 climate NetCDF to cover a whole year of climate data. Then, users can use `helios::diagnostic` to create plots to check  heating and cooling degree behaviors throughout a year.

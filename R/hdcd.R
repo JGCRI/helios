@@ -45,8 +45,10 @@ hdcd <- function(ncdf = NULL,
   # Pick up on intermediate files if program crashed before.
   hdcd_comb <- tibble::tibble()
   hdcd_comb_monthly <- tibble::tibble()
+  hdcd_comb_annual <- tibble::tibble()
   hdcd_region_segments_bld <- tibble::tibble()
   hdcd_region_monthly <- tibble::tibble()
+  hdcd_region_annual<- tibble::tibble()
   if(any(grepl("tbl_df|tbl|data.frame",class(population)))){population <- list("pop"=population)}
   }
 
@@ -255,6 +257,19 @@ hdcd <- function(ncdf = NULL,
           dplyr::ungroup() %>%
           tidyr::gather(key = 'HDDCDD', value = 'value', HDD, CDD)
 
+        # hdcd annual
+        hdcd_region_annual <- hdcd_region %>%
+          dplyr::left_join(temporal_subset, by=c("datetime", "year")) %>%
+          dplyr::group_by(subRegion, year, month, day) %>%
+          dplyr::summarise(value = (max(value) + min(value))/2) %>%
+          dplyr::ungroup() %>%
+          dplyr::group_by(subRegion, year) %>%
+          dplyr::summarise(HDD = sum(value[value < 0]),
+                           CDD = sum(value[value > 0])) %>%
+          dplyr::ungroup() %>%
+          tidyr::gather(key = 'HDDCDD', value = 'value', HDD, CDD)
+
+
 
         #......................
         # Step 8: Add in building components for GCAMUSA
@@ -344,6 +359,36 @@ hdcd <- function(ncdf = NULL,
 
     }
 
+    #......................
+    # Step 9c: Save annual as combined csv files
+    #......................
+
+    if(nrow(hdcd_region_annual)>0){
+
+      hdcd_comb_annual <- hdcd_comb_annual %>%
+        dplyr::bind_rows(hdcd_region_annual) %>%
+        dplyr::ungroup() %>%
+        dplyr::group_by(subRegion, year, HDDCDD) %>%
+        dplyr::summarize(value = sum(value, na.rm = T)) %>%
+        dplyr::ungroup() %>%
+        dplyr::filter(!is.na(subRegion),
+                      !is.na(year))
+
+      year_min_i <- min(hdcd_comb_annual$year, na.rm = T)
+      year_max_i <- max(hdcd_comb_annual$year, na.rm = T)
+
+      if(i < length(ncdf)){
+        filename_i_annual <- paste0(folder,"/hdcd_wrf_to_gcam_intermediate_annual",name_append,".csv")
+      } else {
+        filename_i_annual <- paste0(folder,"/hdcd_wrf_to_gcam_",year_min_i,"_",year_max_i,"_annual",name_append,".csv")}
+
+      if(save){
+        data.table::fwrite(hdcd_comb_annual, file=filename_i_annual)
+        print(paste0("File saved as : ", filename_i_annual))
+      }
+
+    }
+
   } # Close for(i in 1:length(ncdf)){
 
 
@@ -381,7 +426,9 @@ hdcd <- function(ncdf = NULL,
   print("process_hdcd completed.")
 
   # return data
-  invisible(list(hdcd_comb = hdcd_comb,hdcd_comb_monthly = hdcd_comb_monthly))
+  invisible(list(hdcd_comb = hdcd_comb,
+                 hdcd_comb_monthly = hdcd_comb_monthly,
+                 hdcd_comb_annual = hdcd_comb_annual))
 
 } # Close process_hdcd
 
