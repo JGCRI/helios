@@ -3,11 +3,11 @@ Title: Process heating and cooling degrees for GCAM
 Version: 1.0.0
 Authors@R: c(person("Mengqi", "Zhao", email = "mengqi.zhao@pnnl.gov", role = c("aut", "cre"),
 		   comment = c(ORCID ="0000-0001-5385-2758")),
-		   person("Zarrar", "Khan", email = "zarrar.khan@pnnl.gov", role = c("aut", "cre"),
+		   person("Zarrar", "Khan", email = "zarrar.khan@pnnl.gov", role = c("aut"),
 		   comment = c(ORCID ="0000-0002-8147-8553")),
 		   person("Kalyn", "Dorheim", role = c("aut"), comment = c(ORCID="0000-0001-8093-8397")),
 		   person("Chris", "Vernon", role = c("aut"), comment = c(ORCID="0000-0002-3406-6214")))
-Description: Color palettes used by the Pacific Northwest National Laboratory - Joint Global Change Research Institute for maps and charts.
+Description: Heating and Cooling Degrees based on High Resolution Climate Data.
 URL: https://github.com/JGCRI/helios
 BugReports: https://github.com/JGCRI/helios/issues
 Depends: R (>= 2.10)

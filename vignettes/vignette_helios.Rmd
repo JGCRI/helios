@@ -73,9 +73,9 @@ Please note that `helios` can process multiple climate NetCDF files with one pop
 
 | Temporal Scale | Unit | Method |
 |----------------|----------------|----------------------------------------------------------------|
-| Dispatch Segment | Degree-hours | 1. Calcualte heating degree-hours (HDH) and cooling degree-hours (CDH) as the difference from hourly temperature to comfortable temperature (65F). <br /> $$HDH = T_i - T_{comfort}, \ if \ T_i < T_{comfort}$$ <br /> $$CDH = T_i - T_{comfort}, \ if \ T_i > T_{comfort}$$ <br /> where, $T_i$ is the hourly temperature at a grid cell; $T_{comfort}$ is the comfortable temperature (usually 65F for USA). <br /> 2. Aggregate hourly HDH and CDH by dispatch segment. |
-| Monthly | Degree-days | 1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br /> 2. Calculate heating degree-days (HDD) and cooling degree-days (HDD) as the difference from mean temperature to comfortable temperature (65F). <br /> 3. Aggregate daily HDD and CDD by month. |
-| Annual | Degree-days | 1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br /> 2. Calculate heating degree-days (HDD) and cooling degree-days (HDD) as the difference from mean temperature to comfortable temperature (65F). <br /> 3. Aggregate daily HDD and CDD by year. |
+| Dispatch Segment | Degree-hours | 1. Calcualte heating degree-hours (HDH) and cooling degree-hours (CDH) as the difference between hourly temperature and comfortable temperature (65F). <br /> $$HDH = T_i - T_{comfort}, \ if \ T_i < T_{comfort}$$ <br /> $$CDH = T_i - T_{comfort}, \ if \ T_i > T_{comfort}$$ <br /> where, $T_i$ is the hourly temperature at a grid cell; $T_{comfort}$ is the comfortable temperature (usually 65F for USA). <br /> 2. Aggregate hourly HDH and CDH by dispatch segment. |
+| Monthly | Degree-days | 1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br /> 2. Calculate heating degree-days (HDD < 0) and cooling degree-days (CDD > 0) as the difference between mean temperature and comfortable temperature (65F). <br /> 3. Aggregate daily HDD and CDD by month. |
+| Annual | Degree-days | 1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br /> 2. Calculate heating degree-days (HDD < 0) and cooling degree-days (CDD > 0) as the difference from mean temperature to comfortable temperature (65F). <br /> 3. Aggregate daily HDD and CDD by year. |
 
 <br />
 
