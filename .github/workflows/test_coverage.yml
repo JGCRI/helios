@@ -7,40 +7,29 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        r: ['3.6']
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.PAT}}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
       - uses: r-lib/actions/setup-r@v2-branch
         with:
-          r-version: '3.6'
+          r-version: ${{ matrix.r }}
       - uses: r-lib/actions/setup-pandoc@v2-branch
       - uses: r-lib/actions/setup-tinytex@v2-branch
-
-      - name: Cache R packages
-        uses: actions/cache@v1
-        with:
-          path: ${{ env.R_LIBS_USER }}
-          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
-
-      - name: Ubuntu config
-        run: |
-          sudo add-apt-repository ppa:ubuntugis/ppa
-          sudo apt-get update
-          sudo apt-get install -y libudunits2-dev libgdal-dev libgeos-dev libproj-dev libnetcdf-dev
-
       - name: Install dependencies
-        run: |
-          install.packages(c("remotes","rcmdcheck"), repos = "https://cloud.r-project.org")
-          remotes::install_deps(dependencies = TRUE)
-        shell: Rscript {0}
-
+        env:
+          R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+          GITHUB_PAT: ${{ secrets.PAT }}
+        run: Rscript -e "install.packages(c('remotes', 'rcmdcheck', 'covr'))" -e "remotes::install_deps(dependencies = TRUE)"
       - name: Test coverage
         run: |
-          Rscript -e 'remotes::install_github("r-lib/covr@gh-actions")'
-          Rscript -e 'covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")'
+          remotes::install_cran("covr")
+          covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")
+        shell: Rscript {0}
