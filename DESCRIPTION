@@ -29,7 +29,8 @@ Imports:
 	data.table,
 	gcamdata
 Suggests: 
-    rmarkdown,
+  rmarkdown,
+	terra,
 	testthat
 Remotes: 
 	github::JGCRI/gcamdata
