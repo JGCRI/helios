@@ -162,38 +162,78 @@
 </tr>
 </tbody>
 </table>
-<p>Please note that <code>helios</code> can process one climate NetCDF file with one population CSV file for each run. Parallelization may be needed for large dataset with longer time coverage.</p>
+<p>Please note that <code>helios</code> can process multiple climate NetCDF files with one population CSV file for each run. However, parallelizing grouped climate data can improve calculation efficiency for large dataset.</p>
 <p><br></p>
 <!-------------------------->
 <!-------------------------->
 </div>
 <div class="section level2">
-<h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
+<h2 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a>
 </h2>
 <!-------------------------->
 <!-------------------------->
 <p align="center">
 <img src="vignetteFigs/divider.png"></p>
+<div class="section level3">
+<h3 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
+</h3>
 <p><code>helios</code> includes 6 major steps in its workflow (<a href="#figure1">Figure 1</a>),</p>
 <ul>
 <li>Step 1: Process climate NetCDF.</li>
 <li>Step 2: Calculate weighted population.</li>
 <li>Step 3: Calculate heating and cooling degree-hours at grid resolution.</li>
 <li>Step 4: Aggregate heating and cooling degree-hours to CONUS States scale.</li>
-<li>Step 5: Aggregate heating and cooling degree-hours to dispatch segment scale and monthly scale.</li>
+<li>Step 5: Calculate heating and cooling degree-days at monthly and annual scale.</li>
 <li>Step 6: Post-process for diagnostic and convert to GCAM required format.</li>
 </ul>
-<p>*<strong>Note:</strong> Dispatch segments are defined as 24 day and night segments in each month of the year, plus a “super-peak” segment that has the top 10% of loads within a year for each grid region. Dispatch segments are specifically used in GCAM-USA.</p>
+<p>*<strong>Note:</strong> Dispatch segments are defined as 24 day and night segments in each month of the year (e.g., Jan-day, Jan-night, Feb-day, Feb-night, etc), plus a “super-peak” segment that has the top 10% of loads within a year for each grid region. Dispatch segments are specifically used in GCAM-USA.</p>
 <p><br></p>
 <p align="center">
 <img src="vignetteFigs/helios_workflow.jpg"></p>
 <a name="figure1"></a>
-<p align="center" style="font-size:14px;">
-<em>Figure 1:</em> Helios Workflow.
+<p align="left" style="font-size:14px;">
+<strong>Figure 1:</strong> Helios Workflow.
 </p>
+<p><br></p>
+</div>
+<div class="section level3">
+<h3 id="method">Method<a class="anchor" aria-label="anchor" href="#method"></a>
+</h3>
+<p><code>helios</code> calculates different units of heating and cooling degrees for different temporal scale. <a href="#table2">Table 2</a> shows more details of the method</p>
+<p><a name="table2"></a> <strong>Table 2:</strong> Methods for calculating heating and cooling degrees at different temporal scales.</p>
+<table class="table">
+<colgroup>
+<col width="16%">
+<col width="16%">
+<col width="66%">
+</colgroup>
+<thead><tr class="header">
+<th>Temporal Scale</th>
+<th>Unit</th>
+<th>Method</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Dispatch Segment</td>
+<td>Degree-hours</td>
+<td>1. Calcualte heating degree-hours (HDH) and cooling degree-hours (CDH) as the difference from hourly temperature to comfortable temperature (65F). <br><span class="math display">\[HDH = T_i - T_{comfort}, \ if \ T_i &lt; T_{comfort}\]</span> <br><span class="math display">\[CDH = T_i - T_{comfort}, \ if \ T_i &gt; T_{comfort}\]</span> <br> where, <span class="math inline">\(T_i\)</span> is the hourly temperature at a grid cell; <span class="math inline">\(T_{comfort}\)</span> is the comfortable temperature (usually 65F for USA). <br> 2. Aggregate hourly HDH and CDH by dispatch segment.</td>
+</tr>
+<tr class="even">
+<td>Monthly</td>
+<td>Degree-days</td>
+<td>1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br> 2. Calculate heating degree-days (HDD) and cooling degree-days (HDD) as the difference from mean temperature to comfortable temperature (65F). <br> 3. Aggregate daily HDD and CDD by month.</td>
+</tr>
+<tr class="odd">
+<td>Annual</td>
+<td>Degree-days</td>
+<td>1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br> 2. Calculate heating degree-days (HDD) and cooling degree-days (HDD) as the difference from mean temperature to comfortable temperature (65F). <br> 3. Aggregate daily HDD and CDD by year.</td>
+</tr>
+</tbody>
+</table>
 <p><br></p>
 <!-------------------------->
 <!-------------------------->
+</div>
 </div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
@@ -217,15 +257,24 @@
 <span>                       name_append <span class="op">=</span> <span class="st">""</span>,</span>
 <span>                       save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
-<p>The output is a list containing two tables.</p>
+<p>The output is a list containing three tables. Please note the different units (degree-hours or degree-days) for different outputs.</p>
+<ul>
+<li>Heating and cooling <strong>degree-hours</strong> by dispatch segment for CONUS.</li>
+<li>Heating and cooling <strong>degree-days</strong> by month for CONUS.</li>
+<li>Heating and cooling <strong>degree-days</strong> by year for CONUS.</li>
+</ul>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-hours at dispatch segment scale for CONUS</span></span>
 <span><span class="va">hdcd_segment</span> <span class="op">&lt;-</span> <span class="va">output</span><span class="op">$</span><span class="va">hdcd_comb</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdcd_segment</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># Heating and cooling degree-hours at dispatch monthly scale for CONUS</span></span>
+<span><span class="co"># Heating and cooling degree-days at monthly scale for CONUS</span></span>
 <span><span class="va">hdcd_monthly</span> <span class="op">&lt;-</span> <span class="va">output</span><span class="op">$</span><span class="va">hdcd_comb_monthly</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdcd_monthly</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdcd_monthly</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Heating and cooling degree-days at annual scale for CONUS</span></span>
+<span><span class="va">hdcd_annual</span> <span class="op">&lt;-</span> <span class="va">output</span><span class="op">$</span><span class="va">hdcd_comb_annual</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">hdcd_annual</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p>After getting the data table for heating and cooling degrees, users can perform diagnostics and compare with NOAA observations. The following example is only for demonstration of how to use <code>helios::diagnostic</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -237,7 +286,7 @@
 <span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span>hdcd <span class="op">=</span> <span class="va">hdcd_segment</span>,</span>
 <span>                    folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/output"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
-<p>*<strong>Note:</strong> Please note that if users are following the example provided here, we use one WRF input climate NetCDF data, which only covers 7 days. Thus, the diagnostic will not show the full picture of heating and cooling degrees over a year. To get heating and cooling degrees for a complete year, users need to repeatly run climate NetCDF files in <code>helios</code> that cover the length of a year. For example, if each climate NetCDF is for 7-days, then user need to run about 52 climate NetCDF through <code>helios</code> to cover a whole year of climate. Then, users can combine all the output tables from <code>helios</code> and run <code>helios::diagnostic</code> to create the heating and cooling degree behavior throughout a year.</p>
+<p>*<strong>Note:</strong> Please note that if users are following the example provided here, we use one WRF input climate NetCDF data, which only covers 7 days. Thus, the diagnostic will not show the full picture of heating and cooling degrees over a year. To get heating and cooling degrees for a complete year, users need to run climate NetCDF files using <code>helios</code> that cover the length of a year. For example, if each climate NetCDF is for 7-days, then user need to include about 52 climate NetCDF to cover a whole year of climate data. Then, users can use <code>helios::diagnostic</code> to create plots to check heating and cooling degree behaviors throughout a year.</p>
 </div>
   </div>
 
