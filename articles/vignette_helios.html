@@ -136,8 +136,8 @@
 </tr>
 <tr class="odd">
 <td>Temporal Resolution</td>
-<td>Yearly</td>
 <td>Hourly</td>
+<td>Annual</td>
 </tr>
 <tr class="even">
 <td>Required Variable</td>
@@ -216,17 +216,17 @@
 <tr class="odd">
 <td>Dispatch Segment</td>
 <td>Degree-hours</td>
-<td>1. Calcualte heating degree-hours (HDH) and cooling degree-hours (CDH) as the difference from hourly temperature to comfortable temperature (65F). <br><span class="math display">\[HDH = T_i - T_{comfort}, \ if \ T_i &lt; T_{comfort}\]</span> <br><span class="math display">\[CDH = T_i - T_{comfort}, \ if \ T_i &gt; T_{comfort}\]</span> <br> where, <span class="math inline">\(T_i\)</span> is the hourly temperature at a grid cell; <span class="math inline">\(T_{comfort}\)</span> is the comfortable temperature (usually 65F for USA). <br> 2. Aggregate hourly HDH and CDH by dispatch segment.</td>
+<td>1. Calcualte heating degree-hours (HDH) and cooling degree-hours (CDH) as the difference between hourly temperature and comfortable temperature (65F). <br><span class="math display">\[HDH = T_i - T_{comfort}, \ if \ T_i &lt; T_{comfort}\]</span> <br><span class="math display">\[CDH = T_i - T_{comfort}, \ if \ T_i &gt; T_{comfort}\]</span> <br> where, <span class="math inline">\(T_i\)</span> is the hourly temperature at a grid cell; <span class="math inline">\(T_{comfort}\)</span> is the comfortable temperature (usually 65F for USA). <br> 2. Aggregate hourly HDH and CDH by dispatch segment.</td>
 </tr>
 <tr class="even">
 <td>Monthly</td>
 <td>Degree-days</td>
-<td>1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br> 2. Calculate heating degree-days (HDD) and cooling degree-days (HDD) as the difference from mean temperature to comfortable temperature (65F). <br> 3. Aggregate daily HDD and CDD by month.</td>
+<td>1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br> 2. Calculate heating degree-days (HDD &lt; 0) and cooling degree-days (CDD &gt; 0) as the difference between mean temperature and comfortable temperature (65F). <br> 3. Aggregate daily HDD and CDD by month.</td>
 </tr>
 <tr class="odd">
 <td>Annual</td>
 <td>Degree-days</td>
-<td>1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br> 2. Calculate heating degree-days (HDD) and cooling degree-days (HDD) as the difference from mean temperature to comfortable temperature (65F). <br> 3. Aggregate daily HDD and CDD by year.</td>
+<td>1. Calculate daily mean temperature as the average of minimum and maximum daily temperature. <br> 2. Calculate heating degree-days (HDD &lt; 0) and cooling degree-days (CDD &gt; 0) as the difference from mean temperature to comfortable temperature (65F). <br> 3. Aggregate daily HDD and CDD by year.</td>
 </tr>
 </tbody>
 </table>
@@ -302,7 +302,7 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Zarrar Khan, Kalyn Dorheim, Paul Wolfram, Chris Vernon.</p>
+<p>Developed by Mengqi Zhao, Zarrar Khan, Kalyn Dorheim, Chris Vernon.</p>
 </div>
 
 <div class="pkgdown">
