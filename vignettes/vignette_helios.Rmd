@@ -26,7 +26,7 @@ vignette: >
 |---|---|---|
 | Input Format | NetCDF File | CSV File |
 | Spatial Resolution | WRF Resolution: 12 x 12 km | WRF Resolution: 12 x 12 km |
-| Temporal Resolution | Yearly | Hourly |
+| Temporal Resolution | Hourly | Annual |
 | Required Variable | Temperature T2 (K) | Population (Capita) |
 | Cluster Location | (NERSC) /global/cfs/cdirs/m2702/gsharing/tgw-wrf-conus | (NERSC) /global/cfs/cdirs/m2702/gcamusa/hddcdd/pop_1km |
 | Available Download | N/A | (Pre-processed) https://zenodo.org/record/3756179#.Y5fLK3bMKUl |
