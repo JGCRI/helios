@@ -25,11 +25,15 @@ reference:
 - title: "Functions"
 - contents:
   - hdcd
+  - read_ncdf
+  - read_population
   - diagnostics
   - save_xml
 - title: "Pre-loaded Data"
 - contents:
   - L2441.HDDCDD_Fixed_gcamusa_seg
+  - L244.HDDCDD_building
+  - mapping_grid_region
   - mapping_wrf_us49
   - mapUS52
   - noaa_hddcdd
