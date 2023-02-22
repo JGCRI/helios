@@ -6,9 +6,11 @@
 \usage{
 hdcd(
   ncdf = NULL,
+  ncdf_var = NULL,
+  model = NULL,
+  population = NULL,
   spatial = NULL,
   temporal = NULL,
-  population = NULL,
   reference_temp_F = 65,
   folder = paste0(getwd(), "/output"),
   diagnostics = F,
@@ -20,11 +22,15 @@ hdcd(
 \arguments{
 \item{ncdf}{Default = NULL. Path to ncdf file.}
 
-\item{spatial}{Default = NULL. Options: "gcamusa". Aggregate to different spatial boundaries.}
+\item{ncdf_var}{Default = NULL. Variable to extract from NetCDF file.}
 
-\item{temporal}{Default = NULL. Options: "gcamusa". Aggregate to timesteps.}
+\item{model}{Default = NULL. Climate model that generates the ncdf file. Options: 'wrf' or 'cmip'}
 
 \item{population}{Default = NULL. Path to population files to population weight data.}
+
+\item{spatial}{Default = NULL. Options: "states_us_49", "gcam_regions_32". Aggregate to different spatial boundaries.}
+
+\item{temporal}{Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).}
 
 \item{reference_temp_F}{Default = 65}
 

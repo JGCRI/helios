@@ -2,8 +2,8 @@
 
 export(diagnostics)
 export(hdcd)
-export(save_xml)
 export(read_ncdf)
 export(read_population)
+export(save_xml)
 importFrom(data.table,":=")
 importFrom(magrittr,"%>%")
