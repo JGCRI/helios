@@ -25,6 +25,9 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
+    <loc>/reference/L244.HDDCDD_building.html</loc>
+  </url>
+  <url>
     <loc>/reference/L2441.HDDCDD_Fixed_gcamusa_seg.html</loc>
   </url>
   <url>
@@ -43,10 +46,19 @@
     <loc>/reference/mapUS52.html</loc>
   </url>
   <url>
+    <loc>/reference/mapping_grid_region.html</loc>
+  </url>
+  <url>
     <loc>/reference/mapping_wrf_us49.html</loc>
   </url>
   <url>
     <loc>/reference/noaa_hddcdd.html</loc>
+  </url>
+  <url>
+    <loc>/reference/read_ncdf.html</loc>
+  </url>
+  <url>
+    <loc>/reference/read_population.html</loc>
   </url>
   <url>
     <loc>/reference/save_xml.html</loc>
