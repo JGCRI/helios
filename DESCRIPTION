@@ -29,7 +29,8 @@ Imports:
 	ncdf4,
 	magrittr,
 	data.table,
-	gcamdata
+	gcamdata,
+	snow
 Suggests: 
   rmarkdown,
 	testthat

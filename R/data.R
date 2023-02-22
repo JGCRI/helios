@@ -32,6 +32,22 @@
 "L2441.HDDCDD_Fixed_gcamusa_seg"
 
 #.................................
+# L244.HDDCDD_building
+#................................
+
+#' L244.HDDCDD_building
+#'
+#' @source gcamdata/outputs/L244.HDDCDD_constdd_no_GCM.csv
+#' @format R dataframe
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  L244.HDDCDD_building <- helios::L244.HDDCDD_building
+#' }
+"L244.HDDCDD_building"
+
+
+#.................................
 # Copy of rmap::mapUS52 for local use in helios
 #................................
 
@@ -75,6 +91,21 @@
 #'  mapping_wrf_us49 <- helios::mapping_wrf_us49
 #' }
 "mapping_wrf_us49"
+
+#.................................
+# 0.5 Grid to GCAM 32 region Mapping
+#................................
+
+#' mapping_grid_region
+#'
+#' @source
+#' @format tibble
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  mapping_grid_region <- helios::mapping_grid_region
+#' }
+"mapping_grid_region"
 
 #.................................
 # Pre-processed Population Files

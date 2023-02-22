@@ -52,6 +52,18 @@ L2441.HDDCDD_Fixed_gcamusa_seg <- L2441.HDDCDD_Fixed_gcamusa %>%
 use_data(L2441.HDDCDD_Fixed_gcamusa_seg, version=3, overwrite=T)
 
 #-----------------
+# L244.HDDCDD_constdd_no_GCM
+#----------------
+
+L244.HDDCDD_constdd_no_GCM <- read.csv(paste0(gcamdata_folder,"/outputs/L244.HDDCDD_constdd_no_GCM.csv"), comment.char = "#") %>% tibble::as_tibble()
+
+L244.HDDCDD_building <- L244.HDDCDD_constdd_no_GCM %>%
+  dplyr::select(-degree.days, -year) %>%
+  unique()
+
+use_data(L244.HDDCDD_building, version = 3, overwrite = T)
+
+#-----------------
 # US52 map from Rmap saved locally to remove dependency
 #-----------------
 
@@ -251,3 +263,13 @@ mapping_wrf_us49 <- mapping_wrf_us49 %>%
   dplyr::left_join(nam_df, by = 'subRegion')
 
 usethis::use_data(mapping_wrf_us49, overwrite=T)
+
+
+
+#----------------------
+# Map 0.5 grid to GCAM regions
+#-----------------------
+mapping_grid_region <- rmap::mapping_tethys_grid_basin_region_country %>%
+  dplyr::select(lat, lon, region = regionName, subRegion = regionName, ID = regionID)
+
+usethis::use_data(mapping_grid_region, overwrite=T)
