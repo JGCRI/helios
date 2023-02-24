@@ -113,12 +113,34 @@ hdcd <- function(ncdf = NULL,
         ncdf_times <- names(ncdf_grid)[
           !names(ncdf_grid) %in% c('lat', 'lon', 'region', 'subRegion', 'ID')]
 
-
         indices <- as.integer(grepl(paste0(time_periods, collapse = "|"), ncdf_times))
-        ncdf_times_subset <- ncdf_times[grepl(paste0(time_periods, collapse = "|"), ncdf_times)]
         index_subset <- c(1:length(ncdf_times)) * indices
         index_subset <- index_subset[!index_subset %in% 0]
         years <- unique(substr(ncdf_times, 1, 4))
+
+        if (model == 'wrf') {
+
+          ncdf_pivot <- ncdf_grid %>%
+            tidyr::pivot_longer(cols = ncdf_times, names_to = 'datetime') %>%
+            dplyr::mutate(datetime = as.POSIXct(datetime,
+                                                format = "%Y-%m-%d_%H:%M:%S",
+                                                tz = "UTC")) %>%
+            dplyr::mutate(year = as.character(lubridate::year(datetime)))
+
+        } else if (model == 'cmip') {
+
+          ncdf_pivot <- ncdf_grid %>%
+            tidyr::pivot_longer(cols = ncdf_times, names_to = 'datetime') %>%
+            dplyr::mutate(datetime = as.POSIXct(datetime,
+                                                format = "%Y-%m-%d",
+                                                tz = "UTC")) %>%
+            dplyr::mutate(year = as.character(lubridate::year(datetime)))
+
+        } else {
+
+          stop('Please select valid model. Options: wrf, cmip')
+
+        }
 
         #......................
         # Step 2: Population weighted grid
@@ -151,34 +173,12 @@ hdcd <- function(ncdf = NULL,
             # Step 3: Calculate Heating and Cooling Degrees (Kelvin to F)
             # Step 4: Population weight for each grid for each year
             #......................
-            if (model == 'wrf') {
 
-              ncdf_pivot <- ncdf_grid %>%
-                tidyr::pivot_longer(cols = ncdf_times, names_to = 'datetime') %>%
-                dplyr::mutate(datetime = as.POSIXct(datetime,
-                                                    format = "%Y-%m-%d_%H:%M:%S",
-                                                    tz = "UTC")) %>%
-                dplyr::mutate(year = as.character(lubridate::year(datetime)))
-
-            } else if (model == 'cmip') {
-
-              ncdf_pivot <- ncdf_grid %>%
-                tidyr::pivot_longer(cols = ncdf_times, names_to = 'datetime') %>%
-                dplyr::mutate(datetime = as.POSIXct(datetime,
-                                                    format = "%Y-%m-%d",
-                                                    tz = "UTC")) %>%
-                dplyr::mutate(year = as.character(lubridate::year(datetime)))
-
-            } else {
-
-              stop('Please select valid model. Options: wrf, cmip')
-
-            }
 
             ncdf_hdcd_pop_weighted <- ncdf_pivot %>%
               dplyr::left_join(population_j_weighted %>%
                                  dplyr::select(-value, -subRegion_total_value),
-                               by = c('ID', 'subRegion', 'lat', 'lon', 'year')) %>%
+                               by = c('ID', 'region', 'subRegion', 'lat', 'lon', 'year')) %>%
               dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
                             value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
 
@@ -193,17 +193,19 @@ hdcd <- function(ncdf = NULL,
         # Step 5: Subset for time periods chosen
         #......................
 
-        if (spatial == 'states_us_49') {
+        # Subset raster brick to selected times
+        if (length(index_subset) > 0) {
 
-          # Subset raster brick to selected times
-          if (length(index_subset) > 0) {
+          if (spatial == 'states_us_49') {
+
             # Equivalent to step 6: Aggregate to regions
             hdcd_region <- ncdf_hdcd_pop_weighted %>%
               dplyr::filter(!is.na(subRegion)) %>%
               dplyr::select(-lat, -lon) %>%
               dplyr::group_by(subRegion, ID, year, datetime) %>%
               dplyr::summarise(value = dplyr::if_else(any(is.na(pop_weight)), mean(value), sum(value))) %>%
-              dplyr::ungroup()
+              dplyr::ungroup() %>%
+              dplyr::mutate(region = 'USA')
 
             # Assign HDDCDD categories
             hdcd_region <- hdcd_region %>%
@@ -232,16 +234,16 @@ hdcd <- function(ncdf = NULL,
               dplyr::left_join(temporal_subset, by = c("datetime", "year")) %>%
               dplyr::left_join(helios::segment_map_utc,
                                by = c("subRegion", "month", "day", "hour")) %>%
-              dplyr::group_by(subRegion, year, segment, HDDCDD) %>%
+              dplyr::group_by(region, subRegion, year, segment, HDDCDD) %>%
               dplyr::summarise(value = sum(value, na.rm = T))
 
             # hdcd monthly
             hdcd_region_monthly <- hdcd_region %>%
               dplyr::left_join(temporal_subset, by = c("datetime", "year")) %>%
-              dplyr::group_by(subRegion, year, month, day) %>%
+              dplyr::group_by(region, subRegion, year, month, day) %>%
               dplyr::summarise(value = (max(value) + min(value)) / 2) %>%
               dplyr::ungroup() %>%
-              dplyr::group_by(subRegion, year, month) %>%
+              dplyr::group_by(region, subRegion, year, month) %>%
               dplyr::summarise(HDD = sum(value[value < 0]),
                                CDD = sum(value[value > 0])) %>%
               dplyr::ungroup() %>%
@@ -250,78 +252,80 @@ hdcd <- function(ncdf = NULL,
             # hdcd annual
             hdcd_region_annual <- hdcd_region %>%
               dplyr::left_join(temporal_subset, by = c("datetime", "year")) %>%
-              dplyr::group_by(subRegion, year, month, day) %>%
+              dplyr::group_by(region, subRegion, year, month, day) %>%
               dplyr::summarise(value = (max(value) + min(value)) / 2) %>%
               dplyr::ungroup() %>%
-              dplyr::group_by(subRegion, year) %>%
+              dplyr::group_by(region, subRegion, year) %>%
               dplyr::summarise(HDD = sum(value[value < 0]),
                                CDD = sum(value[value > 0])) %>%
               dplyr::ungroup() %>%
               tidyr::gather(key = 'HDDCDD', value = 'value', HDD, CDD)
-          } else {
-            print(paste0("None of the selected time_periods: ",
-                         paste0(time_periods, collapse = ", ")))
-            print(paste0("are available in the selected ncdf file chosen: ", ncdf_i))
+
+
+            #......................
+            # Step 7a: Add in building components for GCAMUSA
+            #......................
+
+            hdcd_region_bld <- hdcd_region_segments %>%
+              dplyr::left_join(helios::L2441.HDDCDD_Fixed_gcamusa_seg,
+                               by = c("subRegion", "segment")) %>%
+              # Remove columns with -ve hdcd/cooling and +ve/heating
+              dplyr::filter(
+                !((value < 0) & grepl("cool", thermal.building.service.input, ignore.case = T)),
+                !((value > 0) & grepl("heat", thermal.building.service.input, ignore.case = T))) %>%
+              dplyr::select(-HDDCDD)
+
+          }
+          else if(spatial == 'gcam_region_32') {
+
+            #......................
+            # Step 6b: Aggregate over monthly and annual
+            #......................
+
+            hdcd_region_monthly <- ncdf_hdcd_pop_weighted %>%
+              dplyr::filter(!is.na(subRegion)) %>%
+              dplyr::select(-lat, -lon, -region, -ID) %>%
+              dplyr::mutate(month = lubridate::month(datetime)) %>%
+              dplyr::group_by(subRegion, year, month) %>%
+              dplyr::summarise(HDD = sum(value[value < 0]),
+                               CDD = sum(value[value > 0])) %>%
+              dplyr::ungroup() %>%
+              tidyr::pivot_longer(cols = c('HDD', 'CDD'), names_to = 'HDDCDD') %>%
+              dplyr::filter(value != 0) %>%
+              dplyr::mutate(region = subRegion)
+
+            hdcd_region_annual <- ncdf_hdcd_pop_weighted %>%
+              dplyr::filter(!is.na(subRegion)) %>%
+              dplyr::select(-lat, -lon, -region, -ID) %>%
+              dplyr::group_by(subRegion, year) %>%
+              dplyr::summarise(HDD = sum(value[value < 0]),
+                               CDD = sum(value[value > 0])) %>%
+              dplyr::ungroup() %>%
+              tidyr::pivot_longer(cols = c('HDD', 'CDD'), names_to = 'HDDCDD') %>%
+              dplyr::filter(value != 0) %>%
+              dplyr::mutate(region = subRegion)
+
+            #......................
+            # Step 7b: Add in building components for GCAM
+            #......................
+
+            hdcd_region_bld <- hdcd_region_annual %>%
+              dplyr::left_join(helios::L244.HDDCDD_building,
+                               by = c('region')) %>%
+              # Remove columns with -ve hdcd/cooling and +ve/heating
+              dplyr::filter(
+                !((value < 0) & grepl("cool", thermal.building.service.input, ignore.case = T)),
+                !((value > 0) & grepl("heat", thermal.building.service.input, ignore.case = T))) %>%
+              dplyr::select(-HDDCDD)
+          }
+          else {
+            stop('Please provide a valid spatial scale. Options: states_us_49, gcam_region_32.')
           }
 
-          #......................
-          # Step 7a: Add in building components for GCAMUSA
-          #......................
-
-          hdcd_region_bld <- hdcd_region_segments %>%
-            dplyr::left_join(helios::L2441.HDDCDD_Fixed_gcamusa_seg,
-                             by = c("subRegion", "segment")) %>%
-            # Remove columns with -ve hdcd/cooling and +ve/heating
-            dplyr::filter(
-              !((value < 0) & grepl("cool", thermal.building.service.input, ignore.case = T)),
-              !((value > 0) & grepl("heat", thermal.building.service.input, ignore.case = T))) %>%
-            dplyr::select(-HDDCDD)
-
-        }
-        else if(spatial == 'gcam_region_32') {
-
-          #......................
-          # Step 6b: Aggregate over monthly and annual
-          #......................
-
-          hdcd_region_monthly <- ncdf_hdcd_pop_weighted %>%
-            dplyr::filter(!is.na(subRegion)) %>%
-            dplyr::select(-lat, -lon, -region, -ID) %>%
-            dplyr::mutate(month = lubricate::month(datetime)) %>%
-            dplyr::group_by(subRegion, year, month) %>%
-            dplyr::summarise(HDD = sum(value[value < 0]),
-                             CDD = sum(value[value > 0])) %>%
-            dplyr::ungroup() %>%
-            tidyr::pivot_longer(cols = c('HDD', 'CDD'), names_to = 'HDDCDD') %>%
-            dplyr::filter(value != 0) %>%
-            dplyr::rename(region = subRegion)
-
-          hdcd_region_annual <- ncdf_hdcd_pop_weighted %>%
-            dplyr::filter(!is.na(subRegion)) %>%
-            dplyr::select(-lat, -lon, -region, -ID) %>%
-            dplyr::group_by(subRegion, year) %>%
-            dplyr::summarise(HDD = sum(value[value < 0]),
-                             CDD = sum(value[value > 0])) %>%
-            dplyr::ungroup() %>%
-            tidyr::pivot_longer(cols = c('HDD', 'CDD'), names_to = 'HDDCDD') %>%
-            dplyr::filter(value != 0) %>%
-            dplyr::rename(region = subRegion)
-
-          #......................
-          # Step 7b: Add in building components for GCAM
-          #......................
-
-          hdcd_region_bld <- hdcd_region_annual %>%
-            dplyr::left_join(helios::L244.HDDCDD_building,
-                             by = c('region')) %>%
-            # Remove columns with -ve hdcd/cooling and +ve/heating
-            dplyr::filter(
-              !((value < 0) & grepl("cool", thermal.building.service.input, ignore.case = T)),
-              !((value > 0) & grepl("heat", thermal.building.service.input, ignore.case = T))) %>%
-            dplyr::select(-HDDCDD)
-        }
-        else {
-          stop('Please provide a valid spatial scale. Options: states_us_49, gcam_region_32.')
+        } else {
+          print(paste0("None of the selected time_periods: ",
+                       paste0(time_periods, collapse = ", ")))
+          print(paste0("are available in the selected ncdf file chosen: ", ncdf_i))
         }
 
           print(paste0("Processing hdcd completed for file: ", ncdf_i))
@@ -340,17 +344,32 @@ hdcd <- function(ncdf = NULL,
     #......................
 
     if(nrow(hdcd_region_bld)>0){
-      hdcd_comb <- hdcd_comb %>%
-        dplyr::bind_rows(hdcd_region_bld) %>%
-        dplyr::ungroup() %>%
-        dplyr::group_by(subRegion, year, segment, gcam.consumer,
-                        nodeInput, building.node.input,
-                        thermal.building.service.input) %>%
-        dplyr::summarize(value = sum(value, na.rm = T)) %>%
-        dplyr::ungroup() %>%
-        dplyr::filter(!is.na(subRegion),
-                      !is.na(year),
-                      !is.na(segment))
+
+      if (spatial == 'states_us_49'){
+        hdcd_comb <- hdcd_comb %>%
+          dplyr::bind_rows(hdcd_region_bld) %>%
+          dplyr::ungroup() %>%
+          dplyr::group_by(region, subRegion, year, segment, gcam.consumer,
+                          nodeInput, building.node.input,
+                          thermal.building.service.input) %>%
+          dplyr::summarize(value = sum(value, na.rm = T)) %>%
+          dplyr::ungroup() %>%
+          dplyr::filter(!is.na(subRegion),
+                        !is.na(year),
+                        !is.na(segment))
+      } else if (spatial == 'gcam_region_32'){
+        hdcd_comb <- hdcd_comb %>%
+          dplyr::bind_rows(hdcd_region_bld) %>%
+          dplyr::ungroup() %>%
+          dplyr::group_by(region, subRegion, year, gcam.consumer,
+                          nodeInput, building.node.input,
+                          thermal.building.service.input) %>%
+          dplyr::summarize(value = sum(value, na.rm = T)) %>%
+          dplyr::ungroup() %>%
+          dplyr::filter(!is.na(subRegion),
+                        !is.na(year))
+      }
+
 
       year_min_i <- min(hdcd_comb$year, na.rm = T)
       year_max_i <- max(hdcd_comb$year, na.rm = T)
@@ -381,7 +400,7 @@ hdcd <- function(ncdf = NULL,
       hdcd_comb_monthly <- hdcd_comb_monthly %>%
         dplyr::bind_rows(hdcd_region_monthly) %>%
         dplyr::ungroup() %>%
-        dplyr::group_by(subRegion, year, month, HDDCDD) %>%
+        dplyr::group_by(region, subRegion, year, month, HDDCDD) %>%
         dplyr::summarize(value = sum(value, na.rm = T)) %>%
         dplyr::ungroup() %>%
         dplyr::filter(!is.na(subRegion),
@@ -418,7 +437,7 @@ hdcd <- function(ncdf = NULL,
       hdcd_comb_annual <- hdcd_comb_annual %>%
         dplyr::bind_rows(hdcd_region_annual) %>%
         dplyr::ungroup() %>%
-        dplyr::group_by(subRegion, year, HDDCDD) %>%
+        dplyr::group_by(region, subRegion, year, HDDCDD) %>%
         dplyr::summarize(value = sum(value, na.rm = T)) %>%
         dplyr::ungroup() %>%
         dplyr::filter(!is.na(subRegion),

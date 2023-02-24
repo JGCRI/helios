@@ -44,23 +44,8 @@ read_ncdf <- function(ncdf = NULL,
 
       # subset ncdf times within selected periods
       indices <- as.integer(grepl(paste0(time_periods, collapse = "|"), ncdf_times))
-      ncdf_times_subset <- ncdf_times[grepl(paste0(time_periods, collapse = "|"), ncdf_times)]
       index_subset <- c(1:length(ncdf_times)) * indices
       index_subset <- index_subset[!index_subset %in% 0]
-
-
-
-      # Base raster
-      # ncdf_ras <- ncdf_brick[[1]]
-
-      # ncdf_dim <- raster::as.data.frame(ncdf_ras, xy = TRUE, na.rm = TRUE) %>%
-      #   dplyr::select(x, y) %>%
-      #   dplyr::left_join(helios::mapping_grid_region,
-      #                    by = c('y' = 'lat', 'x' = 'lon')) %>%
-      #   dplyr::filter(!is.na(ID)) %>%
-      #   dplyr::select(-region, -subRegion, -ID)
-
-
 
 
       # create cluster
@@ -77,7 +62,7 @@ read_ncdf <- function(ncdf = NULL,
             lon = rep(lon, times = length(lat)),
             lat = rep(lat, each = length(lon)),
             tas = tas_1d)
-          names(tas_df) <- c('lon', 'lat', ncdf_times_subset[x])
+          names(tas_df) <- c('lon', 'lat', ncdf_times[x])
           tas_df})
 
       # bind columns of sublists
@@ -97,8 +82,6 @@ read_ncdf <- function(ncdf = NULL,
 
 
       ncdf_grid <- ncdf_df %>%
-        dplyr::rename(setNames(c(name_brick, 'lat', 'lon'),
-                               c(ncdf_times, 'lat', 'lon'))) %>%
         dplyr::left_join(helios::mapping_grid_region,
                          by = c('lat', 'lon')) %>%
         dplyr::filter(!is.na(ID))
@@ -116,6 +99,13 @@ read_ncdf <- function(ncdf = NULL,
 
       ncdf4::nc_close(ncdf_in)
 
+      # subset ncdf times within selected periods
+      indices <- as.integer(grepl(paste0(time_periods, collapse = "|"), ncdf_times))
+      index_subset <- c(1:length(ncdf_times)) * indices
+      index_subset <- index_subset[!index_subset %in% 0]
+      ncdf_times <- ncdf_times[index_subset]
+
+      ncdf_brick <- ncdf_brick[[index_subset]]
 
       #......................
       # Step 1: Map grid (lat/lon) to each shape in the polygons being mapped to
