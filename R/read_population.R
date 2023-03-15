@@ -58,9 +58,9 @@ read_population <- function(file = NULL) {
           # ------------------------------------------------
           else if (any(file_type %in% c('nc', 'nc4'))) {
 
-            raster_base <- raster::raster(resolution = 0.5,
-                                          xmn = -180, xmx = 180, ymn = -56, ymx = 84,
-                                          crs = '+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0')
+            # raster_base <- raster::raster(resolution = 0.5,
+            #                               xmn = -180, xmx = 180, ymn = -56, ymx = 84,
+            #                               crs = '+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0')
 
             pop_in <- ncdf4::nc_open(file)
 
@@ -73,7 +73,16 @@ read_population <- function(file = NULL) {
 
               pop_brick <- raster::brick(file, varname = var, ncdf=TRUE)
 
-              pop_agg <- raster::aggregate(pop_brick, fact = 4, fun = sum)
+              raster_base <- raster::raster(resolution = 0.5,
+                                            xmn = ceiling(pop_brick@extent@xmin),
+                                            xmx = ceiling(pop_brick@extent@xmax),
+                                            ymn = ceiling(pop_brick@extent@ymin),
+                                            ymx = ceiling(pop_brick@extent@ymax),
+                                            crs = '+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0')
+
+              resolution <- raster::res(pop_brick)[1]
+
+              pop_agg <- raster::aggregate(pop_brick, fact = 0.5 / resolution, fun = sum)
 
               pop_agg_resample <- raster::resample(pop_agg, raster_base, method = 'bilinear')
 

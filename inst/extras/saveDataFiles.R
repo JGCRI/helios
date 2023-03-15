@@ -265,7 +265,6 @@ mapping_wrf_us49 <- mapping_wrf_us49 %>%
 usethis::use_data(mapping_wrf_us49, overwrite=T)
 
 
-
 #----------------------
 # Map 0.5 grid to GCAM regions
 #-----------------------
@@ -273,3 +272,39 @@ mapping_grid_region <- rmap::mapping_tethys_grid_basin_region_country %>%
   dplyr::select(lat, lon, region = regionName, subRegion = regionName, ID = regionID)
 
 usethis::use_data(mapping_grid_region, overwrite=T)
+
+#-----------------------
+# WRF example data
+#-----------------------
+example_wrf_usa_ncdf<- system.file(
+  'extras',
+  'wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc',
+  package = 'helios')
+usethis::use_data(example_wrf_usa_ncdf, version=3, overwrite=T)
+
+#-----------------------
+# CMIP6 example data
+#-----------------------
+example_cmip6_china_ncdf <- system.file(
+  'extras',
+  'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc',
+  package = 'helios')
+usethis::use_data(example_cmip6_china_ncdf, version=3, overwrite=T)
+
+#--------------------------------
+# Population NetCDF Example Data
+#--------------------------------
+example_pop_china_ncdf <- system.file(
+  'extras',
+  'ssp1_2020_sub.nc',
+  package = 'helios')
+usethis::use_data(example_pop_china_ncdf, version=3, overwrite=T)
+
+#--------------------------------
+# Population CSV Example Data
+#--------------------------------
+example_pop_usa_csv <- system.file(
+  'extras',
+  'population_conus_ssp2_2020wrf_wgs84.csv',
+  package = 'helios')
+usethis::use_data(example_pop_usa_csv, version=3, overwrite=T)

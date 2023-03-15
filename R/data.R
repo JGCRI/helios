@@ -83,7 +83,7 @@
 
 #' mapping_wrf_us49
 #'
-#' @source
+#' @source wrf climate data wrfout_d01_2020-01-01_01%3A00%3A00.nc
 #' @format tibble
 #' @examples
 #' \dontrun{
@@ -98,7 +98,7 @@
 
 #' mapping_grid_region
 #'
-#' @source
+#' @source rmap::mapping_tethys_grid_basin_region_country
 #' @format tibble
 #' @examples
 #' \dontrun{
@@ -106,6 +106,64 @@
 #'  mapping_grid_region <- helios::mapping_grid_region
 #' }
 "mapping_grid_region"
+
+#.................................
+# WRF Example Data
+#.................................
+
+#' example_wrf_usa_ncdf
+#'
+#' @source .inst/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc
+#' @format string
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_wrf_usa_ncdf <- helios::example_wrf_usa_ncdf
+#' }
+"example_wrf_usa_ncdf"
+
+#.................................
+# CMIP6 Example Data
+#.................................
+
+#' example_cmip6_china_ncdf
+#'
+#' @source .inst/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc
+#' @format string
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_cmip6_china_ncdf <- helios::example_cmip6_china_ncdf
+#' }
+"example_cmip6_china_ncdf"
+
+#.................................
+# Population NetCDF Example Data
+#.................................
+#' example_pop_china_ncdf
+#'
+#' @source .inst/extras/ssp1_2020_sub.nc
+#' @format string
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_pop_china_ncdf <- helios::example_pop_china_ncdf
+#' }
+"example_pop_china_ncdf"
+
+#.................................
+# Population CSV Example Data
+#.................................
+#' example_pop_usa_csv
+#'
+#' @source .inst/extras/population_conus_ssp2_2020wrf_wgs84.csv
+#' @format string
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_pop_usa_csv <- helios::example_pop_usa_csv
+#' }
+"example_pop_usa_csv"
 
 #.................................
 # Pre-processed Population Files
