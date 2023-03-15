@@ -38,6 +38,10 @@ reference:
   - mapUS52
   - noaa_hddcdd
   - segment_map_utc
+  - example_cmip6_china_ncdf
+  - example_wrf_usa_ncdf
+  - example_pop_china_ncdf
+  - example_pop_usa_csv
 - title: "Package File"
 - contents:
   - helios

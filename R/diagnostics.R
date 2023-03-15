@@ -9,6 +9,7 @@
 #' @param name_append Default = "". Name to append to all filenames
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
+#' @importFrom grDevices colorRampPalette
 #' @export
 
 diagnostics <- function(hdcd = tibble::tibble(),
@@ -26,7 +27,7 @@ diagnostics <- function(hdcd = tibble::tibble(),
   if(T){
 
     NULL -> subRegion -> year -> segment -> value -> heatcool ->
-      month -> stateCode -> HDDCDD -> scenario -> scenario_hddcdd
+      month -> stateCode -> HDDCDD -> scenario -> scenario_hddcdd -> noaa
 
   }
 

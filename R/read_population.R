@@ -10,6 +10,9 @@
 
 read_population <- function(file = NULL) {
 
+  NULL -> ID -> region -> subRegion -> lat -> lon -> across -> RID -> x -> y ->
+    layer -> value
+
   if (!is.null(file)){
 
     # If isn't a dataframe check if file exists

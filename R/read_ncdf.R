@@ -17,6 +17,8 @@ read_ncdf <- function(ncdf = NULL,
                       var = NULL,
                       time_periods = NULL) {
 
+  NULL -> ID -> X1 -> x -> y -> across -> setNames
+
   if (!is.null(model)) {
 
     # Process ISIMIP NetCDF

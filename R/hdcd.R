@@ -43,7 +43,7 @@ hdcd <- function(ncdf = NULL,
       HDDCDD -> scenario -> scenario_hddcdd -> ID -> V3 -> day ->
       building.node.input -> gcam.consumer -> heatcool -> month -> nodeInput ->
       segment -> subRegion -> thermal.building.service.input -> value ->
-      x -> y -> year
+      x -> y -> year -> datetime -> region -> lat -> lon -> hour -> HDD -> CDD
 
     if(is.null(folder)) {
       folder <- paste0(getwd(), "/output")
