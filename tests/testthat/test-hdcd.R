@@ -1,7 +1,6 @@
 context("hdcd")
 library(helios); library(testthat); library(dplyr)
 
-system.file('extras', 'wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc', package = 'helios')
 
 #.......................
 # Prepare data for tests
@@ -72,9 +71,9 @@ test_that("monthly and annual HDD values are negative, CDD values are positive",
 #      save = F) -> test_hdcd
 
 # Test outputs hdcd_comb
-test_that("hdcd_comb works", {
-  #testthat::expect_true(nrow(test_hdcd$hdcd_comb)>1)
-  testthat::expect_true(1==1)
-})
+# test_that("hdcd_comb works", {
+#   #testthat::expect_true(nrow(test_hdcd$hdcd_comb)>1)
+#   testthat::expect_true(1==1)
+# })
 
 
