@@ -2,6 +2,7 @@ pandoc: 2.7.3
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  vignette_helios: vignette_helios.html
-last_built: 2023-03-16T00:02Z
+  vignette_gcam-regions: vignette_gcam-regions.html
+  vignette_gcam-usa: vignette_gcam-usa.html
+last_built: 2023-03-16T23:44Z
 

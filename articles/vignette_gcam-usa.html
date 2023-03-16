@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>User Guide • helios</title>
+<title>GCAM-USA • helios</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="User Guide">
+<script src="../pkgdown.js"></script><meta property="og:title" content="GCAM-USA">
 <meta property="og:description" content="helios">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -45,12 +45,22 @@
      
   </a>
 </li>
-<li>
-  <a href="../articles/vignette_helios.html">
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <span class="fas fa-book"></span>
      
-    Guide
+    Guides
+     
+    <span class="caret"></span>
   </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/vignette_gcam-usa.html">GCAM-USA</a>
+    </li>
+    <li>
+      <a href="../articles/vignette_gcam-regions.html">GCAM-Regions</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../reference/index.html">
@@ -87,14 +97,14 @@
 
       
 
-      </header><script src="vignette_helios_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="vignette_gcam-usa_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>User Guide</h1>
+      <h1 data-toc-skip>GCAM-USA</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/JGCRI/helios/blob/HEAD/vignettes/vignette_helios.Rmd" class="external-link"><code>vignettes/vignette_helios.Rmd</code></a></small>
-      <div class="hidden name"><code>vignette_helios.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/JGCRI/helios/blob/HEAD/vignettes/vignette_gcam-usa.Rmd" class="external-link"><code>vignettes/vignette_gcam-usa.Rmd</code></a></small>
+      <div class="hidden name"><code>vignette_gcam-usa.Rmd</code></div>
 
     </div>
 
@@ -109,7 +119,7 @@
 <!-------------------------->
 <p align="center">
 <img src="vignetteFigs/divider.png"></p>
-<p><code>helios</code> is an R package that calculates heating and cooling degrees based on high temporal and spatial resolution of climate data (hourly and 12km resolution) and population data (yearly and 12km resolution). Currently, <code>helios</code> only supports climate data over CONUS from WRF or those with the same format. Data are available on NERSC if users have access. <a href="#table1">Table 1</a> shows more details on the climate and population data supported by <code>helios</code>.</p>
+<p><code>helios</code> is an R package that calculates heating and cooling degrees based on high temporal and spatial resolution of climate data (hourly and 12km resolution) and population data (yearly and 12km resolution). In this tutorial, we introduce how to use <code>helios</code> to support GCAM-USA, where we use climate data over CONUS from WRF or those with the same format. Data are available on NERSC if users have access. <a href="#table1">Table 1</a> shows more details on the climate and population data supported by <code>helios</code>.</p>
 <p><br></p>
 <p><a name="table1"></a> <strong>Table 1:</strong> Description of required input data for CONUS.</p>
 <table class="table">
@@ -168,15 +178,12 @@
 <!-------------------------->
 </div>
 <div class="section level2">
-<h2 id="structure">Structure<a class="anchor" aria-label="anchor" href="#structure"></a>
+<h2 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
 </h2>
 <!-------------------------->
 <!-------------------------->
 <p align="center">
 <img src="vignetteFigs/divider.png"></p>
-<div class="section level3">
-<h3 id="workflow">Workflow<a class="anchor" aria-label="anchor" href="#workflow"></a>
-</h3>
 <p><code>helios</code> includes 6 major steps in its workflow (<a href="#figure1">Figure 1</a>),</p>
 <ul>
 <li>Step 1: Process climate NetCDF.</li>
@@ -195,10 +202,14 @@
 <strong>Figure 1:</strong> Helios Workflow.
 </p>
 <p><br></p>
+<!-------------------------->
+<!-------------------------->
 </div>
-<div class="section level3">
-<h3 id="method">Method<a class="anchor" aria-label="anchor" href="#method"></a>
-</h3>
+<div class="section level2">
+<h2 id="method">Method<a class="anchor" aria-label="anchor" href="#method"></a>
+</h2>
+<!-------------------------->
+<!-------------------------->
 <p><code>helios</code> calculates different units of heating and cooling degrees for different temporal scale. <a href="#table2">Table 2</a> shows more details of the method</p>
 <p><a name="table2"></a> <strong>Table 2:</strong> Methods for calculating heating and cooling degrees at different temporal scales.</p>
 <table class="table">
@@ -234,7 +245,6 @@
 <!-------------------------->
 <!-------------------------->
 </div>
-</div>
 <div class="section level2">
 <h2 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
 </h2>
@@ -242,20 +252,37 @@
 <!-------------------------->
 <p align="center">
 <img src="vignetteFigs/divider.png"></p>
-<p><code>helios</code> has many functionalities under development. Currently, the usage of <code>helios</code> are limited to spatial and temporal resolution designed for GCAM-USA. Here is an example using one WRF climate input data (hourly data from 2020-01-01 01:00:00 to 2020-01-08 00:00:00) and population data.</p>
+<p>Due to large size of the climate data (netCDF file), <code>helios</code> provide example dataset for demonstration purpose.</p>
+<ul>
+<li>NetCDF File: <code><a href="../reference/example_wrf_usa_ncdf.html">helios::example_wrf_usa_ncdf</a></code> subsets 121 grid cells within USA from the WRF hourly data. Data time ranges from 2020-01-01 01:00:00 to 2020-01-08 00:00:00.</li>
+<li>CSV File: <code><a href="../reference/example_pop_usa_csv.html">helios::example_pop_usa_csv</a></code> is population for 2020, which is geo-referenced to WRF grid cells.</li>
+</ul>
+<p>The following example specifies the arguments for processing WRF dataset.</p>
+<ul>
+<li>
+<code>ncdf_var = 'T2'</code> specifies climate variable to extract from the netCDF, which is temperature in this case.</li>
+<li>
+<code>model = 'wrf'</code> specifies the model used to produce the climate forcing data, which is WRF model in this case.</li>
+<li>
+<code>spatial = 'states_us_49'</code> specifies we are only calculating the cooling and heating degrees within 49 states of USA. This will produce outputs that can be used for <code>GCAM-USA</code>. For tutorial of using <code>helios</code> for global 32 regions, please check out <a href="vignette_gcam-regions.html">GCAM-regions</a> tutorial page.</li>
+<li>
+<code>temporal = 2020</code> specifies the time period 2020 to include since the example data only covers 7 days in 2020.</li>
+</ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/helios" class="external-link">helios</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/hdcd.html">hdcd</a></span><span class="op">(</span>ncdf <span class="op">=</span> <span class="st">'path_to_wrf_data/wrfout_d01_2020-01-01_01%3A00%3A00.nc'</span>,</span>
-<span>                       spatial <span class="op">=</span> <span class="st">'gcamusa'</span>,</span>
-<span>                       temporal <span class="op">=</span> <span class="st">'gcamusa'</span>,</span>
-<span>                       population <span class="op">=</span> <span class="st">'path_to_pop_data/population_conus_total_ssp2_2020-2100_wrf_wgs84.csv'</span>,</span>
-<span>                       reference_temp_F <span class="op">=</span> <span class="fl">65</span>,</span>
-<span>                       folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/output"</span><span class="op">)</span>,</span>
-<span>                       diagnostics <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>                       xml <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>                       name_append <span class="op">=</span> <span class="st">""</span>,</span>
-<span>                       save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">hdcd_usa</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/hdcd.html">hdcd</a></span><span class="op">(</span>ncdf <span class="op">=</span> <span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_wrf_usa_ncdf.html">example_wrf_usa_ncdf</a></span>,</span>
+<span>                         ncdf_var <span class="op">=</span> <span class="st">'T2'</span>,</span>
+<span>                         model <span class="op">=</span> <span class="st">'wrf'</span>,</span>
+<span>                         population <span class="op">=</span> <span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_pop_usa_csv.html">example_pop_usa_csv</a></span>,</span>
+<span>                         spatial <span class="op">=</span> <span class="st">'states_us_49'</span>,</span>
+<span>                         temporal <span class="op">=</span> <span class="fl">2020</span>,</span>
+<span>                         reference_temp_F <span class="op">=</span> <span class="fl">65</span>,</span>
+<span>                         folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/output"</span><span class="op">)</span>,</span>
+<span>                         diagnostics <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                         xml <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                         name_append <span class="op">=</span> <span class="st">""</span>,</span>
+<span>                         save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p>The output is a list containing three tables. Please note the different units (degree-hours or degree-days) for different outputs.</p>
 <ul>
