@@ -1,37 +1,44 @@
 Package: helios
 Title: Process heating and cooling degrees for GCAM
 Version: 1.0.0
-Authors@R: c(person("Mengqi", "Zhao", email = "mengqi.zhao@pnnl.gov", role = c("aut", "cre"),
-		   comment = c(ORCID ="0000-0001-5385-2758")),
-		   person("Zarrar", "Khan", email = "zarrar.khan@pnnl.gov", role = c("aut"),
-		   comment = c(ORCID ="0000-0002-8147-8553")),
-		   person("Kalyn", "Dorheim", role = c("aut"), comment = c(ORCID="0000-0001-8093-8397")),
-		   person("Chris", "Vernon", role = c("aut"), comment = c(ORCID="0000-0002-3406-6214")))
-Description: Heating and Cooling Degrees based on High Resolution Climate Data.
+Authors@R: c(
+    person("Mengqi", "Zhao", , "mengqi.zhao@pnnl.gov", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-5385-2758")),
+    person("Zarrar", "Khan", , "zarrar.khan@pnnl.gov", role = "aut",
+           comment = c(ORCID = "0000-0002-8147-8553")),
+    person("Kalyn", "Dorheim", role = "aut",
+           comment = c(ORCID = "0000-0001-8093-8397")),
+    person("Chris", "Vernon", role = "aut",
+           comment = c(ORCID = "0000-0002-3406-6214"))
+  )
+Description: Heating and Cooling Degrees based on High Resolution Climate
+    Data.
+License: BSD_2_clause + file LICENSE
 URL: https://github.com/JGCRI/helios
 BugReports: https://github.com/JGCRI/helios/issues
-Depends: R (>= 2.10)
-License: BSD_2_clause + file LICENSE
+Depends: 
+    R (>= 2.10)
+Imports: 
+    data.table (>= 1.14.2),
+    dplyr (>= 1.0.10),
+    gcamdata (>= 5.1),
+    ggplot2 (>= 3.4.0),
+    knitr (>= 1.40),
+    lubridate (>= 1.8.0),
+    magrittr (>= 2.0.3),
+    ncdf4 (>= 1.21),
+    raster (>= 3.6.14),
+    RColorBrewer (>= 1.1.3),
+    snow (>= 0.4.4),
+    tibble (>= 3.1.8),
+    tidyr (>= 1.2.1)
+Suggests: 
+    rmarkdown (>= 2.16),
+    testthat (>= 3.1.4)
+VignetteBuilder: 
+    knitr
+Remotes: 
+    github::JGCRI/gcamdata
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
-Imports: 
-	ggplot2,
-	knitr,
-	RColorBrewer,
-	dplyr,
-	tidyr,
-	raster,
-	lubridate,
-	tibble,
-	ncdf4,
-	magrittr,
-	data.table,
-	gcamdata,
-	snow
-Suggests: 
-  rmarkdown,
-	testthat
-Remotes: 
-	github::JGCRI/gcamdata
-VignetteBuilder: knitr

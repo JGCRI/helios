@@ -6,10 +6,30 @@ library(helios); library(testthat); library(dplyr)
 # Prepare data for tests
 #.......................
 
-hdcd_usa <- helios::hdcd(ncdf = helios::example_wrf_usa_ncdf,
+# path to climate data example
+wrf_usa_ncdf <- system.file(
+  'extras',
+  'wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc',
+  package = 'helios')
+cmip6_china_ncdf <- system.file(
+  'extras',
+  'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc',
+  package = 'helios')
+
+# path to population data example
+pop_usa_csv <- system.file(
+  'extras',
+  'population_conus_ssp2_2020wrf_wgs84.csv',
+  package = 'helios')
+pop_china_ncdf <- system.file(
+  'extras',
+  'ssp1_2020_sub.nc',
+  package = 'helios')
+
+hdcd_usa <- helios::hdcd(ncdf = wrf_usa_ncdf,
                          ncdf_var = 'T2',
                          model = 'wrf',
-                         population = helios::example_pop_usa_csv,
+                         population = pop_usa_csv,
                          spatial = 'states_us_49',
                          temporal = 2020,
                          reference_temp_F = 65,
@@ -18,10 +38,10 @@ hdcd_usa <- helios::hdcd(ncdf = helios::example_wrf_usa_ncdf,
                          name_append = "",
                          save = F)
 
-hdcd_china <- helios::hdcd(ncdf = helios::example_cmip6_china_ncdf,
+hdcd_china <- helios::hdcd(ncdf = cmip6_china_ncdf,
                            ncdf_var = 'tas',
                            model = 'cmip',
-                           population = helios::example_pop_china_ncdf,
+                           population = pop_china_ncdf,
                            spatial = 'gcam_region_32',
                            temporal = 2020,
                            reference_temp_F = 65,
@@ -32,7 +52,9 @@ hdcd_china <- helios::hdcd(ncdf = helios::example_cmip6_china_ncdf,
 
 testthat::skip_on_cran(); testthat::skip_on_travis()
 
-# For WRF Test
+# ------------------------------------
+# Testing Outputs
+# ------------------------------------
 test_that("returns a list containing 3 elements", {
   testthat::expect_equal(length(hdcd_usa), 3)
   testthat::expect_equal(length(hdcd_china), 3)
@@ -56,7 +78,9 @@ test_that("monthly and annual HDD values are negative, CDD values are positive",
   testthat::expect_equal(all(hdcd_usa$hdcd_comb_annual$value[hdcd_usa$hdcd_comb_annual$HDDCDD == 'CDD'] >= 0), TRUE)
 })
 
-
+# ------------------------------------
+# Testing Errors
+# ------------------------------------
 
 # To do: Get smaller example to test
 # hdcd(ncdf = "example_ncdf_wrfout_d01_1979-01-01_00_00_00.nc",
