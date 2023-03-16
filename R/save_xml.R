@@ -33,23 +33,23 @@ save_xml <- function(hdcd = tibble::tibble(),
   #......................
 
   # Format to match GCAM output file L2441.HDDCDD_Fixed_rcp4p5_gcamusa.csv
-  if(nrow(hdcd)>0){
+  if(nrow(hdcd) > 0){
     hdcd_comb_xml <- hdcd %>%
       dplyr::mutate(value = abs(value)) %>%
-      dplyr::select(region=subRegion,
+      dplyr::select(region = subRegion,
                     gcam.consumer,
                     nodeInput,
                     building.node.input,
                     thermal.building.service.input,
                     year,
-                    degree.days=value)
+                    degree.days = value)
 
     # Save csv corresponding to xml
-    filename_i_xml_csv <- paste0(folder, "/", basename(gsub(".csv", "", filename)),name_append,"_xml.csv")
-    data.table::fwrite(hdcd_comb_xml, file=filename_i_xml_csv)
+    filename_i_xml_csv <- paste0(folder, "/", basename(gsub(".csv", "", filename)), name_append, "_xml.csv")
+    data.table::fwrite(hdcd_comb_xml, file = filename_i_xml_csv)
     print(paste0("File saved as : ", filename_i_xml_csv))
 
-    filename_i_xml <- paste0(folder, "/", basename(gsub(".csv", "", filename)),name_append,".xml")
+    filename_i_xml <- paste0(folder, "/", basename(gsub(".csv", "", filename)), name_append, ".xml")
 
     gcamdata::create_xml(filename_i_xml) %>%
       gcamdata::add_xml_data(hdcd_comb_xml, "HDDCDD")%>%

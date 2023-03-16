@@ -1,0 +1,43 @@
+---
+title: "GCAM-Regions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{GCAM-Regions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+<!-------------------------->
+<!-------------------------->
+# Input Data
+<!-------------------------->
+<!-------------------------->
+<p align="center"> <img src="vignetteFigs/divider.png"></p>
+
+
+
+<!-------------------------->
+<!-------------------------->
+# Workflow
+<!-------------------------->
+<!-------------------------->
+<p align="center"> <img src="vignetteFigs/divider.png"></p>
+
+
+
+<!-------------------------->
+<!-------------------------->
+# Method
+<!-------------------------->
+<!-------------------------->
+<p align="center"> <img src="vignetteFigs/divider.png"></p>
+
+
+
+<!-------------------------->
+<!-------------------------->
+# Examples
+<!-------------------------->
+<!-------------------------->
+<p align="center"> <img src="vignetteFigs/divider.png"></p>

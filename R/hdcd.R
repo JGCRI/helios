@@ -49,7 +49,7 @@ hdcd <- function(ncdf = NULL,
       folder <- paste0(getwd(), "/output")
     }
 
-    if (save | diagnostics) {
+    if (save | diagnostics | xml) {
       if (!dir.exists(folder)) {
         dir.create(folder)
       }
@@ -87,7 +87,7 @@ hdcd <- function(ncdf = NULL,
         #......................
         # Assign time_periods
         if (is.null(temporal)) {
-
+          message('Setting time periods to default 2020 to 2100 with 5 year interval.')
           time_periods <- seq(2020, 2100, by = 5)
 
         } else {
@@ -121,7 +121,7 @@ hdcd <- function(ncdf = NULL,
         if (model == 'wrf') {
 
           ncdf_pivot <- ncdf_grid %>%
-            tidyr::pivot_longer(cols = ncdf_times, names_to = 'datetime') %>%
+            tidyr::pivot_longer(cols = all_of(ncdf_times), names_to = 'datetime') %>%
             dplyr::mutate(datetime = as.POSIXct(datetime,
                                                 format = "%Y-%m-%d_%H:%M:%S",
                                                 tz = "UTC")) %>%
@@ -130,15 +130,11 @@ hdcd <- function(ncdf = NULL,
         } else if (model == 'cmip') {
 
           ncdf_pivot <- ncdf_grid %>%
-            tidyr::pivot_longer(cols = ncdf_times, names_to = 'datetime') %>%
+            tidyr::pivot_longer(cols = all_of(ncdf_times), names_to = 'datetime') %>%
             dplyr::mutate(datetime = as.POSIXct(datetime,
                                                 format = "%Y-%m-%d",
                                                 tz = "UTC")) %>%
             dplyr::mutate(year = as.character(lubridate::year(datetime)))
-
-        } else {
-
-          stop('Please select valid model. Options: wrf, cmip')
 
         }
 
@@ -187,6 +183,8 @@ hdcd <- function(ncdf = NULL,
             print(paste0("ncdf data years: ", as.character(years)))
             stop("Population data provided does not contain data for any of the years in the ncdf data.")
           }
+        } else {
+          stop('Please provide valide population file path.')
         }
 
         #......................

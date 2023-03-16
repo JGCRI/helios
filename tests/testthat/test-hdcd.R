@@ -1,60 +1,13 @@
-context("hdcd")
-library(helios); library(testthat); library(dplyr)
-
-
-#.......................
-# Prepare data for tests
-#.......................
-
-# path to climate data example
-wrf_usa_ncdf <- system.file(
-  'extras',
-  'wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc',
-  package = 'helios')
-cmip6_china_ncdf <- system.file(
-  'extras',
-  'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc',
-  package = 'helios')
-
-# path to population data example
-pop_usa_csv <- system.file(
-  'extras',
-  'population_conus_ssp2_2020wrf_wgs84.csv',
-  package = 'helios')
-pop_china_ncdf <- system.file(
-  'extras',
-  'ssp1_2020_sub.nc',
-  package = 'helios')
-
-hdcd_usa <- helios::hdcd(ncdf = wrf_usa_ncdf,
-                         ncdf_var = 'T2',
-                         model = 'wrf',
-                         population = pop_usa_csv,
-                         spatial = 'states_us_49',
-                         temporal = 2020,
-                         reference_temp_F = 65,
-                         diagnostics = F,
-                         xml = F,
-                         name_append = "",
-                         save = F)
-
-hdcd_china <- helios::hdcd(ncdf = cmip6_china_ncdf,
-                           ncdf_var = 'tas',
-                           model = 'cmip',
-                           population = pop_china_ncdf,
-                           spatial = 'gcam_region_32',
-                           temporal = 2020,
-                           reference_temp_F = 65,
-                           diagnostics = F,
-                           xml = F,
-                           name_append = "",
-                           save = F)
 
 testthat::skip_on_cran(); testthat::skip_on_travis()
 
 # ------------------------------------
-# Testing Outputs
+# Testing Outputs from Major Functions
 # ------------------------------------
+
+hdcd_usa <- run_hdcd_usa()
+hdcd_china <- run_hdcd_china()
+
 test_that("returns a list containing 3 elements", {
   testthat::expect_equal(length(hdcd_usa), 3)
   testthat::expect_equal(length(hdcd_china), 3)
@@ -71,7 +24,6 @@ test_that("segment, monthly, and annual output exists", {
 })
 
 test_that("monthly and annual HDD values are negative, CDD values are positive", {
-
   testthat::expect_equal(all(hdcd_usa$hdcd_comb_monthly$value[hdcd_usa$hdcd_comb_monthly$HDDCDD == 'HDD'] <= 0), TRUE)
   testthat::expect_equal(all(hdcd_usa$hdcd_comb_monthly$value[hdcd_usa$hdcd_comb_monthly$HDDCDD == 'CDD'] >= 0), TRUE)
   testthat::expect_equal(all(hdcd_usa$hdcd_comb_annual$value[hdcd_usa$hdcd_comb_annual$HDDCDD == 'HDD'] <= 0), TRUE)
@@ -79,25 +31,80 @@ test_that("monthly and annual HDD values are negative, CDD values are positive",
 })
 
 # ------------------------------------
-# Testing Errors
+# Testing Diagnostics
 # ------------------------------------
+run_hdcd_usa(diagnostics = T, xml = T)
 
-# To do: Get smaller example to test
-# hdcd(ncdf = "example_ncdf_wrfout_d01_1979-01-01_00_00_00.nc",
-#      spatial = "gcamusa",
-#      temporal = NULL,
-#      population = NULL,
-#      reference_temp_F = 65,
-#      #folder = folder_i,
-#      diagnostics= F,
-#      xml= F,
-#      name_append = "",
-#      save = F) -> test_hdcd
+test_that("dianostics produces outputs", {
+  testthat::expect_snapshot_file(
+    testthat::test_path('output', 'diagnostics', 'hdcd_wrf_to_gcam_2020_2020_2020.png'))
+  testthat::expect_snapshot_file(
+    testthat::test_path('output', 'diagnostics', 'hdcd_wrf_to_gcam_2020_2020_2020-2020.csv'))
+  testthat::expect_snapshot_file(
+    testthat::test_path('output', 'diagnostics', 'hdcd_wrf_to_gcam_2020_2020_allYears_gradient_fixedScale_.png'))
+  testthat::expect_snapshot_file(
+    testthat::test_path('output', 'diagnostics', 'hdcd_wrf_to_gcam_2020_2020_allYears_gradient_freeScale_.png'))
+  testthat::expect_snapshot_file(
+    testthat::test_path('output', 'diagnostics', 'monthly_ncdf_2020_noaa_2020.png'))
+  testthat::expect_snapshot_file(
+    testthat::test_path('output', 'diagnostics', 'monthly_ncdf_2020-2020_noaa_2000-2021.csv'))
+  testthat::expect_snapshot_file(
+    testthat::test_path('output', 'diagnostics', 'monthly_ncdf_AllYears_noaa_2021.png'))
+})
 
-# Test outputs hdcd_comb
-# test_that("hdcd_comb works", {
-#   #testthat::expect_true(nrow(test_hdcd$hdcd_comb)>1)
-#   testthat::expect_true(1==1)
-# })
+
+# ------------------------------------
+# Testing Save XML
+# ------------------------------------
+test_that("save xml produces xml outputs", {
+  testthat::expect_snapshot_file(
+    testthat::test_path('output', 'hdcd_wrf_to_gcam_2020_2020.xml'))
+  testthat::expect_snapshot_file(
+    testthat::test_path('output', 'hdcd_wrf_to_gcam_2020_2020_xml.csv'))
+})
 
 
+# ------------------------------------
+# Testing Conditions
+# ------------------------------------
+test_that('if temporal is NULL, set as 2020 - 2100', {
+  testthat::expect_message(
+    run_hdcd_usa(temporal = NULL),
+    'Setting time periods to default 2020 to 2100 with 5 year interval.')
+})
+
+# ------------------------------------
+# Testing Error Messages
+# ------------------------------------
+test_that('wrong climate variable name gives error', {
+  testthat::expect_error(run_hdcd_usa(ncdf_var = 'var'), class = 'error')
+})
+
+
+test_that('wrong climate model name gives error', {
+  testthat::expect_error(run_hdcd_usa(model = 'model'), class = 'error')
+})
+
+test_that('fail to provide model name gives error', {
+  testthat::expect_error(run_hdcd_usa(model = NULL), class = 'error')
+})
+
+test_that('No population input format gives error', {
+  testthat::expect_error(run_hdcd_usa(population = NULL), class = 'error')
+})
+
+test_that('invalid population input type gives error', {
+  testthat::expect_error(run_hdcd_usa(population = pop_test), class = 'error')
+})
+
+test_that('population input that does not exist gives error', {
+  testthat::expect_error(run_hdcd_usa(population = 'invalid/path/population.csv'), class = 'error')
+})
+
+test_that('invalid spatial input type gives error', {
+  testthat::expect_error(run_hdcd_usa(spatial = 'gcam'), class = 'error')
+})
+
+test_that('invalid temporal input type gives error', {
+  testthat::expect_error(run_hdcd_usa(temporal = '2020'), class = 'error')
+})

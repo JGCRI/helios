@@ -297,7 +297,7 @@ diagnostics <- function(hdcd = tibble::tibble(),
                                       group = interaction(scenario, year, HDDCDD),
                                       color = interaction(year, HDDCDD))) +
       ggplot2::geom_line(ggplot2::aes(x = month, y = noaa, group = HDDCDD),
-                         color = 'black', size = 1.2, linetype = 'dashed') +
+                         color = 'black', linewidth = 1.2, linetype = 'dashed') +
       ggplot2::facet_wrap(subRegion ~ ., scales = "free_y") +
       ggplot2::ggtitle(paste0("NCDF (all years) VS", " NOAA (", noaa_year_latest, ')')) +
       ggplot2::ylab('Monthly Degree-Hours') +

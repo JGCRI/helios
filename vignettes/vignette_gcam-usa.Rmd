@@ -1,8 +1,8 @@
 ---
-title: "User Guide"
+title: "GCAM-USA"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{User Guide}
+  %\VignetteIndexEntry{GCAM-USA}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,7 +15,7 @@ vignette: >
 <!-------------------------->
 <p align="center"> <img src="vignetteFigs/divider.png"></p>
 
-`helios` is an R package that calculates heating and cooling degrees based on high temporal and spatial resolution of climate data (hourly and 12km resolution) and population data (yearly and 12km resolution). Currently, `helios` only supports climate data over CONUS from WRF or those with the same format. Data are available on NERSC if users have access. [Table 1](#table1) shows more details on the climate and population data supported by `helios`.
+`helios` is an R package that calculates heating and cooling degrees based on high temporal and spatial resolution of climate data (hourly and 12km resolution) and population data (yearly and 12km resolution). In this tutorial, we introduce how to use `helios` to support GCAM-USA, where we use climate data over CONUS from WRF or those with the same format. Data are available on NERSC if users have access. [Table 1](#table1) shows more details on the climate and population data supported by `helios`.
 
 <br />
 
@@ -38,12 +38,11 @@ Please note that `helios` can process multiple climate NetCDF files with one pop
 
 <!-------------------------->
 <!-------------------------->
-# Structure
+# Workflow
 <!-------------------------->
 <!-------------------------->
 <p align="center"> <img src="vignetteFigs/divider.png"></p>
 
-## Workflow
 
 `helios` includes 6 major steps in its workflow ([Figure 1](#figure1)),
 
@@ -64,7 +63,11 @@ Please note that `helios` can process multiple climate NetCDF files with one pop
 
 <br />
 
-## Method
+<!-------------------------->
+<!-------------------------->
+# Method
+<!-------------------------->
+<!-------------------------->
 
 `helios` calculates different units of heating and cooling degrees for different temporal scale. [Table 2](#table2) shows more details of the method
 
@@ -86,21 +89,34 @@ Please note that `helios` can process multiple climate NetCDF files with one pop
 <!-------------------------->
 <p align="center"> <img src="vignetteFigs/divider.png"></p>
 
-`helios` has many functionalities under development. Currently, the usage of `helios` are limited to spatial and temporal resolution designed for GCAM-USA. Here is an example using one WRF climate input data (hourly data from 2020-01-01 01:00:00 to 2020-01-08 00:00:00) and population data.
+Due to large size of the climate data (netCDF file), `helios` provide example dataset for demonstration purpose.
+
+* NetCDF File: `helios::example_wrf_usa_ncdf` subsets 121 grid cells within USA from the WRF hourly data. Data time ranges from 2020-01-01 01:00:00 to 2020-01-08 00:00:00.
+* CSV File: `helios::example_pop_usa_csv` is population for 2020, which is geo-referenced to WRF grid cells.
+
+The following example specifies the arguments for processing WRF dataset.
+
+* `ncdf_var = 'T2'` specifies climate variable to extract from the netCDF, which is temperature in this case.
+* `model = 'wrf'` specifies the model used to produce the climate forcing data, which is WRF model in this case.
+* `spatial = 'states_us_49'` specifies we are only calculating the cooling and heating degrees within 49 states of USA. This will produce outputs that can be used for `GCAM-USA`. For tutorial of using `helios` for global 32 regions, please check out [GCAM-regions](vignette_gcam-regions.html) tutorial page.
+* `temporal = 2020` specifies the time period 2020 to include since the example data only covers 7 days in 2020.
+
 
 ```{r eval=FALSE}
 library(helios)
 
-output <- helios::hdcd(ncdf = 'path_to_wrf_data/wrfout_d01_2020-01-01_01%3A00%3A00.nc',
-                       spatial = 'gcamusa',
-                       temporal = 'gcamusa',
-                       population = 'path_to_pop_data/population_conus_total_ssp2_2020-2100_wrf_wgs84.csv',
-                       reference_temp_F = 65,
-                       folder = paste0(getwd(), "/output"),
-                       diagnostics = F,
-                       xml = F,
-                       name_append = "",
-                       save = F)
+hdcd_usa <- helios::hdcd(ncdf = helios::example_wrf_usa_ncdf,
+                         ncdf_var = 'T2',
+                         model = 'wrf',
+                         population = helios::example_pop_usa_csv,
+                         spatial = 'states_us_49',
+                         temporal = 2020,
+                         reference_temp_F = 65,
+                         folder = paste0(getwd(), "/output"),
+                         diagnostics = F,
+                         xml = F,
+                         name_append = "",
+                         save = F)
 ```
 
 <br />

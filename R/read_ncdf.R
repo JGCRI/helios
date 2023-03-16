@@ -31,7 +31,7 @@ read_ncdf <- function(ncdf = NULL,
       var_names <- attributes(ncdf_in$var)$names
 
       if(!any(var %in% var_names)){
-        stop('Variable name is not valid. Please provide valid "var" name.')
+        stop('Climate variable name is not valid. Please provide valid ncdf_var name.')
       }
 
       # get lat lon and var
@@ -94,6 +94,12 @@ read_ncdf <- function(ncdf = NULL,
     else if (model == 'wrf') {
 
       ncdf_in <- ncdf4::nc_open(ncdf)
+      var_names <- attributes(ncdf_in$var)$names
+
+      if(!any(var %in% var_names)){
+        stop('Climate variable name is not valid. Please provide valid ncdf_var name.')
+      }
+
       ncdf_brick <- raster::brick(ncdf, varname = var, ncdf = TRUE)
 
       # Index of Times available
@@ -153,7 +159,7 @@ read_ncdf <- function(ncdf = NULL,
     }# end of wrf netcdf processing
 
     else{
-      stop('The model name is invalid. Please provide a valid model name.')
+      stop('The model name is invalid. Please provide a valid model name. Options: wrf, cmip')
     }
 
     return(ncdf_grid)

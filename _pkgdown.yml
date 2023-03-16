@@ -9,9 +9,13 @@ navbar:
   left:
     - icon: fa-home
       href: index.html
-    - text: "Guide"
+    - text: "Guides"
       icon: fas fa-book
-      href: articles/vignette_helios.html
+      menu:
+      - text: GCAM-USA
+        href: articles/vignette_gcam-usa.html
+      - text: GCAM-Regions
+        href: articles/vignette_gcam-regions.html
     - icon: fas fa-code-branch
       text: "Reference"
       href: reference/index.html

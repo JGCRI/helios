@@ -1,0 +1,9 @@
+subRegion,year,segment,value,heatcool
+CA,2020,Dec_day,0.0114599332119931,heat
+CA,2020,Dec_night,0.0414881513580531,heat
+CA,2020,Jan_day,0.339384371820925,heat
+CA,2020,Jan_night,0.625636006883051,heat
+NV,2020,Dec_day,1.01707417632374,heat
+NV,2020,Dec_night,3.79331853848332,heat
+NV,2020,Jan_day,30.8660315109663,heat
+NV,2020,Jan_night,57.7348272630291,heat

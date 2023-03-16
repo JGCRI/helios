@@ -1,0 +1,17 @@
+region,gcam.consumer,nodeInput,building.node.input,thermal.building.service.input,year,degree.days
+CA,comm,comm,comm_building,comm heating Dec_day,2020,0.0114599332119931
+CA,resid,resid,resid_building,resid heating Dec_day,2020,0.0114599332119931
+CA,comm,comm,comm_building,comm heating Dec_night,2020,0.0414881513580531
+CA,resid,resid,resid_building,resid heating Dec_night,2020,0.0414881513580531
+CA,comm,comm,comm_building,comm heating Jan_day,2020,0.339384371820925
+CA,resid,resid,resid_building,resid heating Jan_day,2020,0.339384371820925
+CA,comm,comm,comm_building,comm heating Jan_night,2020,0.625636006883051
+CA,resid,resid,resid_building,resid heating Jan_night,2020,0.625636006883051
+NV,comm,comm,comm_building,comm heating Dec_day,2020,1.01707417632374
+NV,resid,resid,resid_building,resid heating Dec_day,2020,1.01707417632374
+NV,comm,comm,comm_building,comm heating Dec_night,2020,3.79331853848332
+NV,resid,resid,resid_building,resid heating Dec_night,2020,3.79331853848332
+NV,comm,comm,comm_building,comm heating Jan_day,2020,30.8660315109663
+NV,resid,resid,resid_building,resid heating Jan_day,2020,30.8660315109663
+NV,comm,comm,comm_building,comm heating Jan_night,2020,57.7348272630291
+NV,resid,resid,resid_building,resid heating Jan_night,2020,57.7348272630291

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?><scenario>
+    <world>
+        <region name="CA">
+            <gcam-consumer name="comm">
+                <nodeInput name="comm">
+                    <building-node-input name="comm_building">
+                        <thermal-building-service-input name="comm heating Dec_day">
+                            <degree-days year="2020">0.0114599332119931</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="comm heating Dec_night">
+                            <degree-days year="2020">0.0414881513580531</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="comm heating Jan_day">
+                            <degree-days year="2020">0.339384371820925</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="comm heating Jan_night">
+                            <degree-days year="2020">0.625636006883051</degree-days>
+                        </thermal-building-service-input>
+                    </building-node-input>
+                </nodeInput>
+            </gcam-consumer>
+            <gcam-consumer name="resid">
+                <nodeInput name="resid">
+                    <building-node-input name="resid_building">
+                        <thermal-building-service-input name="resid heating Dec_day">
+                            <degree-days year="2020">0.0114599332119931</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="resid heating Dec_night">
+                            <degree-days year="2020">0.0414881513580531</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="resid heating Jan_day">
+                            <degree-days year="2020">0.339384371820925</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="resid heating Jan_night">
+                            <degree-days year="2020">0.625636006883051</degree-days>
+                        </thermal-building-service-input>
+                    </building-node-input>
+                </nodeInput>
+            </gcam-consumer>
+        </region>
+        <region name="NV">
+            <gcam-consumer name="comm">
+                <nodeInput name="comm">
+                    <building-node-input name="comm_building">
+                        <thermal-building-service-input name="comm heating Dec_day">
+                            <degree-days year="2020">1.01707417632374</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="comm heating Dec_night">
+                            <degree-days year="2020">3.79331853848332</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="comm heating Jan_day">
+                            <degree-days year="2020">30.8660315109663</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="comm heating Jan_night">
+                            <degree-days year="2020">57.7348272630291</degree-days>
+                        </thermal-building-service-input>
+                    </building-node-input>
+                </nodeInput>
+            </gcam-consumer>
+            <gcam-consumer name="resid">
+                <nodeInput name="resid">
+                    <building-node-input name="resid_building">
+                        <thermal-building-service-input name="resid heating Dec_day">
+                            <degree-days year="2020">1.01707417632374</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="resid heating Dec_night">
+                            <degree-days year="2020">3.79331853848332</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="resid heating Jan_day">
+                            <degree-days year="2020">30.8660315109663</degree-days>
+                        </thermal-building-service-input>
+                        <thermal-building-service-input name="resid heating Jan_night">
+                            <degree-days year="2020">57.7348272630291</degree-days>
+                        </thermal-building-service-input>
+                    </building-node-input>
+                </nodeInput>
+            </gcam-consumer>
+        </region>
+    </world>
+</scenario>
