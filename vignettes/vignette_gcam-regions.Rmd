@@ -17,6 +17,23 @@ vignette: >
 
 In this tutorial, we introduce how to use `helios` to calculate heating degree-days (HDD) and cooling degree-days (CDD) for the whole globe. The annual HDD and CDD with global coverage can be used in GCAM with 32 regions. `helios` currently supports climate data that has same format with ISIMIP statistical downscaling CMIP climate data. [Table 1](#table1) shows more details on the climate and population data supported by `helios` for GCAM-Regions.
 
+<br />
+
+<a name="table1"></a>
+**Table 1:** Description of required input data for GCAM 32 regions.
+
+| Specification | CMIP Climate Data | Population Data |
+|---|---|---|
+| Input Format | NetCDF File | NetCDF File |
+| Spatial Resolution | 0.5 degree | No Limit |
+| Temporal Resolution | Daily | Annual |
+| Required Variable | Temperature T2 (K) | Population (Capita) |
+| Available Download | [ISIMIP](https://data.isimip.org/) | [Jones and O'Neill, 2020](https://sedac.ciesin.columbia.edu/data/set/popdynamics-1-8th-pop-base-year-projection-ssp-2000-2100-rev01) |
+
+Please note that `helios` can process multiple climate NetCDF files with one population CSV file for each run. However, parallelizing grouped climate data can improve calculation efficiency for large dataset.
+
+<br />
+
 <!-------------------------->
 <!-------------------------->
 # Workflow

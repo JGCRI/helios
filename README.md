@@ -70,8 +70,8 @@ brew install gdal
 
 `helios` is an R package that calculates heating and cooling degrees using high temporal and spatial resolution of climate data and population data. `helios` currently supports WRF data and ISIMIP-CMIP data, or same format with any of them. For more details:
 
-* [GCAM-Regions Tutorial](vignettes/vignettes_gcam-regions.html) introduces how to use `helios` to calculate heating and cooling degree-days for 32 global regions in GCAM.
-* [GCAM-USA Tutorial](vignettes/vignettes_gcam-usa.html) introduces how to use `helios` to calculate heating and cooling degree-hours for CONUS in GCAM-USA.
+* [GCAM-Regions Tutorial](vignettes_gcam-regions.html) introduces how to use `helios` to calculate heating and cooling degree-days for 32 global regions in GCAM.
+* [GCAM-USA Tutorial](vignettes_gcam-usa.html) introduces how to use `helios` to calculate heating and cooling degree-hours for CONUS in GCAM-USA.
 
 <!-- ------------------------>
 <!-- ------------------------>

@@ -121,7 +121,7 @@ hdcd <- function(ncdf = NULL,
         if (model == 'wrf') {
 
           ncdf_pivot <- ncdf_grid %>%
-            tidyr::pivot_longer(cols = all_of(ncdf_times), names_to = 'datetime') %>%
+            tidyr::pivot_longer(cols = dplyr::all_of(ncdf_times), names_to = 'datetime') %>%
             dplyr::mutate(datetime = as.POSIXct(datetime,
                                                 format = "%Y-%m-%d_%H:%M:%S",
                                                 tz = "UTC")) %>%
@@ -130,7 +130,7 @@ hdcd <- function(ncdf = NULL,
         } else if (model == 'cmip') {
 
           ncdf_pivot <- ncdf_grid %>%
-            tidyr::pivot_longer(cols = all_of(ncdf_times), names_to = 'datetime') %>%
+            tidyr::pivot_longer(cols = dplyr::all_of(ncdf_times), names_to = 'datetime') %>%
             dplyr::mutate(datetime = as.POSIXct(datetime,
                                                 format = "%Y-%m-%d",
                                                 tz = "UTC")) %>%
