@@ -120,6 +120,44 @@
 <p align="center">
 <img src="vignetteFigs/divider.png"></p>
 <p>In this tutorial, we introduce how to use <code>helios</code> to calculate heating degree-days (HDD) and cooling degree-days (CDD) for the whole globe. The annual HDD and CDD with global coverage can be used in GCAM with 32 regions. <code>helios</code> currently supports climate data that has same format with ISIMIP statistical downscaling CMIP climate data. <a href="#table1">Table 1</a> shows more details on the climate and population data supported by <code>helios</code> for GCAM-Regions.</p>
+<p><br></p>
+<p><a name="table1"></a> <strong>Table 1:</strong> Description of required input data for GCAM 32 regions.</p>
+<table class="table">
+<thead><tr class="header">
+<th>Specification</th>
+<th>CMIP Climate Data</th>
+<th>Population Data</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>Input Format</td>
+<td>NetCDF File</td>
+<td>NetCDF File</td>
+</tr>
+<tr class="even">
+<td>Spatial Resolution</td>
+<td>0.5 degree</td>
+<td>No Limit</td>
+</tr>
+<tr class="odd">
+<td>Temporal Resolution</td>
+<td>Daily</td>
+<td>Annual</td>
+</tr>
+<tr class="even">
+<td>Required Variable</td>
+<td>Temperature T2 (K)</td>
+<td>Population (Capita)</td>
+</tr>
+<tr class="odd">
+<td>Available Download</td>
+<td><a href="https://data.isimip.org/" class="external-link">ISIMIP</a></td>
+<td><a href="https://sedac.ciesin.columbia.edu/data/set/popdynamics-1-8th-pop-base-year-projection-ssp-2000-2100-rev01" class="external-link">Jones and O’Neill, 2020</a></td>
+</tr>
+</tbody>
+</table>
+<p>Please note that <code>helios</code> can process multiple climate NetCDF files with one population CSV file for each run. However, parallelizing grouped climate data can improve calculation efficiency for large dataset.</p>
+<p><br></p>
 <!-------------------------->
 <!-------------------------->
 </div>
