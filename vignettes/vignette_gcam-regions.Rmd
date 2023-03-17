@@ -15,7 +15,7 @@ vignette: >
 <!-------------------------->
 <p align="center"> <img src="vignetteFigs/divider.png"></p>
 
-
+In this tutorial, we introduce how to use `helios` to calculate heating degree-days (HDD) and cooling degree-days (CDD) for the whole globe. The annual HDD and CDD with global coverage can be used in GCAM with 32 regions. `helios` currently supports climate data that has same format with ISIMIP statistical downscaling CMIP climate data. [Table 1](#table1) shows more details on the climate and population data supported by `helios` for GCAM-Regions.
 
 <!-------------------------->
 <!-------------------------->
