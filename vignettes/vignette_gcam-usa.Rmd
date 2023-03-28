@@ -64,7 +64,7 @@ Please note that `helios` can process multiple climate NetCDF files with one pop
 
 <br />
 
-<p align="center"> <img src="vignetteFigs/helios_usa_workflow.jpg"></p>
+<p align="center"> <img src="vignetteFigs/helios_gcam-usa_workflow.jpg"></p>
 <a name="figure1"></a>
 <p align="left" style="font-size:14px;"> **Figure 1:** Helios workflow for CONUS heating and cooling degree-days for GCAM-USA. </p>
 
