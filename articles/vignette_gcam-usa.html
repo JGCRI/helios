@@ -313,8 +313,21 @@
 <span>                         name_append <span class="op">=</span> <span class="st">""</span>,</span>
 <span>                         save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
-<span><span class="co">## [1] "Processing files provided: C:/WorkSpace/github/helios/inst/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
-<span><span class="co">## [1] "Skipping hdcd for file which does not exist: C:/WorkSpace/github/helios/inst/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
+<span><span class="co">## [1] "........................................."</span></span>
+<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named west_east BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named south_north BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named west_east BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named south_north BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named west_east BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named south_north BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "Starting population weighting ..."</span></span>
+<span><span class="co">## [1] "Completed population weighting."</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
 <span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
 <p><br></p>
 <p>The output is a list containing three tables. Please note the different units (degree-hours or degree-days) for different outputs.</p>
@@ -328,19 +341,304 @@
 <span><span class="va">hdcd_segment</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">hdcd_segment</span>, </span>
 <span>             caption <span class="op">=</span> <span class="st">'Annual Heating and Cooling Degree-hours by Building Thermal Service'</span><span class="op">)</span></span></code></pre></div>
-<p>Table: Annual Heating and Cooling Degree-hours by Building Thermal Service</p>
+<table style="width:100%;" class="table">
+<caption>Annual Heating and Cooling Degree-hours by Building Thermal Service</caption>
+<colgroup>
+<col width="5%">
+<col width="8%">
+<col width="4%">
+<col width="8%">
+<col width="11%">
+<col width="8%">
+<col width="16%">
+<col width="26%">
+<col width="10%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">region</th>
+<th align="left">subRegion</th>
+<th align="left">year</th>
+<th align="left">segment</th>
+<th align="left">gcam.consumer</th>
+<th align="left">nodeInput</th>
+<th align="left">building.node.input</th>
+<th align="left">thermal.building.service.input</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">Dec_day</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm heating Dec_day</td>
+<td align="right">-0.0114599</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">Dec_day</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid heating Dec_day</td>
+<td align="right">-0.0114599</td>
+</tr>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">Dec_night</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm heating Dec_night</td>
+<td align="right">-0.0414882</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">Dec_night</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid heating Dec_night</td>
+<td align="right">-0.0414882</td>
+</tr>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">Jan_day</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm heating Jan_day</td>
+<td align="right">-0.3393844</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">Jan_day</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid heating Jan_day</td>
+<td align="right">-0.3393844</td>
+</tr>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">Jan_night</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm heating Jan_night</td>
+<td align="right">-0.6256360</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">Jan_night</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid heating Jan_night</td>
+<td align="right">-0.6256360</td>
+</tr>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">Dec_day</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm heating Dec_day</td>
+<td align="right">-1.0170742</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">Dec_day</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid heating Dec_day</td>
+<td align="right">-1.0170742</td>
+</tr>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">Dec_night</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm heating Dec_night</td>
+<td align="right">-3.7933185</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">Dec_night</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid heating Dec_night</td>
+<td align="right">-3.7933185</td>
+</tr>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">Jan_day</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm heating Jan_day</td>
+<td align="right">-30.8660315</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">Jan_day</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid heating Jan_day</td>
+<td align="right">-30.8660315</td>
+</tr>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">Jan_night</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm heating Jan_night</td>
+<td align="right">-57.7348273</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">Jan_night</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid heating Jan_night</td>
+<td align="right">-57.7348273</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at monthly scale for CONUS</span></span>
 <span><span class="va">hdcd_monthly</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_monthly</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">hdcd_monthly</span>, </span>
 <span>             caption <span class="op">=</span> <span class="st">'Monthly Heating and Cooling Degree-days'</span><span class="op">)</span></span></code></pre></div>
-<p>Table: Monthly Heating and Cooling Degree-days</p>
+<table class="table">
+<caption>Monthly Heating and Cooling Degree-days</caption>
+<thead><tr class="header">
+<th align="left">region</th>
+<th align="left">subRegion</th>
+<th align="left">year</th>
+<th align="left">month</th>
+<th align="left">HDDCDD</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">01</td>
+<td align="left">CDD</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">01</td>
+<td align="left">HDD</td>
+<td align="right">-0.0483388</td>
+</tr>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">01</td>
+<td align="left">CDD</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">01</td>
+<td align="left">HDD</td>
+<td align="right">-4.3027594</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at annual scale for CONUS</span></span>
 <span><span class="va">hdcd_annual</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_annual</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">hdcd_annual</span>, </span>
 <span>             caption <span class="op">=</span> <span class="st">'Annual Heating and Cooling Degree-days'</span><span class="op">)</span></span></code></pre></div>
-<p>Table: Annual Heating and Cooling Degree-days</p>
+<table class="table">
+<caption>Annual Heating and Cooling Degree-days</caption>
+<thead><tr class="header">
+<th align="left">region</th>
+<th align="left">subRegion</th>
+<th align="left">year</th>
+<th align="left">HDDCDD</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">CDD</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">CA</td>
+<td align="left">2020</td>
+<td align="left">HDD</td>
+<td align="right">-0.0483388</td>
+</tr>
+<tr class="odd">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">CDD</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">USA</td>
+<td align="left">NV</td>
+<td align="left">2020</td>
+<td align="left">HDD</td>
+<td align="right">-4.3027594</td>
+</tr>
+</tbody>
+</table>
 <p><br></p>
 </div>
 <div class="section level3">

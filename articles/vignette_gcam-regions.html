@@ -302,8 +302,12 @@
 <span>                           name_append <span class="op">=</span> <span class="st">""</span>,</span>
 <span>                           save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
-<span><span class="co">## [1] "Processing files provided: C:/WorkSpace/github/helios/inst/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
-<span><span class="co">## [1] "Skipping hdcd for file which does not exist: C:/WorkSpace/github/helios/inst/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "........................................."</span></span>
+<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Starting population weighting ..."</span></span>
+<span><span class="co">## [1] "Completed population weighting."</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
 <span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
 <p><br></p>
 <p>The output is a list containing three tables. All outputs are in degree-days.</p>
@@ -317,19 +321,280 @@
 <span><span class="va">hdcd_bldg</span> <span class="op">&lt;-</span> <span class="va">hdcd_china</span><span class="op">$</span><span class="va">hdcd_comb</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">hdcd_bldg</span>, </span>
 <span>             caption <span class="op">=</span> <span class="st">'Annual Heating and Cooling Degree-days by Building Thermal Service'</span><span class="op">)</span></span></code></pre></div>
-<p>Table: Annual Heating and Cooling Degree-days by Building Thermal Service</p>
+<table class="table">
+<caption>Annual Heating and Cooling Degree-days by Building Thermal Service</caption>
+<colgroup>
+<col width="6%">
+<col width="9%">
+<col width="4%">
+<col width="13%">
+<col width="9%">
+<col width="18%">
+<col width="28%">
+<col width="9%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">region</th>
+<th align="left">subRegion</th>
+<th align="left">year</th>
+<th align="left">gcam.consumer</th>
+<th align="left">nodeInput</th>
+<th align="left">building.node.input</th>
+<th align="left">thermal.building.service.input</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm cooling</td>
+<td align="right">1260.400</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="left">comm</td>
+<td align="left">comm</td>
+<td align="left">comm_building</td>
+<td align="left">comm heating</td>
+<td align="right">-4366.006</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid cooling</td>
+<td align="right">1260.400</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="left">resid</td>
+<td align="left">resid</td>
+<td align="left">resid_building</td>
+<td align="left">resid heating</td>
+<td align="right">-4366.006</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at monthly scale for GCAM regions</span></span>
 <span><span class="va">hdcd_monthly</span> <span class="op">&lt;-</span> <span class="va">hdcd_china</span><span class="op">$</span><span class="va">hdcd_comb_monthly</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">hdcd_monthly</span>, </span>
 <span>             caption <span class="op">=</span> <span class="st">'Monthly Heating and Cooling Degree-days'</span><span class="op">)</span></span></code></pre></div>
-<p>Table: Monthly Heating and Cooling Degree-days</p>
+<table class="table">
+<caption>Monthly Heating and Cooling Degree-days</caption>
+<thead><tr class="header">
+<th align="left">region</th>
+<th align="left">subRegion</th>
+<th align="left">year</th>
+<th align="right">month</th>
+<th align="left">HDDCDD</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">1</td>
+<td align="left">HDD</td>
+<td align="right">-924.169900</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">2</td>
+<td align="left">HDD</td>
+<td align="right">-755.526257</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">3</td>
+<td align="left">CDD</td>
+<td align="right">1.336682</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">3</td>
+<td align="left">HDD</td>
+<td align="right">-606.183647</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">4</td>
+<td align="left">CDD</td>
+<td align="right">30.045706</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">4</td>
+<td align="left">HDD</td>
+<td align="right">-186.149601</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">5</td>
+<td align="left">CDD</td>
+<td align="right">124.613478</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">5</td>
+<td align="left">HDD</td>
+<td align="right">-66.998748</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">6</td>
+<td align="left">CDD</td>
+<td align="right">207.748333</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">6</td>
+<td align="left">HDD</td>
+<td align="right">-38.717064</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">7</td>
+<td align="left">CDD</td>
+<td align="right">401.606410</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">7</td>
+<td align="left">HDD</td>
+<td align="right">-12.551112</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">8</td>
+<td align="left">CDD</td>
+<td align="right">310.909836</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">8</td>
+<td align="left">HDD</td>
+<td align="right">-23.165328</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">9</td>
+<td align="left">CDD</td>
+<td align="right">156.554741</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">9</td>
+<td align="left">HDD</td>
+<td align="right">-59.748262</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">10</td>
+<td align="left">CDD</td>
+<td align="right">27.585049</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">10</td>
+<td align="left">HDD</td>
+<td align="right">-219.468608</td>
+</tr>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">11</td>
+<td align="left">HDD</td>
+<td align="right">-628.251171</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="right">12</td>
+<td align="left">HDD</td>
+<td align="right">-845.076493</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at annual scale for GCAM regions</span></span>
 <span><span class="va">hdcd_annual</span> <span class="op">&lt;-</span> <span class="va">hdcd_china</span><span class="op">$</span><span class="va">hdcd_comb_annual</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">hdcd_annual</span>, </span>
 <span>             caption <span class="op">=</span> <span class="st">'Annual Heating and Cooling Degree-days'</span><span class="op">)</span></span></code></pre></div>
-<p>Table: Annual Heating and Cooling Degree-days</p>
+<table class="table">
+<caption>Annual Heating and Cooling Degree-days</caption>
+<thead><tr class="header">
+<th align="left">region</th>
+<th align="left">subRegion</th>
+<th align="left">year</th>
+<th align="left">HDDCDD</th>
+<th align="right">value</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="left">CDD</td>
+<td align="right">1260.400</td>
+</tr>
+<tr class="even">
+<td align="left">China</td>
+<td align="left">China</td>
+<td align="left">2020</td>
+<td align="left">HDD</td>
+<td align="right">-4366.006</td>
+</tr>
+</tbody>
+</table>
 <p><br></p>
 </div>
 <div class="section level3">
