@@ -22,6 +22,7 @@ read_population <- function(file = NULL) {
         # ------------------------------------------------
         # directly read corresponding wrd population
         # ------------------------------------------------
+
         if (any(file_type %in% 'csv')) {
 
           file_raw <- data.table::fread(file)
