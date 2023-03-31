@@ -288,11 +288,17 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/helios" class="external-link">helios</a></span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># example data: CMIP6 daily climate at 0.5 degree resolution</span></span>
+<span><span class="va">path_to_climate_ncdf</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># example data: population of 2020 at 0.125 degree resolution</span></span>
+<span><span class="va">path_to_population</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'ssp1_2020_sub.nc'</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># Calculate heating and coolong degrees for GCAM regions (e.g., part of China in the example)</span></span>
-<span><span class="va">hdcd_china</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/hdcd.html">hdcd</a></span><span class="op">(</span>ncdf <span class="op">=</span> <span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_cmip6_china_ncdf.html">example_cmip6_china_ncdf</a></span>,</span>
+<span><span class="va">hdcd_china</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/hdcd.html">hdcd</a></span><span class="op">(</span>ncdf <span class="op">=</span> <span class="va">path_to_climate_ncdf</span>,</span>
 <span>                           ncdf_var <span class="op">=</span> <span class="st">'tas'</span>,</span>
 <span>                           model <span class="op">=</span> <span class="st">'cmip'</span>,</span>
-<span>                           population <span class="op">=</span> <span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_pop_china_ncdf.html">example_pop_china_ncdf</a></span>,</span>
+<span>                           population <span class="op">=</span> <span class="va">path_to_population</span>,</span>
 <span>                           spatial <span class="op">=</span> <span class="st">'gcam_region_32'</span>,</span>
 <span>                           temporal <span class="op">=</span> <span class="fl">2020</span>,</span>
 <span>                           reference_temp_F <span class="op">=</span> <span class="fl">65</span>,</span>
