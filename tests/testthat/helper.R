@@ -3,24 +3,12 @@
 #.......................
 
 # path to climate data example
-wrf_usa_ncdf <- system.file(
-  'extras',
-  'wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc',
-  package = 'helios')
-cmip6_china_ncdf <- system.file(
-  'extras',
-  'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc',
-  package = 'helios')
+wrf_usa_ncdf <- helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc')
+cmip6_china_ncdf <- helios::pkg_example('gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc')
 
-# path to population data example
-pop_usa_csv <- system.file(
-  'extras',
-  'population_conus_ssp2_2020wrf_wgs84.csv',
-  package = 'helios')
-pop_china_ncdf <- system.file(
-  'extras',
-  'ssp1_2020_sub.nc',
-  package = 'helios')
+pop_usa_csv <- helios::pkg_example('population_conus_ssp2_2020wrf_wgs84.csv')
+pop_china_ncdf <- helios::pkg_example('ssp1_2020_sub.nc')
+
 
 pop_test <- system.file(
   'extras',

@@ -5,7 +5,7 @@
 \alias{example_wrf_usa_ncdf}
 \title{example_wrf_usa_ncdf}
 \format{
-string
+list
 }
 \source{
 .inst/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc

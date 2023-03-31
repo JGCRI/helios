@@ -2,6 +2,7 @@
 
 export(diagnostics)
 export(hdcd)
+export(pkg_example)
 export(read_ncdf)
 export(read_population)
 export(save_xml)

@@ -119,14 +119,20 @@ The following example specifies the arguments for processing WRF dataset. More i
 * `temporal = 2020` specifies the time period 2020 to include since the example data only covers 7 days in 2020.
 
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 library(helios)
 
+# example data: WRF hourly climate at 12-km resolution
+path_to_climate_ncdf <- helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc')
+
+# example data: population of 2020 at same 12-km resolution as WRF
+path_to_population <- helios::pkg_example('population_conus_ssp2_2020wrf_wgs84.csv')
+
 # Calculate heating and coolong degrees for CONUS (e.g., part of USA in the example)
-hdcd_usa <- helios::hdcd(ncdf = helios::example_wrf_usa_ncdf,
+hdcd_usa <- helios::hdcd(ncdf = path_to_climate_ncdf,
                          ncdf_var = 'T2',
                          model = 'wrf',
-                         population = helios::example_pop_usa_csv,
+                         population = path_to_population,
                          spatial = 'states_us_49',
                          temporal = 2020,
                          reference_temp_F = 65,
@@ -137,35 +143,6 @@ hdcd_usa <- helios::hdcd(ncdf = helios::example_wrf_usa_ncdf,
                          save = F)
 ```
 
-```{r eval=TRUE, echo=FALSE}
-library(helios)
-
-# path to climate data example
-wrf_usa_ncdf <- system.file(
-  'extras',
-  'wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc',
-  package = 'helios')
-
-# path to population data example
-pop_usa_csv <- system.file(
-  'extras',
-  'population_conus_ssp2_2020wrf_wgs84.csv',
-  package = 'helios')
-
-# Calculate heating and coolong degrees for CONUS (e.g., part of USA in the example)
-hdcd_usa <- helios::hdcd(ncdf = wrf_usa_ncdf,
-                         ncdf_var = 'T2',
-                         model = 'wrf',
-                         population = pop_usa_csv,
-                         spatial = 'states_us_49',
-                         temporal = 2020,
-                         reference_temp_F = 65,
-                         folder = paste0(getwd(), "/output"),
-                         diagnostics = F,
-                         xml = F,
-                         name_append = "",
-                         save = F)
-```
 
 <br />
 

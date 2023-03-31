@@ -114,7 +114,7 @@
 #' example_wrf_usa_ncdf
 #'
 #' @source .inst/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc
-#' @format string
+#' @format list
 #' @examples
 #' \dontrun{
 #'  library(helios);
@@ -129,7 +129,7 @@
 #' example_cmip6_china_ncdf
 #'
 #' @source .inst/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc
-#' @format string
+#' @format list
 #' @examples
 #' \dontrun{
 #'  library(helios);
@@ -143,7 +143,7 @@
 #' example_pop_china_ncdf
 #'
 #' @source .inst/extras/ssp1_2020_sub.nc
-#' @format string
+#' @format list
 #' @examples
 #' \dontrun{
 #'  library(helios);
@@ -157,7 +157,7 @@
 #' example_pop_usa_csv
 #'
 #' @source .inst/extras/population_conus_ssp2_2020wrf_wgs84.csv
-#' @format string
+#' @format data.table
 #' @examples
 #' \dontrun{
 #'  library(helios);

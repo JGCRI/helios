@@ -5,7 +5,7 @@
 \alias{example_cmip6_china_ncdf}
 \title{example_cmip6_china_ncdf}
 \format{
-string
+list
 }
 \source{
 .inst/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc

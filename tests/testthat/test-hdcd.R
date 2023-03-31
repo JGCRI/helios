@@ -81,3 +81,12 @@ test_that('invalid spatial input type gives error', {
 test_that('invalid temporal input type gives error', {
   testthat::expect_error(run_hdcd_usa(temporal = '2020'), class = 'error')
 })
+
+
+# ------------------------------------
+# Testing Package Example Helper
+# ------------------------------------
+test_that('pkg_example gives paths', {
+  testthat::expect_type(helios::pkg_example(), 'character')
+  testthat::expect_type(helios::pkg_example('ssp1_2020_sub.nc'), 'character')
+})

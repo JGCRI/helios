@@ -18,7 +18,8 @@
 <br>
 
 <p align="center">
-<a href="https://jgcri.github.io/helios/articles/vignette_helios.html" target="_blank"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" alt="https://jgcri.github.io/helios/articles/vignette_helios.html" height="60"/></a>
+<a href="https://jgcri.github.io/helios/" target="_blank"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" 
+alt="https://jgcri.github.io/helios/" height="60"/></a>
 <img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_divider.PNG?raw=true" height="40"/>
 </p>
 
@@ -64,7 +65,7 @@ brew install gdal
 
 <!-- ------------------------>
 <!-- ------------------------>
-# <a name="GetStarted"></a>Get Started
+# <a name="GettingStarted"></a>Getting Started
 <!-- ------------------------>
 <!-- ------------------------>
 

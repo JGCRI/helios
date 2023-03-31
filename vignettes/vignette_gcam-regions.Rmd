@@ -118,45 +118,20 @@ The following example specifies the arguments for processing CMIP6 dataset. More
 * `temporal = 2020` specifies the time period (e.g., 2020) to extract from the dataset covering 2015 - 2020. Users can also specify multiple time period (e.g. `temporal = c(2017, 2018, 2019, 2020)`) if those time periods are within the time span of the climate and population dataset.
 
 
-```{r eval=FALSE}
+```{r eval=TRUE}
 library(helios)
 
-# Calculate heating and coolong degrees for GCAM regions (e.g., part of China in the example)
-hdcd_china <- helios::hdcd(ncdf = helios::example_cmip6_china_ncdf,
-                           ncdf_var = 'tas',
-                           model = 'cmip',
-                           population = helios::example_pop_china_ncdf,
-                           spatial = 'gcam_region_32',
-                           temporal = 2020,
-                           reference_temp_F = 65,
-                           folder = paste0(getwd(), "/output"),
-                           diagnostics = F,
-                           xml = F,
-                           name_append = "",
-                           save = F)
-```
+# example data: CMIP6 daily climate at 0.5 degree resolution
+path_to_climate_ncdf <- helios::pkg_example('gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc')
 
-
-```{r eval=TRUE, echo=FALSE}
-library(helios)
-
-# path to climate data example
-cmip6_china_ncdf <- system.file(
-  'extras',
-  'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc',
-  package = 'helios')
-
-# path to population data example
-pop_china_ncdf <- system.file(
-  'extras',
-  'ssp1_2020_sub.nc',
-  package = 'helios')
+# example data: population of 2020 at 0.125 degree resolution
+path_to_population <- helios::pkg_example('ssp1_2020_sub.nc')
 
 # Calculate heating and coolong degrees for GCAM regions (e.g., part of China in the example)
-hdcd_china <- helios::hdcd(ncdf = cmip6_china_ncdf,
+hdcd_china <- helios::hdcd(ncdf = path_to_climate_ncdf,
                            ncdf_var = 'tas',
                            model = 'cmip',
-                           population = pop_china_ncdf,
+                           population = path_to_population,
                            spatial = 'gcam_region_32',
                            temporal = 2020,
                            reference_temp_F = 65,

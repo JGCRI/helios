@@ -5,7 +5,7 @@
 \alias{example_pop_usa_csv}
 \title{example_pop_usa_csv}
 \format{
-string
+data.table
 }
 \source{
 .inst/extras/population_conus_ssp2_2020wrf_wgs84.csv

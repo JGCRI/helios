@@ -5,7 +5,7 @@
 \alias{example_pop_china_ncdf}
 \title{example_pop_china_ncdf}
 \format{
-string
+list
 }
 \source{
 .inst/extras/ssp1_2020_sub.nc

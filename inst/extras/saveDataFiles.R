@@ -276,35 +276,39 @@ usethis::use_data(mapping_grid_region, overwrite=T)
 #-----------------------
 # WRF example data
 #-----------------------
-example_wrf_usa_ncdf<- system.file(
+f_wrf_usa_ncdf<- system.file(
   'extras',
   'wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc',
   package = 'helios')
+example_wrf_usa_ncdf <- ncdf4::nc_open(f_wrf_usa_ncdf)
 usethis::use_data(example_wrf_usa_ncdf, version=3, overwrite=T)
 
 #-----------------------
 # CMIP6 example data
 #-----------------------
-example_cmip6_china_ncdf <- system.file(
+f_cmip6_china_ncdf <- system.file(
   'extras',
   'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc',
   package = 'helios')
+example_cmip6_china_ncdf <- ncdf4::nc_open(f_cmip6_china_ncdf)
 usethis::use_data(example_cmip6_china_ncdf, version=3, overwrite=T)
 
 #--------------------------------
 # Population NetCDF Example Data
 #--------------------------------
-example_pop_china_ncdf <- system.file(
+f_pop_china_ncdf <- system.file(
   'extras',
   'ssp1_2020_sub.nc',
   package = 'helios')
+example_pop_china_ncdf <- ncdf4::nc_open(f_pop_china_ncdf)
 usethis::use_data(example_pop_china_ncdf, version=3, overwrite=T)
 
 #--------------------------------
 # Population CSV Example Data
 #--------------------------------
-example_pop_usa_csv <- system.file(
+f_pop_usa_csv <- system.file(
   'extras',
   'population_conus_ssp2_2020wrf_wgs84.csv',
   package = 'helios')
+example_pop_usa_csv <- data.table::fread(f_pop_usa_csv)
 usethis::use_data(example_pop_usa_csv, version=3, overwrite=T)
