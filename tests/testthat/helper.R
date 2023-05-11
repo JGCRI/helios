@@ -69,4 +69,21 @@ run_hdcd_china <- function(ncdf = cmip6_china_ncdf,
   return(output)
 }
 
+run_diagnostics <- function(hdcd = helios::example_hdcd_segment_usa %>%
+                              dplyr::filter(year %in% c(2020, 2025)),
+                            hdcd_monthly = helios::example_hdcd_monthly_usa %>%
+                              dplyr::filter(year %in% c(2020, 2025)),
+                            min_diagnostic_months = 6,
+                            folder = paste0(getwd(), "/output"),
+                            name_append = '') {
+
+  helios::diagnostics(hdcd = hdcd,
+                      hdcd_monthly = hdcd_monthly,
+                      min_diagnostic_months = min_diagnostic_months,
+                      folder = folder,
+                      name_append = name_append)
+
+}
+
+
 

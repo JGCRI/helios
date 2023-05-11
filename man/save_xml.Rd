@@ -6,7 +6,7 @@
 \usage{
 save_xml(
   hdcd = tibble::tibble(),
-  folder = paste0(getwd()),
+  folder = file.path(getwd(), "output"),
   filename = "hdcd_xml",
   name_append = ""
 )

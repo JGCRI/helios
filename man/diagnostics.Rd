@@ -7,8 +7,8 @@
 diagnostics(
   hdcd = tibble::tibble(),
   hdcd_monthly = tibble::tibble(),
+  min_diagnostic_months = 6,
   folder = paste0(getwd()),
-  filename = "hdcd_diagnostic",
   name_append = ""
 )
 }
@@ -17,11 +17,11 @@ diagnostics(
 
 \item{hdcd_monthly}{Default = tibble::tibble()}
 
+\item{min_diagnostic_months}{Default = 6. Months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.}
+
 \item{folder}{Default = paste0(getwd()).}
 
-\item{filename}{Default = "hdcd_diagnostic".}
-
-\item{name_append}{Default = "". Name to append to all filenames}
+\item{name_append}{Default = ''. Name to append to all filenames}
 }
 \description{
 Heating and Cooling Degree diagnostic scripts

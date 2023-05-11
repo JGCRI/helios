@@ -24,17 +24,19 @@ test_that("segment, monthly, and annual output exists", {
   testthat::expect_gt(nrow(hdcd_china$hdcd_comb_annual), 0)
 })
 
-test_that("monthly and annual HDD values are negative, CDD values are positive", {
-  testthat::expect_equal(all(hdcd_usa$hdcd_comb_monthly$value[hdcd_usa$hdcd_comb_monthly$HDDCDD == 'HDD'] <= 0), TRUE)
-  testthat::expect_equal(all(hdcd_usa$hdcd_comb_monthly$value[hdcd_usa$hdcd_comb_monthly$HDDCDD == 'CDD'] >= 0), TRUE)
-  testthat::expect_equal(all(hdcd_usa$hdcd_comb_annual$value[hdcd_usa$hdcd_comb_annual$HDDCDD == 'HDD'] <= 0), TRUE)
-  testthat::expect_equal(all(hdcd_usa$hdcd_comb_annual$value[hdcd_usa$hdcd_comb_annual$HDDCDD == 'CDD'] >= 0), TRUE)
+test_that("monthly and annual HD values are negative, CD values are positive", {
+  testthat::expect_equal(all(hdcd_usa$hdcd_comb_monthly$value[hdcd_usa$hdcd_comb_monthly$HDCD == 'HD'] <= 0), TRUE)
+  testthat::expect_equal(all(hdcd_usa$hdcd_comb_monthly$value[hdcd_usa$hdcd_comb_monthly$HDCD == 'CD'] >= 0), TRUE)
+  testthat::expect_equal(all(hdcd_usa$hdcd_comb_annual$value[hdcd_usa$hdcd_comb_annual$HDCD == 'HD'] <= 0), TRUE)
+  testthat::expect_equal(all(hdcd_usa$hdcd_comb_annual$value[hdcd_usa$hdcd_comb_annual$HDCD == 'CD'] >= 0), TRUE)
 })
 
 # ------------------------------------
 # Testing Diagnostics and XML
 # ------------------------------------
-run_hdcd_usa(diagnostics = T, xml = T)
+
+run_diagnostics()
+run_hdcd_usa(xml = TRUE)
 
 
 # ------------------------------------

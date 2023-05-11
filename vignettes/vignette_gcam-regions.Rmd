@@ -169,22 +169,30 @@ knitr::kable(hdcd_annual,
 
 <br />
 
+***WARNING:** Please note that if users are following the example provided here, we use a spatial subset of CMIP6 input climate NetCDF data that covers 2015 - 2020. To get heating and cooling degrees for all 32 regions, users need to run the **global** climate NetCDF. This might propose computational challenge depending on the features of the computational devices used.
+
+<br />
+
 ## Diagnostics
 
 After getting the data table for heating and cooling degrees, users can perform diagnostics. The following example is only for demonstration of how to use `helios::diagnostic`.
 
 
 ```{r eval=FALSE}
-# Perform annual diagnostic
+# Perform diagnostic on monthly data
 helios::diagnostics(hdcd_monthly = hdcd_monthly,
-                    folder = paste0(getwd(), "/output"))
+                    min_diagnostic_months = 6,
+                    folder = paste0(getwd(), "/output"),
+                    name_append = 'monthly')
+
+# Perform diagnostic on segment data
+helios::diagnostics(hdcd = hdcd,
+                    spatial = 'states_us_49',
+                    min_diagnostic_months = 6,
+                    folder = paste0(getwd(), "/output"),
+                    name_append = 'segment')
 ```
 
-
-
-<br />
-
-***WARNING:** Please note that if users are following the example provided here, we use a spatial subset of CMIP6 input climate NetCDF data that covers 2015 - 2020. To get heating and cooling degrees for all 32 regions, users need to run the **global** climate NetCDF. This might propose computational challenge depending on the features of the computational devices used.
 
 <br />
 

@@ -49,7 +49,7 @@ L2441.HDDCDD_Fixed_gcamusa_seg <- L2441.HDDCDD_Fixed_gcamusa %>%
                                thermal.building.service.input)) %>%
   unique(); L2441.HDDCDD_Fixed_gcamusa_seg
 
-use_data(L2441.HDDCDD_Fixed_gcamusa_seg, version=3, overwrite=T)
+use_data(L2441.HDDCDD_Fixed_gcamusa_seg, version = 3, overwrite = T)
 
 #-----------------
 # L244.HDDCDD_constdd_no_GCM
@@ -59,7 +59,8 @@ L244.HDDCDD_constdd_no_GCM <- read.csv(paste0(gcamdata_folder,"/outputs/L244.HDD
 
 L244.HDDCDD_building <- L244.HDDCDD_constdd_no_GCM %>%
   dplyr::select(-degree.days, -year) %>%
-  unique()
+  unique() %>%
+  dplyr::mutate(region = gsub('-', '_', region))
 
 use_data(L244.HDDCDD_building, version = 3, overwrite = T)
 
@@ -301,7 +302,7 @@ f_pop_china_ncdf <- system.file(
   'ssp1_2020_sub.nc',
   package = 'helios')
 example_pop_china_ncdf <- ncdf4::nc_open(f_pop_china_ncdf)
-usethis::use_data(example_pop_china_ncdf, version=3, overwrite=T)
+usethis::use_data(example_pop_china_ncdf, version = 3, overwrite = T)
 
 #--------------------------------
 # Population CSV Example Data
@@ -311,4 +312,31 @@ f_pop_usa_csv <- system.file(
   'population_conus_ssp2_2020wrf_wgs84.csv',
   package = 'helios')
 example_pop_usa_csv <- data.table::fread(f_pop_usa_csv)
-usethis::use_data(example_pop_usa_csv, version=3, overwrite=T)
+usethis::use_data(example_pop_usa_csv, version = 3, overwrite = T)
+
+
+#--------------------------------
+# HDCD Example Data by Segment
+#--------------------------------
+
+example_hdcd_segment_usa <- data.table::fread('inst/extras/hdcd_diagnostic_2020-2100rcp45cooler_ssp3.csv') %>%
+  dplyr::rename(HDCD = heatcool) %>%
+  dplyr::mutate(HDCD = gsub('heat', 'HD', HDCD),
+                HDCD = gsub('cool', 'CD', HDCD),
+                value = dplyr::if_else(HDCD == 'HD', -value, value)) %>%
+  dplyr::filter(year %in% seq(2020, 2050, 5))
+usethis::use_data(example_hdcd_segment_usa, version = 3, overwrite = T)
+
+
+#--------------------------------
+# HDCD Example Data by Month
+#--------------------------------
+
+example_hdcd_monthly_usa <- data.table::fread('inst/extras/monthly_ncdf_2020-2100_noaa_2000-2021rcp45cooler_ssp3.csv') %>%
+  dplyr::filter(year %in% seq(2020, 2050, 5),
+                scenario %in% 'ncdf') %>%
+  dplyr::select(subRegion, year, month = monthNums, HDCD = HDDCDD, value) %>%
+  dplyr::mutate(HDCD = gsub('HDD', 'HD', HDCD),
+                HDCD = gsub('CDD', 'CD', HDCD),
+                value = dplyr::if_else(HDCD == 'HD', -value, value))
+usethis::use_data(example_hdcd_monthly_usa, version = 3, overwrite = T)

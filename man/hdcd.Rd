@@ -28,19 +28,19 @@ hdcd(
 
 \item{population}{Default = NULL. Path to population files to population weight data.}
 
-\item{spatial}{Default = NULL. Options: "states_us_49", "gcam_regions_32". Aggregate to different spatial boundaries.}
+\item{spatial}{Default = NULL. Options: 'states_us_49', 'gcam_regions_32'. Aggregate to different spatial boundaries.}
 
 \item{temporal}{Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).}
 
 \item{reference_temp_F}{Default = 65}
 
-\item{folder}{Default = paste0(getwd(),"/output").}
+\item{folder}{Default = paste0(getwd(),'/output').}
 
 \item{diagnostics}{Default = F.}
 
 \item{xml}{Default = F. Whether to create GCAM XML or not.}
 
-\item{name_append}{Default = "". Name to append to all filenames}
+\item{name_append}{Default = ''. Name to append to all filenames}
 
 \item{save}{Default = T. Whether to save outputs or not.}
 }

@@ -165,6 +165,37 @@
 #' }
 "example_pop_usa_csv"
 
+
+#.................................
+# HDCD Example Data by Segment
+#.................................
+#' example_hdcd_segment_usa
+#'
+#' @source .inst/extras/hdcd_diagnostic_2020-2100rcp45cooler_ssp3.csv
+#' @format data.table
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_hdcd_segment_usa <- helios::example_hdcd_segment_usa
+#' }
+"example_hdcd_segment_usa"
+
+
+#.................................
+# HDCD Example Data by Month
+#.................................
+#' example_hdcd_monthly_usa
+#'
+#' @source .inst/extras/monthly_ncdf_2020-2100_noaa_2000-2021rcp45cooler_ssp3.csv
+#' @format data.table
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_hdcd_monthly_usa <- helios::example_hdcd_monthly_usa
+#' }
+"example_hdcd_monthly_usa"
+
+
 #.................................
 # Pre-processed Population Files
 #................................

@@ -171,30 +171,68 @@ knitr::kable(hdcd_annual,
 
 <br />
 
+***Note:** Please note that we use a spatial subset of WRF input climate NetCDF data as an example, which only covers 7 days. To get heating and cooling degrees for a complete year, users need to run climate NetCDF files using `helios` that cover the length of a year. For example, if each climate NetCDF is for 7-days, then user need to include about 52 climate NetCDF to cover a whole year of climate data. Then, users can use `helios::diagnostic` to create plots to check  heating and cooling degree behaviors throughout a year.
+
+<br />
+
 ## Diagnostics
 
-After getting the data table for heating and cooling degrees, users can perform diagnostics and compare with NOAA observations. The following example is only for demonstration of how to use `helios::diagnostic`.
+After getting the data table for heating and cooling degrees, users can perform diagnostics and compare with NOAA observations if data covers the U.S. The diagnostics create the following plots at segment and monthly time step:
 
+* Heating and cooling degrees for each year
+* Comparison of heating and cooling degrees among all years
 
-```{r eval=FALSE}
-# Perform monthly diagnostic
-helios::diagnostics(hdcd_monthly = hdcd_monthly,
-                    folder = paste0(getwd(), "/output"))
+Users can also use `helios::diagnostics` to visualize any heating and cooling degree data as long as they include those columns in the monthly data or the segment data: [subRegion, year, month/segment, HDCD, value]
+
+```{r eval=TRUE, results='asis'}
+# Heating and cooling degree-hours by dispatch segment
+knitr::kable(helios::example_hdcd_segment_usa[1:4,], 
+             caption = 'Heating and Cooling Degree-hours by Segment')
+
+# Heating and cooling degree-days by month
+knitr::kable(helios::example_hdcd_monthly_usa[1:4,], 
+             caption = 'Monthly Heating and Cooling Degree-days')
+
 ```
 
+If the data coverage is too short (e.g., less than 6 months), diagnostics will not create plot by default. Users can change the constraint on numbers of months in the data using argument `min_diagnostic_months` to enable diagnostics even with short data coverage. The followings show how to use diagnostics with example outputs of heating and cooling degrees at both segment and monthly time step. 
 
 ```{r eval=FALSE}
-# Perform segment diagnostic
-helios::diagnostics(hdcd = hdcd_segment,
-                    folder = paste0(getwd(), "/output"))
+# Perform diagnostic on monthly data
+helios::diagnostics(hdcd_monthly = helios::example_hdcd_monthly_usa,
+                    min_diagnostic_months = 6,
+                    folder = paste0(getwd(), "/output"),
+                    name_append = 'monthly')
+```
+
+<br />
+
+<p align="center"> <img src="vignetteFigs/monthly_allYears_noaa-2021_wrf_rcp45cooler_ssp3.png"></p>
+<a name="figure2"></a>
+<p align="left" style="font-size:14px;"> **Figure 2:** Diagnostics for monthly heating and cooling degree-days from 2020 to 2050. </p>
+
+<br />
+
+Segment output , set `spatial = 'states_us_49'` to indicate the data
+
+```{r eval=FALSE}
+# Perform diagnostic on segment data
+helios::diagnostics(hdcd = helios::example_hdcd_segment_usa,
+                    spatial = 'states_us_49',
+                    min_diagnostic_months = 6,
+                    folder = paste0(getwd(), "/output"),
+                    name_append = 'segment')
 
 ```
 
 <br />
 
-***Note:** Please note that if users are following the example provided here, we use a spatial subset of WRF input climate NetCDF data, which only covers 7 days. Thus, the diagnostic will not show the full picture of heating and cooling degrees over a year. To get heating and cooling degrees for a complete year, users need to run climate NetCDF files using `helios` that cover the length of a year. For example, if each climate NetCDF is for 7-days, then user need to include about 52 climate NetCDF to cover a whole year of climate data. Then, users can use `helios::diagnostic` to create plots to check  heating and cooling degree behaviors throughout a year.
+<p align="center"> <img src="vignetteFigs/segment_allYears_freeScale_wrf_rcp45cooler_ssp3.png"></p>
+<a name="figure3"></a>
+<p align="left" style="font-size:14px;"> **Figure 3:** Diagnostics for heating and cooling degree-hours by dispatch segment from 2020 to 2050. </p>
 
 <br />
+
 
 ## XML file for GCAM-USA
 

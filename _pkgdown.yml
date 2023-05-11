@@ -33,7 +33,7 @@ reference:
   - read_population
   - diagnostics
   - save_xml
-  - pkg_example
+  - pkg_utils
 - title: "Pre-loaded Data"
 - contents:
   - L2441.HDDCDD_Fixed_gcamusa_seg
@@ -47,6 +47,8 @@ reference:
   - example_wrf_usa_ncdf
   - example_pop_china_ncdf
   - example_pop_usa_csv
+  - example_hdcd_segment_usa
+  - example_hdcd_monthly_usa
 - title: "Package File"
 - contents:
   - helios
