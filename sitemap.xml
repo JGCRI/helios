@@ -34,10 +34,19 @@
     <loc>/reference/L2441.HDDCDD_Fixed_gcamusa_seg.html</loc>
   </url>
   <url>
+    <loc>/reference/create_name.html</loc>
+  </url>
+  <url>
     <loc>/reference/diagnostics.html</loc>
   </url>
   <url>
     <loc>/reference/example_cmip6_china_ncdf.html</loc>
+  </url>
+  <url>
+    <loc>/reference/example_hdcd_monthly_usa.html</loc>
+  </url>
+  <url>
+    <loc>/reference/example_hdcd_segment_usa.html</loc>
   </url>
   <url>
     <loc>/reference/example_pop_china_ncdf.html</loc>
