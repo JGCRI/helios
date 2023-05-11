@@ -33,7 +33,8 @@ reference:
   - read_population
   - diagnostics
   - save_xml
-  - pkg_utils
+  - pkg_example
+  - create_name
 - title: "Pre-loaded Data"
 - contents:
   - L2441.HDDCDD_Fixed_gcamusa_seg

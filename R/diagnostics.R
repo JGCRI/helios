@@ -94,8 +94,8 @@ diagnostics <- function(hdcd = tibble::tibble(),
             ggplot2::facet_wrap(subRegion ~ ., scales = 'free_y') +
             ggplot2::ggtitle(paste0('HDCD at GCAM-USA Dispatch Segment in ', year_i)) +
             ggplot2::ylab('Degree-Hours') +
-            ggplot2::scale_color_manual(values = c('heat' = 'firebrick',
-                                                   'cool' = 'dodgerblue')) +
+            ggplot2::scale_color_manual(values = c('heat' = '#1AB2FF',
+                                                   'cool' = '#E61A33')) +
             ggplot2::scale_x_discrete(drop = FALSE) +
             ggplot2::theme_bw() +
             ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,

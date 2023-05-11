@@ -14,7 +14,7 @@ library(dplyr)
 
 # WRF data -----------------
 
-# example data: WRF hourly climate at 12-km resolution
+# example data: spatial subset (few grid cells within USA) of WRF hourly climate at 12-km resolution, covers 7 days
 path_to_climate_ncdf <- helios::pkg_example("wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc")
 
 # example data: population of 2020 at same 12-km resolution as WRF
@@ -39,7 +39,7 @@ hdcd_usa <- helios::hdcd(
 
 # CMIP data ----------------
 
-# example data: CMIP6 daily climate at 0.5 degree resolution
+# example data: spatial subset (gew grid cells within China) CMIP6 daily climate at 0.5 degree resolution from 2015 to 2020
 path_to_climate_ncdf <- helios::pkg_example("gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc")
 
 # example data: population of 2020 at 0.125 degree resolution
@@ -61,28 +61,19 @@ hdcd_china <- helios::hdcd(
   save = T
 )
 
-helios::diagnostics(
-  hdcd_monthly = hdcd_china$hdcd_comb_monthly,
-  min_diagnostic_months = 6,
-  folder = paste0(getwd(), "/output"),
-  name_append = "cmip"
-)
-
-
 
 # -----------------------------------------------------------
 # Test the large data set
 # -----------------------------------------------------------
-
-# WRF ---------------------
 # These data are not from the package
 # Download data folder from Constance /pic/projects/im3/gcamusa/climateimpacts/helios/data
-data_dir <- "/pic/projects/im3/gcamusa/climateimpacts/helios/data"
+data_dir <- "C:/WorkSpace/IM3/helios/example_data"
 
+# WRF ---------------------
+# CONUS WRF data
 path_to_climate_ncdf <- file.path(data_dir, "climate", "wrfout_d01_2020-01-01_01%3A00%3A00.nc")
 path_to_population <- file.path(
-  data_dir, 'population', "population_conus_total_ssp2_2020-2100_wrf_wgs84.csv"
-)
+  data_dir, 'population', "population_conus_total_ssp2_2020-2100_wrf_wgs84.csv")
 
 hdcd_usa_full <- helios::hdcd(
   ncdf = path_to_climate_ncdf,
@@ -104,16 +95,17 @@ helios::diagnostics(
   hdcd_monthly = hdcd_usa_full$hdcd_comb_monthly,
   min_diagnostic_months = 1,
   folder = paste0(getwd(), "/output"),
-  name_append = "wrf"
+  name_append = "wrf_full"
 )
 
 
 # CMIP data ----------------
+# Global CMIP6 data
 # These data are not from the package
+# Download data folder from Constance /pic/projects/im3/gcamusa/climateimpacts/helios/data
+
 path_to_climate_ncdf <- file.path(data_dir, "climate", "gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020.nc")
-path_to_population <- file.path(
-  data_dir, 'population', "ssp1_2020.nc"
-)
+path_to_population <- file.path(data_dir, 'population', "ssp1_2020.nc")
 # path_to_climate_ncdf <- "C:/WorkSpace/GCIMS/data/climate/isimip/isimip3b/cmip6/gfdl-esm4/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020.nc"
 # path_to_population <- "C:/WorkSpace/IM3/helios/example_nersc_data/popdynamics-1-8th-pop-base-year-projection-ssp-2000-2100-rev01-proj-ssp1-netcdf/SSP1/Total/NetCDF/ssp1_2020.nc"
 
