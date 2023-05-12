@@ -55,6 +55,10 @@ test_that('wrong climate variable name gives error', {
   testthat::expect_error(run_hdcd_usa(ncdf_var = 'var'), class = 'error')
 })
 
+test_that('wrong climate variable name gives error', {
+  testthat::expect_error(run_hdcd_china(ncdf_var = 'var'), class = 'error')
+})
+
 
 test_that('wrong climate model name gives error', {
   testthat::expect_error(run_hdcd_usa(model = 'model'), class = 'error')
@@ -83,6 +87,7 @@ test_that('invalid spatial input type gives error', {
 test_that('invalid temporal input type gives error', {
   testthat::expect_error(run_hdcd_usa(temporal = '2020'), class = 'error')
 })
+
 
 
 # ------------------------------------

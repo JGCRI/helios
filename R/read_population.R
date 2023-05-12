@@ -15,9 +15,9 @@ read_population <- function(file = NULL) {
 
   # If isn't a dataframe check if file exists
   if (length(file) == 1) {
-    if (any(class(file) == "character")) {
+    if (any(class(file) == 'character')) {
       if (file.exists(file)) {
-        file_type <- strsplit(basename(file), split="\\.")[[1]][2]
+        file_type <- strsplit(basename(file), split='\\.')[[1]][2]
 
         # ------------------------------------------------
         # directly read corresponding wrd population
@@ -28,17 +28,17 @@ read_population <- function(file = NULL) {
           file_raw <- data.table::fread(file)
 
           # Rename latitude and longitude if needed
-          if (!any(grepl("\\<latitude\\>", names(file_raw), ignore.case = T))) {
+          if (!any(grepl('\\<latitude\\>', names(file_raw), ignore.case = T))) {
           } else{
             file_raw <-
               file_raw %>%
-              dplyr::rename(!!"lat" := (names(file_raw)[grepl("\\<latitude\\>", names(file_raw), ignore.case = T)])[1])
+              dplyr::rename(!!'lat' := (names(file_raw)[grepl('\\<latitude\\>', names(file_raw), ignore.case = T)])[1])
           }
-          if (!any(grepl("\\<longitude\\>", names(file_raw), ignore.case = T))) {
+          if (!any(grepl('\\<longitude\\>', names(file_raw), ignore.case = T))) {
           } else{
             file_raw <-
               file_raw %>%
-              dplyr::rename(!!"lon" := (names(file_raw)[grepl("\\<longitude\\>", names(file_raw), ignore.case = T)])[1])
+              dplyr::rename(!!'lon' := (names(file_raw)[grepl('\\<longitude\\>', names(file_raw), ignore.case = T)])[1])
           }
 
           # Replace with helios::mapping_wrf_us49
@@ -46,9 +46,9 @@ read_population <- function(file = NULL) {
             dplyr::select(ID, region, subRegion, lat, lon) %>%
             dplyr::left_join(file_raw %>%
                                dplyr::mutate(across(c(lat, lon), ~ round(., 5))),
-                             by = c("lat", "lon")) %>%
-            tidyr::gather(key = "year",
-                          value = "value",
+                             by = c('lat', 'lon')) %>%
+            tidyr::gather(key = 'year',
+                          value = 'value',
                           -RID, -lat, -lon, -region, -ID, -subRegion) %>%
             tibble::as_tibble() %>%
             dplyr::select(-RID)
@@ -112,11 +112,11 @@ read_population <- function(file = NULL) {
         return(pop_df)
 
       } else {
-        stop(paste0("Population file provided: ", file, " does not exist."))
-        file_raw = "No population"
+        stop(paste0('Population file provided: ', file, ' does not exist.'))
+        file_raw = 'No population'
       }
     }
-  } else if (any(grepl("tbl_df|tbl|data.frame", class(file)))) {
+  } else if (any(grepl('tbl_df|tbl|data.frame', class(file)))) {
     file_raw = file
   }
 

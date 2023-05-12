@@ -14,11 +14,11 @@ save_xml(
 \arguments{
 \item{hdcd}{Default = tibble::tibble()}
 
-\item{folder}{Default = paste0(getwd()).}
+\item{folder}{Default = file.path(getwd(), 'output').}
 
-\item{filename}{Default = "hdcd_diagnostic".}
+\item{filename}{Default = 'hdcd_diagnostic'.}
 
-\item{name_append}{Default = "". Name to append to all filenames}
+\item{name_append}{Default = ''. Name to append to all filenames}
 }
 \description{
 Heating and Cooling Degree diagnostic scripts

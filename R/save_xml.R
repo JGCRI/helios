@@ -3,18 +3,18 @@
 #' Heating and Cooling Degree diagnostic scripts
 #'
 #' @param hdcd Default = tibble::tibble()
-#' @param folder Default = paste0(getwd()).
-#' @param filename Default = "hdcd_diagnostic".
-#' @param name_append Default = "". Name to append to all filenames
+#' @param folder Default = file.path(getwd(), 'output').
+#' @param filename Default = 'hdcd_diagnostic'.
+#' @param name_append Default = ''. Name to append to all filenames
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
 
 save_xml <- function(hdcd = tibble::tibble(),
                      folder = file.path(getwd(), 'output'),
-                     filename = "hdcd_xml",
-                     name_append = "") {
-  print("Starting function save_xml...")
+                     filename = 'hdcd_xml',
+                     name_append = '') {
+  print('Starting function save_xml...')
 
   # ......................
   # Initialize
@@ -44,18 +44,18 @@ save_xml <- function(hdcd = tibble::tibble(),
       )
 
     # Save csv corresponding to xml
-    filename_i_xml_csv <- paste0(folder, "/", basename(gsub(".csv", "", filename)), name_append, "_xml.csv")
+    filename_i_xml_csv <- paste0(folder, '/', basename(gsub('.csv', '', filename)), name_append, '_xml.csv')
     data.table::fwrite(hdcd_comb_xml, file = filename_i_xml_csv)
-    print(paste0("File saved as : ", filename_i_xml_csv))
+    print(paste0('File saved as : ', filename_i_xml_csv))
 
-    filename_i_xml <- paste0(folder, "/", basename(gsub(".csv", "", filename)), name_append, ".xml")
+    filename_i_xml <- paste0(folder, '/', basename(gsub('.csv', '', filename)), name_append, '.xml')
 
     gcamdata::create_xml(filename_i_xml) %>%
-      gcamdata::add_xml_data(hdcd_comb_xml, "HDDCDD") %>%
+      gcamdata::add_xml_data(hdcd_comb_xml, 'HDDCDD') %>%
       gcamdata::run_xml_conversion()
 
-    print(paste0("File saved as : ", filename_i_xml))
+    print(paste0('File saved as : ', filename_i_xml))
   }
 
-  print("save_xml complete.")
+  print('save_xml complete.')
 }

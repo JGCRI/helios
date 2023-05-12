@@ -10,9 +10,9 @@
 pkg_example <- function(path = NULL) {
 
   if (is.null(path)) {
-    dir(system.file("extras", package = "helios"))
+    dir(system.file('extras', package = 'helios'))
   } else {
-    system.file("extras", path, package = "helios", mustWork = TRUE)
+    system.file('extras', path, package = 'helios', mustWork = TRUE)
   }
 
 }
