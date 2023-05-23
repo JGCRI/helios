@@ -146,9 +146,9 @@ hdcd_china <- helios::hdcd(ncdf = path_to_climate_ncdf,
 
 The output is a list containing three tables. All outputs are in degree-days.
 
-* Heating and cooling **degree-days** by GCAM region and building thermal service.
-* Heating and cooling **degree-days** by month for the Globe (part of China in the example).
-* Heating and cooling **degree-days** by year for the Globe (part of China in the example).
+* `hdcd_china$hdcd_comb`: Heating and cooling **degree-days** by GCAM region and building thermal service.
+* `hdcd_china$hdcd_comb_monthly`: Heating and cooling **degree-days** by month for the Globe (part of China in the example).
+* `hdcd_china$hdcd_comb_annual`: Heating and cooling **degree-days** by year for the Globe (part of China in the example).
 
 ```{r eval=TRUE}
 # Heating and cooling degree-days by year and by building thermal service for GCAM regions

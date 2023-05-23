@@ -148,9 +148,9 @@ hdcd_usa <- helios::hdcd(ncdf = path_to_climate_ncdf,
 
 The output is a list containing three tables. Please note the different units (degree-hours or degree-days) for different outputs.
 
-* Heating and cooling **degree-hours** by dispatch segment for CONUS and by building thermal service.
-* Heating and cooling **degree-days** by month for CONUS (part of USA in the example).
-* Heating and cooling **degree-days** by year for CONUS (part of USA in the example).
+* `hdcd_usa$hdcd_comb`: Heating and cooling **degree-hours** by dispatch segment for CONUS and by building thermal service.
+* `hdcd_usa$hdcd_comb_monthly`: Heating and cooling **degree-days** by month for CONUS (part of USA in the example).
+* `hdcd_usa$hdcd_comb_annual`: Heating and cooling **degree-days** by year for CONUS (part of USA in the example).
 
 ```{r eval=TRUE, results='asis'}
 # Heating and cooling degree-hours by dispatch segment and by building thermal service for CONUS
