@@ -401,12 +401,18 @@ include since the example data only covers 7 days in 2020.</li>
 <p>The output is a list containing three tables. Please note the
 different units (degree-hours or degree-days) for different outputs.</p>
 <ul>
-<li>Heating and cooling <strong>degree-hours</strong> by dispatch
-segment for CONUS and by building thermal service.</li>
-<li>Heating and cooling <strong>degree-days</strong> by month for CONUS
-(part of USA in the example).</li>
-<li>Heating and cooling <strong>degree-days</strong> by year for CONUS
-(part of USA in the example).</li>
+<li>
+<code>hdcd_usa$hdcd_comb</code>: Heating and cooling
+<strong>degree-hours</strong> by dispatch segment for CONUS and by
+building thermal service.</li>
+<li>
+<code>hdcd_usa$hdcd_comb_monthly</code>: Heating and cooling
+<strong>degree-days</strong> by month for CONUS (part of USA in the
+example).</li>
+<li>
+<code>hdcd_usa$hdcd_comb_annual</code>: Heating and cooling
+<strong>degree-days</strong> by year for CONUS (part of USA in the
+example).</li>
 </ul>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-hours by dispatch segment and by building thermal service for CONUS</span></span>
