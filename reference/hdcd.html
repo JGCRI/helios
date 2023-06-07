@@ -89,11 +89,13 @@
 <span>  ncdf <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ncdf_var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  model <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  model_timestep <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  population <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  spatial <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  temporal <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  time_periods <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  dispatch_segment <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  reference_temp_F <span class="op">=</span> <span class="fl">65</span>,</span>
-<span>  folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/output"</span><span class="op">)</span>,</span>
+<span>  folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output"</span><span class="op">)</span>,</span>
 <span>  diagnostics <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  xml <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  name_append <span class="op">=</span> <span class="st">""</span>,</span>
@@ -112,7 +114,11 @@
 
 
 <dt>model</dt>
-<dd><p>Default = NULL. Climate model that generates the ncdf file. Options: 'wrf' or 'cmip'</p></dd>
+<dd><p>Default = NULL. Climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.</p></dd>
+
+
+<dt>model_timestep</dt>
+<dd><p>Default = NULL. String for time step of input climate data. Options: 'hourly' or 'daily'</p></dd>
 
 
 <dt>population</dt>
@@ -120,11 +126,15 @@
 
 
 <dt>spatial</dt>
-<dd><p>Default = NULL. Options: 'states_us_49', 'gcam_regions_32'. Aggregate to different spatial boundaries.</p></dd>
+<dd><p>Default = NULL. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52'. Aggregate to different spatial boundaries.</p></dd>
 
 
-<dt>temporal</dt>
+<dt>time_periods</dt>
 <dd><p>Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).</p></dd>
+
+
+<dt>dispatch_segment</dt>
+<dd><p>Default = FALSE. TRUE if want to output degree-hours by GCAM-USA dispatch segment. This can only be TRUE when model time_step is set to 'hourly'.</p></dd>
 
 
 <dt>reference_temp_F</dt>

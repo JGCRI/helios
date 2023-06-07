@@ -97,7 +97,8 @@
 
       
 
-      </header><div class="row">
+      </header><script src="vignette_gcam-usa_files/kePrint-0.0.1/kePrint.js"></script><link href="vignette_gcam-usa_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>GCAM-USA</h1>
@@ -315,23 +316,5885 @@ cooling, residential heating, and residential cooling.</p>
 <p align="center">
 <img src="vignetteFigs/divider.png"></p>
 <div class="section level3">
-<h3 id="example-climate-and-population-dataset">Example climate and population dataset<a class="anchor" aria-label="anchor" href="#example-climate-and-population-dataset"></a>
+<h3 id="example-climate-and-population-data">Example climate and population data<a class="anchor" aria-label="anchor" href="#example-climate-and-population-data"></a>
 </h3>
-<p>Due to large size of the climate data (netCDF file),
-<code>helios</code> provide spatially subsetted example dataset for
+<p>Due to large size of the climate data (NetCDF file),
+<code>helios</code> provide spatially subset of example data for
 demonstration purpose.</p>
 <ul>
 <li>
 <strong>Climate NetCDF File</strong>:
-<code><a href="../reference/example_wrf_usa_ncdf.html">helios::example_wrf_usa_ncdf</a></code> subsets subsets an
-approxmitely [-119.86,-118.18,37.99, 39.30] longitude and latitude box
-within the U.S. (12-km resolution) from the WRF hourly data. Data time
-ranges from 2020-01-01 01:00:00 to 2020-01-08 00:00:00.</li>
+<code><a href="../reference/example_wrf_usa_ncdf.html">helios::example_wrf_usa_ncdf</a></code> subsets an approximately
+[-119.86,-118.18,37.99, 39.30] longitude and latitude box within the
+U.S. (12-km resolution) from the WRF hourly data. Data time ranges from
+2020-01-01 01:00:00 to 2020-01-08 00:00:00.</li>
 <li>
 <strong>Population CSV File</strong>:
 <code><a href="../reference/example_pop_usa_csv.html">helios::example_pop_usa_csv</a></code> is population for 2020, which
 is geo-referenced to WRF grid cells.</li>
 </ul>
+<p><br></p>
+</div>
+<div class="section level3">
+<h3 id="read-climate-and-population-data">Read climate and population data<a class="anchor" aria-label="anchor" href="#read-climate-and-population-data"></a>
+</h3>
+<p>Users can use <code>helios</code> functions to read climate and
+population data and convert to tabular table with latitudes and
+longitudes.</p>
+<ul>
+<li>
+<code><a href="../reference/read_ncdf.html">helios::read_ncdf</a></code> accepts NetCDF format</li>
+<li>
+<code><a href="../reference/read_population.html">helios::read_population</a></code> accepts NetCDF and CSV
+formats</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># example data: WRF hourly climate at 12-km resolution</span></span>
+<span><span class="va">path_to_climate_ncdf</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">temperature</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/read_ncdf.html">read_ncdf</a></span><span class="op">(</span>ncdf <span class="op">=</span> <span class="va">path_to_climate_ncdf</span>,</span>
+<span>                                 model <span class="op">=</span> <span class="st">'wrf'</span>,</span>
+<span>                                 var <span class="op">=</span> <span class="st">'T2'</span>,</span>
+<span>                                 time_periods <span class="op">=</span> <span class="fl">2020</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named west_east BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named south_north BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named west_east BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named south_north BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named west_east BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named south_north BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span></code></pre>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+Table. Temperature data extracted from WRF NetCDF.
+</caption>
+<thead><tr>
+<th style="text-align:right;">
+2020-01-01_01:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_02:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_03:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_04:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_05:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_06:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_07:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_08:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_09:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_10:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_11:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_12:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_13:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_14:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_15:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_16:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_17:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_18:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_19:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_20:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_21:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_22:00:00
+</th>
+<th style="text-align:right;">
+2020-01-01_23:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_00:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_01:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_02:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_03:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_04:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_05:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_06:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_07:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_08:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_09:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_10:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_11:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_12:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_13:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_14:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_15:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_16:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_17:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_18:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_19:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_20:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_21:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_22:00:00
+</th>
+<th style="text-align:right;">
+2020-01-02_23:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_00:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_01:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_02:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_03:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_04:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_05:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_06:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_07:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_08:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_09:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_10:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_11:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_12:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_13:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_14:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_15:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_16:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_17:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_18:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_19:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_20:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_21:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_22:00:00
+</th>
+<th style="text-align:right;">
+2020-01-03_23:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_00:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_01:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_02:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_03:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_04:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_05:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_06:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_07:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_08:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_09:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_10:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_11:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_12:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_13:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_14:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_15:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_16:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_17:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_18:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_19:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_20:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_21:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_22:00:00
+</th>
+<th style="text-align:right;">
+2020-01-04_23:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_00:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_01:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_02:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_03:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_04:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_05:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_06:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_07:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_08:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_09:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_10:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_11:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_12:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_13:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_14:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_15:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_16:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_17:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_18:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_19:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_20:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_21:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_22:00:00
+</th>
+<th style="text-align:right;">
+2020-01-05_23:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_00:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_01:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_02:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_03:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_04:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_05:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_06:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_07:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_08:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_09:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_10:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_11:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_12:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_13:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_14:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_15:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_16:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_17:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_18:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_19:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_20:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_21:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_22:00:00
+</th>
+<th style="text-align:right;">
+2020-01-06_23:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_00:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_01:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_02:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_03:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_04:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_05:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_06:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_07:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_08:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_09:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_10:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_11:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_12:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_13:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_14:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_15:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_16:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_17:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_18:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_19:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_20:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_21:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_22:00:00
+</th>
+<th style="text-align:right;">
+2020-01-07_23:00:00
+</th>
+<th style="text-align:right;">
+2020-01-08_00:00:00
+</th>
+<th style="text-align:right;">
+lat
+</th>
+<th style="text-align:right;">
+lon
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+276.5300
+</td>
+<td style="text-align:right;">
+275.6490
+</td>
+<td style="text-align:right;">
+275.3997
+</td>
+<td style="text-align:right;">
+276.2654
+</td>
+<td style="text-align:right;">
+276.3188
+</td>
+<td style="text-align:right;">
+275.3131
+</td>
+<td style="text-align:right;">
+275.1793
+</td>
+<td style="text-align:right;">
+275.1678
+</td>
+<td style="text-align:right;">
+275.4477
+</td>
+<td style="text-align:right;">
+274.6594
+</td>
+<td style="text-align:right;">
+275.0215
+</td>
+<td style="text-align:right;">
+274.5066
+</td>
+<td style="text-align:right;">
+274.0973
+</td>
+<td style="text-align:right;">
+273.4333
+</td>
+<td style="text-align:right;">
+273.1917
+</td>
+<td style="text-align:right;">
+273.2197
+</td>
+<td style="text-align:right;">
+273.4683
+</td>
+<td style="text-align:right;">
+274.2319
+</td>
+<td style="text-align:right;">
+274.4253
+</td>
+<td style="text-align:right;">
+274.5829
+</td>
+<td style="text-align:right;">
+274.6111
+</td>
+<td style="text-align:right;">
+274.7595
+</td>
+<td style="text-align:right;">
+274.4582
+</td>
+<td style="text-align:right;">
+274.1265
+</td>
+<td style="text-align:right;">
+272.4343
+</td>
+<td style="text-align:right;">
+272.1081
+</td>
+<td style="text-align:right;">
+272.4213
+</td>
+<td style="text-align:right;">
+272.4012
+</td>
+<td style="text-align:right;">
+272.5107
+</td>
+<td style="text-align:right;">
+272.1806
+</td>
+<td style="text-align:right;">
+271.8319
+</td>
+<td style="text-align:right;">
+271.9175
+</td>
+<td style="text-align:right;">
+271.8053
+</td>
+<td style="text-align:right;">
+271.9059
+</td>
+<td style="text-align:right;">
+272.2191
+</td>
+<td style="text-align:right;">
+272.6064
+</td>
+<td style="text-align:right;">
+272.7346
+</td>
+<td style="text-align:right;">
+272.7979
+</td>
+<td style="text-align:right;">
+272.9968
+</td>
+<td style="text-align:right;">
+273.6599
+</td>
+<td style="text-align:right;">
+274.5406
+</td>
+<td style="text-align:right;">
+275.3864
+</td>
+<td style="text-align:right;">
+276.0518
+</td>
+<td style="text-align:right;">
+276.6354
+</td>
+<td style="text-align:right;">
+276.6277
+</td>
+<td style="text-align:right;">
+276.1523
+</td>
+<td style="text-align:right;">
+275.4861
+</td>
+<td style="text-align:right;">
+274.7047
+</td>
+<td style="text-align:right;">
+274.3335
+</td>
+<td style="text-align:right;">
+274.1952
+</td>
+<td style="text-align:right;">
+274.1892
+</td>
+<td style="text-align:right;">
+274.2293
+</td>
+<td style="text-align:right;">
+273.9428
+</td>
+<td style="text-align:right;">
+274.4261
+</td>
+<td style="text-align:right;">
+274.1110
+</td>
+<td style="text-align:right;">
+274.0109
+</td>
+<td style="text-align:right;">
+274.4982
+</td>
+<td style="text-align:right;">
+273.9119
+</td>
+<td style="text-align:right;">
+272.9631
+</td>
+<td style="text-align:right;">
+273.0461
+</td>
+<td style="text-align:right;">
+273.4452
+</td>
+<td style="text-align:right;">
+273.7902
+</td>
+<td style="text-align:right;">
+273.9785
+</td>
+<td style="text-align:right;">
+274.4789
+</td>
+<td style="text-align:right;">
+275.4077
+</td>
+<td style="text-align:right;">
+275.9487
+</td>
+<td style="text-align:right;">
+276.2252
+</td>
+<td style="text-align:right;">
+276.3383
+</td>
+<td style="text-align:right;">
+276.2659
+</td>
+<td style="text-align:right;">
+276.1937
+</td>
+<td style="text-align:right;">
+275.8185
+</td>
+<td style="text-align:right;">
+275.2528
+</td>
+<td style="text-align:right;">
+273.9643
+</td>
+<td style="text-align:right;">
+273.6454
+</td>
+<td style="text-align:right;">
+274.1072
+</td>
+<td style="text-align:right;">
+274.0459
+</td>
+<td style="text-align:right;">
+273.9443
+</td>
+<td style="text-align:right;">
+273.5988
+</td>
+<td style="text-align:right;">
+273.7031
+</td>
+<td style="text-align:right;">
+273.8700
+</td>
+<td style="text-align:right;">
+274.9154
+</td>
+<td style="text-align:right;">
+274.6056
+</td>
+<td style="text-align:right;">
+274.0661
+</td>
+<td style="text-align:right;">
+273.6829
+</td>
+<td style="text-align:right;">
+273.3907
+</td>
+<td style="text-align:right;">
+272.8367
+</td>
+<td style="text-align:right;">
+272.8774
+</td>
+<td style="text-align:right;">
+273.5490
+</td>
+<td style="text-align:right;">
+274.2466
+</td>
+<td style="text-align:right;">
+274.6936
+</td>
+<td style="text-align:right;">
+275.6333
+</td>
+<td style="text-align:right;">
+276.2151
+</td>
+<td style="text-align:right;">
+276.7635
+</td>
+<td style="text-align:right;">
+276.6874
+</td>
+<td style="text-align:right;">
+276.6274
+</td>
+<td style="text-align:right;">
+276.0013
+</td>
+<td style="text-align:right;">
+275.3850
+</td>
+<td style="text-align:right;">
+274.8209
+</td>
+<td style="text-align:right;">
+275.0423
+</td>
+<td style="text-align:right;">
+275.4397
+</td>
+<td style="text-align:right;">
+275.5713
+</td>
+<td style="text-align:right;">
+275.5521
+</td>
+<td style="text-align:right;">
+275.4211
+</td>
+<td style="text-align:right;">
+275.0807
+</td>
+<td style="text-align:right;">
+275.4684
+</td>
+<td style="text-align:right;">
+275.2352
+</td>
+<td style="text-align:right;">
+274.5827
+</td>
+<td style="text-align:right;">
+274.8870
+</td>
+<td style="text-align:right;">
+274.7747
+</td>
+<td style="text-align:right;">
+274.5350
+</td>
+<td style="text-align:right;">
+274.5713
+</td>
+<td style="text-align:right;">
+275.0025
+</td>
+<td style="text-align:right;">
+275.7573
+</td>
+<td style="text-align:right;">
+276.5378
+</td>
+<td style="text-align:right;">
+276.8432
+</td>
+<td style="text-align:right;">
+278.0032
+</td>
+<td style="text-align:right;">
+278.5198
+</td>
+<td style="text-align:right;">
+278.0701
+</td>
+<td style="text-align:right;">
+277.0977
+</td>
+<td style="text-align:right;">
+275.7569
+</td>
+<td style="text-align:right;">
+277.0160
+</td>
+<td style="text-align:right;">
+276.0139
+</td>
+<td style="text-align:right;">
+275.3785
+</td>
+<td style="text-align:right;">
+274.4422
+</td>
+<td style="text-align:right;">
+275.7768
+</td>
+<td style="text-align:right;">
+277.2616
+</td>
+<td style="text-align:right;">
+276.1501
+</td>
+<td style="text-align:right;">
+276.7281
+</td>
+<td style="text-align:right;">
+276.7648
+</td>
+<td style="text-align:right;">
+276.8806
+</td>
+<td style="text-align:right;">
+276.5486
+</td>
+<td style="text-align:right;">
+276.3167
+</td>
+<td style="text-align:right;">
+275.7559
+</td>
+<td style="text-align:right;">
+275.4862
+</td>
+<td style="text-align:right;">
+275.3027
+</td>
+<td style="text-align:right;">
+275.8199
+</td>
+<td style="text-align:right;">
+276.3640
+</td>
+<td style="text-align:right;">
+277.2781
+</td>
+<td style="text-align:right;">
+278.2332
+</td>
+<td style="text-align:right;">
+278.1565
+</td>
+<td style="text-align:right;">
+277.5609
+</td>
+<td style="text-align:right;">
+277.0736
+</td>
+<td style="text-align:right;">
+276.5292
+</td>
+<td style="text-align:right;">
+276.0348
+</td>
+<td style="text-align:right;">
+275.3117
+</td>
+<td style="text-align:right;">
+275.4704
+</td>
+<td style="text-align:right;">
+275.4094
+</td>
+<td style="text-align:right;">
+275.2180
+</td>
+<td style="text-align:right;">
+274.9099
+</td>
+<td style="text-align:right;">
+274.4805
+</td>
+<td style="text-align:right;">
+274.4451
+</td>
+<td style="text-align:right;">
+274.3776
+</td>
+<td style="text-align:right;">
+274.1708
+</td>
+<td style="text-align:right;">
+273.1686
+</td>
+<td style="text-align:right;">
+272.9023
+</td>
+<td style="text-align:right;">
+272.9958
+</td>
+<td style="text-align:right;">
+273.0955
+</td>
+<td style="text-align:right;">
+272.8990
+</td>
+<td style="text-align:right;">
+272.7543
+</td>
+<td style="text-align:right;">
+273.0616
+</td>
+<td style="text-align:right;">
+274.1968
+</td>
+<td style="text-align:right;">
+275.6386
+</td>
+<td style="text-align:right;">
+276.4114
+</td>
+<td style="text-align:right;">
+276.2007
+</td>
+<td style="text-align:right;">
+276.0780
+</td>
+<td style="text-align:right;">
+276.0026
+</td>
+<td style="text-align:right;">
+275.6364
+</td>
+<td style="text-align:right;">
+274.7948
+</td>
+<td style="text-align:right;">
+39.04633
+</td>
+<td style="text-align:right;">
+-119.8572
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+277.5141
+</td>
+<td style="text-align:right;">
+276.6511
+</td>
+<td style="text-align:right;">
+276.4965
+</td>
+<td style="text-align:right;">
+276.4675
+</td>
+<td style="text-align:right;">
+276.6721
+</td>
+<td style="text-align:right;">
+276.1877
+</td>
+<td style="text-align:right;">
+275.8394
+</td>
+<td style="text-align:right;">
+275.2877
+</td>
+<td style="text-align:right;">
+275.8579
+</td>
+<td style="text-align:right;">
+276.3694
+</td>
+<td style="text-align:right;">
+275.4083
+</td>
+<td style="text-align:right;">
+275.0790
+</td>
+<td style="text-align:right;">
+274.4619
+</td>
+<td style="text-align:right;">
+274.3538
+</td>
+<td style="text-align:right;">
+274.1082
+</td>
+<td style="text-align:right;">
+273.8329
+</td>
+<td style="text-align:right;">
+274.4260
+</td>
+<td style="text-align:right;">
+274.9395
+</td>
+<td style="text-align:right;">
+275.4879
+</td>
+<td style="text-align:right;">
+276.1248
+</td>
+<td style="text-align:right;">
+276.6231
+</td>
+<td style="text-align:right;">
+276.6717
+</td>
+<td style="text-align:right;">
+276.1452
+</td>
+<td style="text-align:right;">
+274.9381
+</td>
+<td style="text-align:right;">
+272.6784
+</td>
+<td style="text-align:right;">
+272.2010
+</td>
+<td style="text-align:right;">
+273.0173
+</td>
+<td style="text-align:right;">
+273.0609
+</td>
+<td style="text-align:right;">
+272.9960
+</td>
+<td style="text-align:right;">
+272.9965
+</td>
+<td style="text-align:right;">
+272.8297
+</td>
+<td style="text-align:right;">
+272.6760
+</td>
+<td style="text-align:right;">
+272.5325
+</td>
+<td style="text-align:right;">
+272.5701
+</td>
+<td style="text-align:right;">
+272.7784
+</td>
+<td style="text-align:right;">
+272.8768
+</td>
+<td style="text-align:right;">
+272.8011
+</td>
+<td style="text-align:right;">
+272.7975
+</td>
+<td style="text-align:right;">
+272.5889
+</td>
+<td style="text-align:right;">
+273.0603
+</td>
+<td style="text-align:right;">
+274.5363
+</td>
+<td style="text-align:right;">
+275.9919
+</td>
+<td style="text-align:right;">
+276.7416
+</td>
+<td style="text-align:right;">
+277.4496
+</td>
+<td style="text-align:right;">
+277.6798
+</td>
+<td style="text-align:right;">
+277.4659
+</td>
+<td style="text-align:right;">
+276.7717
+</td>
+<td style="text-align:right;">
+275.5746
+</td>
+<td style="text-align:right;">
+274.4180
+</td>
+<td style="text-align:right;">
+274.3222
+</td>
+<td style="text-align:right;">
+274.6838
+</td>
+<td style="text-align:right;">
+275.0549
+</td>
+<td style="text-align:right;">
+275.0276
+</td>
+<td style="text-align:right;">
+275.1476
+</td>
+<td style="text-align:right;">
+275.1376
+</td>
+<td style="text-align:right;">
+274.3068
+</td>
+<td style="text-align:right;">
+273.8412
+</td>
+<td style="text-align:right;">
+273.4651
+</td>
+<td style="text-align:right;">
+273.8712
+</td>
+<td style="text-align:right;">
+274.4512
+</td>
+<td style="text-align:right;">
+274.6930
+</td>
+<td style="text-align:right;">
+274.3943
+</td>
+<td style="text-align:right;">
+274.4009
+</td>
+<td style="text-align:right;">
+275.2033
+</td>
+<td style="text-align:right;">
+276.1421
+</td>
+<td style="text-align:right;">
+276.6801
+</td>
+<td style="text-align:right;">
+276.6435
+</td>
+<td style="text-align:right;">
+276.9244
+</td>
+<td style="text-align:right;">
+277.2086
+</td>
+<td style="text-align:right;">
+277.0903
+</td>
+<td style="text-align:right;">
+276.7776
+</td>
+<td style="text-align:right;">
+276.0005
+</td>
+<td style="text-align:right;">
+274.5606
+</td>
+<td style="text-align:right;">
+274.5313
+</td>
+<td style="text-align:right;">
+274.6798
+</td>
+<td style="text-align:right;">
+274.5377
+</td>
+<td style="text-align:right;">
+273.9607
+</td>
+<td style="text-align:right;">
+273.9301
+</td>
+<td style="text-align:right;">
+274.4709
+</td>
+<td style="text-align:right;">
+274.2786
+</td>
+<td style="text-align:right;">
+273.9256
+</td>
+<td style="text-align:right;">
+273.8497
+</td>
+<td style="text-align:right;">
+274.0740
+</td>
+<td style="text-align:right;">
+274.1812
+</td>
+<td style="text-align:right;">
+274.0009
+</td>
+<td style="text-align:right;">
+273.9956
+</td>
+<td style="text-align:right;">
+273.8887
+</td>
+<td style="text-align:right;">
+274.3809
+</td>
+<td style="text-align:right;">
+274.8143
+</td>
+<td style="text-align:right;">
+275.8507
+</td>
+<td style="text-align:right;">
+276.7177
+</td>
+<td style="text-align:right;">
+277.8681
+</td>
+<td style="text-align:right;">
+278.6509
+</td>
+<td style="text-align:right;">
+278.1268
+</td>
+<td style="text-align:right;">
+277.3544
+</td>
+<td style="text-align:right;">
+276.0275
+</td>
+<td style="text-align:right;">
+275.1082
+</td>
+<td style="text-align:right;">
+275.3980
+</td>
+<td style="text-align:right;">
+275.6841
+</td>
+<td style="text-align:right;">
+275.8140
+</td>
+<td style="text-align:right;">
+275.6926
+</td>
+<td style="text-align:right;">
+275.6695
+</td>
+<td style="text-align:right;">
+276.1281
+</td>
+<td style="text-align:right;">
+275.8368
+</td>
+<td style="text-align:right;">
+275.8124
+</td>
+<td style="text-align:right;">
+276.5654
+</td>
+<td style="text-align:right;">
+275.9763
+</td>
+<td style="text-align:right;">
+275.9733
+</td>
+<td style="text-align:right;">
+276.0538
+</td>
+<td style="text-align:right;">
+276.0152
+</td>
+<td style="text-align:right;">
+275.9520
+</td>
+<td style="text-align:right;">
+276.3412
+</td>
+<td style="text-align:right;">
+277.4697
+</td>
+<td style="text-align:right;">
+278.1335
+</td>
+<td style="text-align:right;">
+278.1875
+</td>
+<td style="text-align:right;">
+278.8406
+</td>
+<td style="text-align:right;">
+279.7073
+</td>
+<td style="text-align:right;">
+280.8174
+</td>
+<td style="text-align:right;">
+278.4150
+</td>
+<td style="text-align:right;">
+277.9463
+</td>
+<td style="text-align:right;">
+278.1956
+</td>
+<td style="text-align:right;">
+276.6802
+</td>
+<td style="text-align:right;">
+275.5489
+</td>
+<td style="text-align:right;">
+275.3153
+</td>
+<td style="text-align:right;">
+276.3322
+</td>
+<td style="text-align:right;">
+277.3853
+</td>
+<td style="text-align:right;">
+278.4218
+</td>
+<td style="text-align:right;">
+276.2948
+</td>
+<td style="text-align:right;">
+276.6752
+</td>
+<td style="text-align:right;">
+276.6145
+</td>
+<td style="text-align:right;">
+276.5230
+</td>
+<td style="text-align:right;">
+276.4247
+</td>
+<td style="text-align:right;">
+276.5587
+</td>
+<td style="text-align:right;">
+277.3104
+</td>
+<td style="text-align:right;">
+276.9005
+</td>
+<td style="text-align:right;">
+276.7920
+</td>
+<td style="text-align:right;">
+277.1361
+</td>
+<td style="text-align:right;">
+278.5967
+</td>
+<td style="text-align:right;">
+279.8486
+</td>
+<td style="text-align:right;">
+280.3044
+</td>
+<td style="text-align:right;">
+280.2184
+</td>
+<td style="text-align:right;">
+279.5405
+</td>
+<td style="text-align:right;">
+278.8965
+</td>
+<td style="text-align:right;">
+278.0336
+</td>
+<td style="text-align:right;">
+276.8735
+</td>
+<td style="text-align:right;">
+276.4886
+</td>
+<td style="text-align:right;">
+276.0832
+</td>
+<td style="text-align:right;">
+275.4787
+</td>
+<td style="text-align:right;">
+275.3219
+</td>
+<td style="text-align:right;">
+274.7709
+</td>
+<td style="text-align:right;">
+274.3778
+</td>
+<td style="text-align:right;">
+274.4568
+</td>
+<td style="text-align:right;">
+274.0514
+</td>
+<td style="text-align:right;">
+274.2767
+</td>
+<td style="text-align:right;">
+274.4294
+</td>
+<td style="text-align:right;">
+274.5095
+</td>
+<td style="text-align:right;">
+274.7887
+</td>
+<td style="text-align:right;">
+274.8346
+</td>
+<td style="text-align:right;">
+273.6943
+</td>
+<td style="text-align:right;">
+273.4651
+</td>
+<td style="text-align:right;">
+274.9919
+</td>
+<td style="text-align:right;">
+276.2297
+</td>
+<td style="text-align:right;">
+277.4387
+</td>
+<td style="text-align:right;">
+278.1524
+</td>
+<td style="text-align:right;">
+277.9485
+</td>
+<td style="text-align:right;">
+278.0944
+</td>
+<td style="text-align:right;">
+277.7947
+</td>
+<td style="text-align:right;">
+276.7672
+</td>
+<td style="text-align:right;">
+39.07250
+</td>
+<td style="text-align:right;">
+-119.7211
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+277.4338
+</td>
+<td style="text-align:right;">
+277.3451
+</td>
+<td style="text-align:right;">
+276.8208
+</td>
+<td style="text-align:right;">
+276.5629
+</td>
+<td style="text-align:right;">
+276.3838
+</td>
+<td style="text-align:right;">
+276.4206
+</td>
+<td style="text-align:right;">
+275.5637
+</td>
+<td style="text-align:right;">
+275.1495
+</td>
+<td style="text-align:right;">
+275.4079
+</td>
+<td style="text-align:right;">
+274.7087
+</td>
+<td style="text-align:right;">
+274.0557
+</td>
+<td style="text-align:right;">
+273.5301
+</td>
+<td style="text-align:right;">
+273.8975
+</td>
+<td style="text-align:right;">
+273.4431
+</td>
+<td style="text-align:right;">
+273.0273
+</td>
+<td style="text-align:right;">
+273.4006
+</td>
+<td style="text-align:right;">
+274.5069
+</td>
+<td style="text-align:right;">
+274.8414
+</td>
+<td style="text-align:right;">
+275.4318
+</td>
+<td style="text-align:right;">
+275.9485
+</td>
+<td style="text-align:right;">
+276.2454
+</td>
+<td style="text-align:right;">
+276.2336
+</td>
+<td style="text-align:right;">
+275.5822
+</td>
+<td style="text-align:right;">
+273.6338
+</td>
+<td style="text-align:right;">
+271.9279
+</td>
+<td style="text-align:right;">
+271.1920
+</td>
+<td style="text-align:right;">
+272.5292
+</td>
+<td style="text-align:right;">
+272.1657
+</td>
+<td style="text-align:right;">
+271.9913
+</td>
+<td style="text-align:right;">
+272.0365
+</td>
+<td style="text-align:right;">
+271.9078
+</td>
+<td style="text-align:right;">
+271.7598
+</td>
+<td style="text-align:right;">
+271.4124
+</td>
+<td style="text-align:right;">
+271.0777
+</td>
+<td style="text-align:right;">
+271.3087
+</td>
+<td style="text-align:right;">
+271.5481
+</td>
+<td style="text-align:right;">
+271.5678
+</td>
+<td style="text-align:right;">
+271.3572
+</td>
+<td style="text-align:right;">
+271.3090
+</td>
+<td style="text-align:right;">
+272.3175
+</td>
+<td style="text-align:right;">
+274.1086
+</td>
+<td style="text-align:right;">
+275.4430
+</td>
+<td style="text-align:right;">
+276.2410
+</td>
+<td style="text-align:right;">
+276.8939
+</td>
+<td style="text-align:right;">
+277.0539
+</td>
+<td style="text-align:right;">
+276.9896
+</td>
+<td style="text-align:right;">
+276.1978
+</td>
+<td style="text-align:right;">
+274.2848
+</td>
+<td style="text-align:right;">
+273.4598
+</td>
+<td style="text-align:right;">
+274.0288
+</td>
+<td style="text-align:right;">
+274.0605
+</td>
+<td style="text-align:right;">
+273.9382
+</td>
+<td style="text-align:right;">
+274.0850
+</td>
+<td style="text-align:right;">
+273.9896
+</td>
+<td style="text-align:right;">
+274.0732
+</td>
+<td style="text-align:right;">
+274.1925
+</td>
+<td style="text-align:right;">
+273.2381
+</td>
+<td style="text-align:right;">
+272.9239
+</td>
+<td style="text-align:right;">
+273.3215
+</td>
+<td style="text-align:right;">
+273.4763
+</td>
+<td style="text-align:right;">
+273.3856
+</td>
+<td style="text-align:right;">
+273.2394
+</td>
+<td style="text-align:right;">
+273.3382
+</td>
+<td style="text-align:right;">
+274.1041
+</td>
+<td style="text-align:right;">
+275.5028
+</td>
+<td style="text-align:right;">
+276.5359
+</td>
+<td style="text-align:right;">
+276.6447
+</td>
+<td style="text-align:right;">
+277.0298
+</td>
+<td style="text-align:right;">
+277.1918
+</td>
+<td style="text-align:right;">
+277.0930
+</td>
+<td style="text-align:right;">
+276.5129
+</td>
+<td style="text-align:right;">
+275.3564
+</td>
+<td style="text-align:right;">
+274.2963
+</td>
+<td style="text-align:right;">
+274.2750
+</td>
+<td style="text-align:right;">
+274.3716
+</td>
+<td style="text-align:right;">
+274.0932
+</td>
+<td style="text-align:right;">
+273.6718
+</td>
+<td style="text-align:right;">
+273.6484
+</td>
+<td style="text-align:right;">
+273.8635
+</td>
+<td style="text-align:right;">
+274.0537
+</td>
+<td style="text-align:right;">
+274.0068
+</td>
+<td style="text-align:right;">
+274.0025
+</td>
+<td style="text-align:right;">
+274.0842
+</td>
+<td style="text-align:right;">
+273.7983
+</td>
+<td style="text-align:right;">
+273.9827
+</td>
+<td style="text-align:right;">
+273.6584
+</td>
+<td style="text-align:right;">
+273.4251
+</td>
+<td style="text-align:right;">
+273.7102
+</td>
+<td style="text-align:right;">
+274.6863
+</td>
+<td style="text-align:right;">
+275.9803
+</td>
+<td style="text-align:right;">
+277.0750
+</td>
+<td style="text-align:right;">
+277.8293
+</td>
+<td style="text-align:right;">
+277.6727
+</td>
+<td style="text-align:right;">
+277.1702
+</td>
+<td style="text-align:right;">
+276.3065
+</td>
+<td style="text-align:right;">
+275.4015
+</td>
+<td style="text-align:right;">
+274.7246
+</td>
+<td style="text-align:right;">
+274.9166
+</td>
+<td style="text-align:right;">
+275.4112
+</td>
+<td style="text-align:right;">
+275.4323
+</td>
+<td style="text-align:right;">
+275.4433
+</td>
+<td style="text-align:right;">
+275.3102
+</td>
+<td style="text-align:right;">
+275.6197
+</td>
+<td style="text-align:right;">
+275.5220
+</td>
+<td style="text-align:right;">
+276.0020
+</td>
+<td style="text-align:right;">
+276.0228
+</td>
+<td style="text-align:right;">
+275.6092
+</td>
+<td style="text-align:right;">
+276.1223
+</td>
+<td style="text-align:right;">
+276.1828
+</td>
+<td style="text-align:right;">
+276.0825
+</td>
+<td style="text-align:right;">
+276.1298
+</td>
+<td style="text-align:right;">
+276.4129
+</td>
+<td style="text-align:right;">
+277.2372
+</td>
+<td style="text-align:right;">
+277.8974
+</td>
+<td style="text-align:right;">
+278.2938
+</td>
+<td style="text-align:right;">
+279.2236
+</td>
+<td style="text-align:right;">
+280.4651
+</td>
+<td style="text-align:right;">
+280.3109
+</td>
+<td style="text-align:right;">
+277.7477
+</td>
+<td style="text-align:right;">
+276.8280
+</td>
+<td style="text-align:right;">
+277.2137
+</td>
+<td style="text-align:right;">
+276.6455
+</td>
+<td style="text-align:right;">
+275.9772
+</td>
+<td style="text-align:right;">
+276.2234
+</td>
+<td style="text-align:right;">
+277.0934
+</td>
+<td style="text-align:right;">
+276.7909
+</td>
+<td style="text-align:right;">
+276.9845
+</td>
+<td style="text-align:right;">
+276.3396
+</td>
+<td style="text-align:right;">
+276.0008
+</td>
+<td style="text-align:right;">
+274.9017
+</td>
+<td style="text-align:right;">
+275.1274
+</td>
+<td style="text-align:right;">
+275.2122
+</td>
+<td style="text-align:right;">
+276.7889
+</td>
+<td style="text-align:right;">
+276.7823
+</td>
+<td style="text-align:right;">
+276.7444
+</td>
+<td style="text-align:right;">
+276.7426
+</td>
+<td style="text-align:right;">
+276.7131
+</td>
+<td style="text-align:right;">
+277.6767
+</td>
+<td style="text-align:right;">
+278.2821
+</td>
+<td style="text-align:right;">
+278.5796
+</td>
+<td style="text-align:right;">
+278.0051
+</td>
+<td style="text-align:right;">
+277.5120
+</td>
+<td style="text-align:right;">
+276.4938
+</td>
+<td style="text-align:right;">
+275.7630
+</td>
+<td style="text-align:right;">
+274.8125
+</td>
+<td style="text-align:right;">
+274.4836
+</td>
+<td style="text-align:right;">
+273.6418
+</td>
+<td style="text-align:right;">
+273.3192
+</td>
+<td style="text-align:right;">
+273.6409
+</td>
+<td style="text-align:right;">
+273.2992
+</td>
+<td style="text-align:right;">
+272.8663
+</td>
+<td style="text-align:right;">
+272.8728
+</td>
+<td style="text-align:right;">
+272.5224
+</td>
+<td style="text-align:right;">
+273.2383
+</td>
+<td style="text-align:right;">
+273.6937
+</td>
+<td style="text-align:right;">
+273.6470
+</td>
+<td style="text-align:right;">
+273.6143
+</td>
+<td style="text-align:right;">
+273.2316
+</td>
+<td style="text-align:right;">
+272.8201
+</td>
+<td style="text-align:right;">
+273.4341
+</td>
+<td style="text-align:right;">
+274.4675
+</td>
+<td style="text-align:right;">
+275.2092
+</td>
+<td style="text-align:right;">
+275.9472
+</td>
+<td style="text-align:right;">
+276.5947
+</td>
+<td style="text-align:right;">
+276.3076
+</td>
+<td style="text-align:right;">
+276.2460
+</td>
+<td style="text-align:right;">
+275.9823
+</td>
+<td style="text-align:right;">
+274.6244
+</td>
+<td style="text-align:right;">
+39.09851
+</td>
+<td style="text-align:right;">
+-119.5850
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+276.1456
+</td>
+<td style="text-align:right;">
+276.6089
+</td>
+<td style="text-align:right;">
+276.2645
+</td>
+<td style="text-align:right;">
+276.0904
+</td>
+<td style="text-align:right;">
+275.8828
+</td>
+<td style="text-align:right;">
+275.7302
+</td>
+<td style="text-align:right;">
+274.7753
+</td>
+<td style="text-align:right;">
+274.7005
+</td>
+<td style="text-align:right;">
+273.7611
+</td>
+<td style="text-align:right;">
+273.7706
+</td>
+<td style="text-align:right;">
+272.9093
+</td>
+<td style="text-align:right;">
+272.3963
+</td>
+<td style="text-align:right;">
+272.1255
+</td>
+<td style="text-align:right;">
+272.2478
+</td>
+<td style="text-align:right;">
+271.9475
+</td>
+<td style="text-align:right;">
+272.5542
+</td>
+<td style="text-align:right;">
+274.0496
+</td>
+<td style="text-align:right;">
+274.5827
+</td>
+<td style="text-align:right;">
+275.0481
+</td>
+<td style="text-align:right;">
+275.5301
+</td>
+<td style="text-align:right;">
+275.7291
+</td>
+<td style="text-align:right;">
+275.5295
+</td>
+<td style="text-align:right;">
+274.6008
+</td>
+<td style="text-align:right;">
+272.9986
+</td>
+<td style="text-align:right;">
+271.7695
+</td>
+<td style="text-align:right;">
+271.6637
+</td>
+<td style="text-align:right;">
+272.1436
+</td>
+<td style="text-align:right;">
+272.0763
+</td>
+<td style="text-align:right;">
+271.8557
+</td>
+<td style="text-align:right;">
+271.7850
+</td>
+<td style="text-align:right;">
+271.6707
+</td>
+<td style="text-align:right;">
+271.1430
+</td>
+<td style="text-align:right;">
+270.9333
+</td>
+<td style="text-align:right;">
+270.8156
+</td>
+<td style="text-align:right;">
+271.0215
+</td>
+<td style="text-align:right;">
+271.3642
+</td>
+<td style="text-align:right;">
+271.0447
+</td>
+<td style="text-align:right;">
+270.7107
+</td>
+<td style="text-align:right;">
+270.6114
+</td>
+<td style="text-align:right;">
+271.6955
+</td>
+<td style="text-align:right;">
+273.4649
+</td>
+<td style="text-align:right;">
+274.1854
+</td>
+<td style="text-align:right;">
+274.5420
+</td>
+<td style="text-align:right;">
+275.1171
+</td>
+<td style="text-align:right;">
+275.2093
+</td>
+<td style="text-align:right;">
+275.2749
+</td>
+<td style="text-align:right;">
+274.5500
+</td>
+<td style="text-align:right;">
+272.9525
+</td>
+<td style="text-align:right;">
+272.8267
+</td>
+<td style="text-align:right;">
+273.6593
+</td>
+<td style="text-align:right;">
+273.4767
+</td>
+<td style="text-align:right;">
+273.5377
+</td>
+<td style="text-align:right;">
+274.1450
+</td>
+<td style="text-align:right;">
+274.1204
+</td>
+<td style="text-align:right;">
+273.8391
+</td>
+<td style="text-align:right;">
+273.2641
+</td>
+<td style="text-align:right;">
+272.1939
+</td>
+<td style="text-align:right;">
+271.6876
+</td>
+<td style="text-align:right;">
+272.1254
+</td>
+<td style="text-align:right;">
+272.5572
+</td>
+<td style="text-align:right;">
+272.4587
+</td>
+<td style="text-align:right;">
+272.2798
+</td>
+<td style="text-align:right;">
+272.2192
+</td>
+<td style="text-align:right;">
+273.6588
+</td>
+<td style="text-align:right;">
+274.7536
+</td>
+<td style="text-align:right;">
+275.2897
+</td>
+<td style="text-align:right;">
+275.3186
+</td>
+<td style="text-align:right;">
+275.5145
+</td>
+<td style="text-align:right;">
+275.6787
+</td>
+<td style="text-align:right;">
+275.7152
+</td>
+<td style="text-align:right;">
+275.5137
+</td>
+<td style="text-align:right;">
+274.8559
+</td>
+<td style="text-align:right;">
+274.0413
+</td>
+<td style="text-align:right;">
+273.9953
+</td>
+<td style="text-align:right;">
+273.8416
+</td>
+<td style="text-align:right;">
+273.4784
+</td>
+<td style="text-align:right;">
+273.3740
+</td>
+<td style="text-align:right;">
+273.5189
+</td>
+<td style="text-align:right;">
+273.5863
+</td>
+<td style="text-align:right;">
+273.5869
+</td>
+<td style="text-align:right;">
+273.4971
+</td>
+<td style="text-align:right;">
+273.4205
+</td>
+<td style="text-align:right;">
+273.4194
+</td>
+<td style="text-align:right;">
+273.2730
+</td>
+<td style="text-align:right;">
+273.0462
+</td>
+<td style="text-align:right;">
+272.6932
+</td>
+<td style="text-align:right;">
+272.8140
+</td>
+<td style="text-align:right;">
+273.1826
+</td>
+<td style="text-align:right;">
+274.1861
+</td>
+<td style="text-align:right;">
+274.7333
+</td>
+<td style="text-align:right;">
+275.1110
+</td>
+<td style="text-align:right;">
+275.4164
+</td>
+<td style="text-align:right;">
+275.3711
+</td>
+<td style="text-align:right;">
+275.1987
+</td>
+<td style="text-align:right;">
+275.0210
+</td>
+<td style="text-align:right;">
+274.9586
+</td>
+<td style="text-align:right;">
+274.4376
+</td>
+<td style="text-align:right;">
+274.8642
+</td>
+<td style="text-align:right;">
+275.4652
+</td>
+<td style="text-align:right;">
+275.4933
+</td>
+<td style="text-align:right;">
+275.6212
+</td>
+<td style="text-align:right;">
+275.0191
+</td>
+<td style="text-align:right;">
+274.6194
+</td>
+<td style="text-align:right;">
+274.8094
+</td>
+<td style="text-align:right;">
+275.2186
+</td>
+<td style="text-align:right;">
+274.6300
+</td>
+<td style="text-align:right;">
+274.7623
+</td>
+<td style="text-align:right;">
+275.7848
+</td>
+<td style="text-align:right;">
+275.7439
+</td>
+<td style="text-align:right;">
+275.8395
+</td>
+<td style="text-align:right;">
+276.2976
+</td>
+<td style="text-align:right;">
+275.9301
+</td>
+<td style="text-align:right;">
+276.6202
+</td>
+<td style="text-align:right;">
+277.2888
+</td>
+<td style="text-align:right;">
+277.6465
+</td>
+<td style="text-align:right;">
+277.9364
+</td>
+<td style="text-align:right;">
+279.3745
+</td>
+<td style="text-align:right;">
+279.6475
+</td>
+<td style="text-align:right;">
+277.0350
+</td>
+<td style="text-align:right;">
+275.2559
+</td>
+<td style="text-align:right;">
+276.3464
+</td>
+<td style="text-align:right;">
+275.9424
+</td>
+<td style="text-align:right;">
+275.2310
+</td>
+<td style="text-align:right;">
+275.6198
+</td>
+<td style="text-align:right;">
+276.4088
+</td>
+<td style="text-align:right;">
+275.8312
+</td>
+<td style="text-align:right;">
+275.9510
+</td>
+<td style="text-align:right;">
+276.2417
+</td>
+<td style="text-align:right;">
+275.5269
+</td>
+<td style="text-align:right;">
+275.2292
+</td>
+<td style="text-align:right;">
+274.7899
+</td>
+<td style="text-align:right;">
+274.2027
+</td>
+<td style="text-align:right;">
+275.4911
+</td>
+<td style="text-align:right;">
+275.3581
+</td>
+<td style="text-align:right;">
+275.3609
+</td>
+<td style="text-align:right;">
+275.5811
+</td>
+<td style="text-align:right;">
+276.0458
+</td>
+<td style="text-align:right;">
+276.4993
+</td>
+<td style="text-align:right;">
+276.5338
+</td>
+<td style="text-align:right;">
+276.0800
+</td>
+<td style="text-align:right;">
+276.0114
+</td>
+<td style="text-align:right;">
+276.2060
+</td>
+<td style="text-align:right;">
+275.8844
+</td>
+<td style="text-align:right;">
+275.0990
+</td>
+<td style="text-align:right;">
+274.5387
+</td>
+<td style="text-align:right;">
+273.9092
+</td>
+<td style="text-align:right;">
+273.1283
+</td>
+<td style="text-align:right;">
+273.0601
+</td>
+<td style="text-align:right;">
+273.2600
+</td>
+<td style="text-align:right;">
+273.2537
+</td>
+<td style="text-align:right;">
+273.1850
+</td>
+<td style="text-align:right;">
+273.0403
+</td>
+<td style="text-align:right;">
+272.8943
+</td>
+<td style="text-align:right;">
+272.4073
+</td>
+<td style="text-align:right;">
+272.2921
+</td>
+<td style="text-align:right;">
+272.3653
+</td>
+<td style="text-align:right;">
+272.7559
+</td>
+<td style="text-align:right;">
+272.3257
+</td>
+<td style="text-align:right;">
+271.8370
+</td>
+<td style="text-align:right;">
+272.3258
+</td>
+<td style="text-align:right;">
+273.9063
+</td>
+<td style="text-align:right;">
+274.6393
+</td>
+<td style="text-align:right;">
+275.2941
+</td>
+<td style="text-align:right;">
+275.8652
+</td>
+<td style="text-align:right;">
+275.6672
+</td>
+<td style="text-align:right;">
+275.2633
+</td>
+<td style="text-align:right;">
+274.9958
+</td>
+<td style="text-align:right;">
+273.8153
+</td>
+<td style="text-align:right;">
+39.12438
+</td>
+<td style="text-align:right;">
+-119.4488
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+277.5574
+</td>
+<td style="text-align:right;">
+277.1606
+</td>
+<td style="text-align:right;">
+276.3387
+</td>
+<td style="text-align:right;">
+277.1970
+</td>
+<td style="text-align:right;">
+277.0124
+</td>
+<td style="text-align:right;">
+275.9257
+</td>
+<td style="text-align:right;">
+276.3840
+</td>
+<td style="text-align:right;">
+275.5539
+</td>
+<td style="text-align:right;">
+274.9964
+</td>
+<td style="text-align:right;">
+274.6070
+</td>
+<td style="text-align:right;">
+274.0705
+</td>
+<td style="text-align:right;">
+273.9977
+</td>
+<td style="text-align:right;">
+273.1750
+</td>
+<td style="text-align:right;">
+273.4080
+</td>
+<td style="text-align:right;">
+273.4267
+</td>
+<td style="text-align:right;">
+273.8522
+</td>
+<td style="text-align:right;">
+275.1465
+</td>
+<td style="text-align:right;">
+276.0978
+</td>
+<td style="text-align:right;">
+276.7463
+</td>
+<td style="text-align:right;">
+277.2297
+</td>
+<td style="text-align:right;">
+277.4701
+</td>
+<td style="text-align:right;">
+277.1470
+</td>
+<td style="text-align:right;">
+275.7167
+</td>
+<td style="text-align:right;">
+274.0936
+</td>
+<td style="text-align:right;">
+272.8493
+</td>
+<td style="text-align:right;">
+272.8544
+</td>
+<td style="text-align:right;">
+273.2525
+</td>
+<td style="text-align:right;">
+273.1451
+</td>
+<td style="text-align:right;">
+272.9022
+</td>
+<td style="text-align:right;">
+272.9698
+</td>
+<td style="text-align:right;">
+273.0800
+</td>
+<td style="text-align:right;">
+272.5929
+</td>
+<td style="text-align:right;">
+272.2767
+</td>
+<td style="text-align:right;">
+272.2982
+</td>
+<td style="text-align:right;">
+272.5597
+</td>
+<td style="text-align:right;">
+272.4359
+</td>
+<td style="text-align:right;">
+271.6062
+</td>
+<td style="text-align:right;">
+270.9430
+</td>
+<td style="text-align:right;">
+270.6098
+</td>
+<td style="text-align:right;">
+271.0472
+</td>
+<td style="text-align:right;">
+271.7952
+</td>
+<td style="text-align:right;">
+272.1649
+</td>
+<td style="text-align:right;">
+272.4696
+</td>
+<td style="text-align:right;">
+272.6081
+</td>
+<td style="text-align:right;">
+272.6893
+</td>
+<td style="text-align:right;">
+272.9430
+</td>
+<td style="text-align:right;">
+272.9328
+</td>
+<td style="text-align:right;">
+271.5771
+</td>
+<td style="text-align:right;">
+271.0288
+</td>
+<td style="text-align:right;">
+271.1708
+</td>
+<td style="text-align:right;">
+270.9561
+</td>
+<td style="text-align:right;">
+270.6268
+</td>
+<td style="text-align:right;">
+270.5807
+</td>
+<td style="text-align:right;">
+270.9570
+</td>
+<td style="text-align:right;">
+271.0493
+</td>
+<td style="text-align:right;">
+270.8074
+</td>
+<td style="text-align:right;">
+270.0400
+</td>
+<td style="text-align:right;">
+269.8872
+</td>
+<td style="text-align:right;">
+270.3819
+</td>
+<td style="text-align:right;">
+270.8673
+</td>
+<td style="text-align:right;">
+270.8623
+</td>
+<td style="text-align:right;">
+270.4846
+</td>
+<td style="text-align:right;">
+269.9919
+</td>
+<td style="text-align:right;">
+270.7245
+</td>
+<td style="text-align:right;">
+272.0373
+</td>
+<td style="text-align:right;">
+273.0488
+</td>
+<td style="text-align:right;">
+273.8262
+</td>
+<td style="text-align:right;">
+274.4178
+</td>
+<td style="text-align:right;">
+275.0051
+</td>
+<td style="text-align:right;">
+275.3361
+</td>
+<td style="text-align:right;">
+275.0424
+</td>
+<td style="text-align:right;">
+274.2755
+</td>
+<td style="text-align:right;">
+273.6784
+</td>
+<td style="text-align:right;">
+273.6925
+</td>
+<td style="text-align:right;">
+273.5287
+</td>
+<td style="text-align:right;">
+273.1665
+</td>
+<td style="text-align:right;">
+272.9369
+</td>
+<td style="text-align:right;">
+272.8120
+</td>
+<td style="text-align:right;">
+272.8887
+</td>
+<td style="text-align:right;">
+273.1729
+</td>
+<td style="text-align:right;">
+272.8366
+</td>
+<td style="text-align:right;">
+272.4920
+</td>
+<td style="text-align:right;">
+272.5561
+</td>
+<td style="text-align:right;">
+272.4862
+</td>
+<td style="text-align:right;">
+272.1553
+</td>
+<td style="text-align:right;">
+271.7241
+</td>
+<td style="text-align:right;">
+271.3921
+</td>
+<td style="text-align:right;">
+271.7446
+</td>
+<td style="text-align:right;">
+272.7508
+</td>
+<td style="text-align:right;">
+273.7265
+</td>
+<td style="text-align:right;">
+273.9555
+</td>
+<td style="text-align:right;">
+274.3626
+</td>
+<td style="text-align:right;">
+274.6337
+</td>
+<td style="text-align:right;">
+274.8167
+</td>
+<td style="text-align:right;">
+274.4074
+</td>
+<td style="text-align:right;">
+273.8510
+</td>
+<td style="text-align:right;">
+273.3102
+</td>
+<td style="text-align:right;">
+273.4758
+</td>
+<td style="text-align:right;">
+273.6809
+</td>
+<td style="text-align:right;">
+273.6964
+</td>
+<td style="text-align:right;">
+274.5382
+</td>
+<td style="text-align:right;">
+275.0141
+</td>
+<td style="text-align:right;">
+274.5121
+</td>
+<td style="text-align:right;">
+273.6469
+</td>
+<td style="text-align:right;">
+273.8307
+</td>
+<td style="text-align:right;">
+273.7944
+</td>
+<td style="text-align:right;">
+274.4795
+</td>
+<td style="text-align:right;">
+274.8350
+</td>
+<td style="text-align:right;">
+274.8187
+</td>
+<td style="text-align:right;">
+274.9169
+</td>
+<td style="text-align:right;">
+275.3838
+</td>
+<td style="text-align:right;">
+275.9378
+</td>
+<td style="text-align:right;">
+276.7586
+</td>
+<td style="text-align:right;">
+277.0553
+</td>
+<td style="text-align:right;">
+277.4254
+</td>
+<td style="text-align:right;">
+277.9214
+</td>
+<td style="text-align:right;">
+278.7803
+</td>
+<td style="text-align:right;">
+278.3560
+</td>
+<td style="text-align:right;">
+278.0323
+</td>
+<td style="text-align:right;">
+277.2965
+</td>
+<td style="text-align:right;">
+276.8568
+</td>
+<td style="text-align:right;">
+276.2577
+</td>
+<td style="text-align:right;">
+276.1409
+</td>
+<td style="text-align:right;">
+275.6672
+</td>
+<td style="text-align:right;">
+275.8644
+</td>
+<td style="text-align:right;">
+274.5813
+</td>
+<td style="text-align:right;">
+275.4075
+</td>
+<td style="text-align:right;">
+276.5349
+</td>
+<td style="text-align:right;">
+275.9372
+</td>
+<td style="text-align:right;">
+275.4072
+</td>
+<td style="text-align:right;">
+275.1977
+</td>
+<td style="text-align:right;">
+275.1949
+</td>
+<td style="text-align:right;">
+275.7876
+</td>
+<td style="text-align:right;">
+275.3369
+</td>
+<td style="text-align:right;">
+275.3577
+</td>
+<td style="text-align:right;">
+275.3927
+</td>
+<td style="text-align:right;">
+276.1418
+</td>
+<td style="text-align:right;">
+276.8679
+</td>
+<td style="text-align:right;">
+276.9182
+</td>
+<td style="text-align:right;">
+276.6274
+</td>
+<td style="text-align:right;">
+276.6988
+</td>
+<td style="text-align:right;">
+276.9125
+</td>
+<td style="text-align:right;">
+277.0086
+</td>
+<td style="text-align:right;">
+276.4327
+</td>
+<td style="text-align:right;">
+275.7457
+</td>
+<td style="text-align:right;">
+275.1416
+</td>
+<td style="text-align:right;">
+275.0683
+</td>
+<td style="text-align:right;">
+274.9829
+</td>
+<td style="text-align:right;">
+274.9680
+</td>
+<td style="text-align:right;">
+274.3209
+</td>
+<td style="text-align:right;">
+274.1369
+</td>
+<td style="text-align:right;">
+273.8516
+</td>
+<td style="text-align:right;">
+273.6762
+</td>
+<td style="text-align:right;">
+273.2323
+</td>
+<td style="text-align:right;">
+273.0890
+</td>
+<td style="text-align:right;">
+273.2127
+</td>
+<td style="text-align:right;">
+273.2136
+</td>
+<td style="text-align:right;">
+272.7556
+</td>
+<td style="text-align:right;">
+272.5639
+</td>
+<td style="text-align:right;">
+273.4417
+</td>
+<td style="text-align:right;">
+275.1006
+</td>
+<td style="text-align:right;">
+275.9895
+</td>
+<td style="text-align:right;">
+276.8320
+</td>
+<td style="text-align:right;">
+277.0040
+</td>
+<td style="text-align:right;">
+277.6437
+</td>
+<td style="text-align:right;">
+277.6513
+</td>
+<td style="text-align:right;">
+276.7641
+</td>
+<td style="text-align:right;">
+275.6492
+</td>
+<td style="text-align:right;">
+39.15008
+</td>
+<td style="text-align:right;">
+-119.3124
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+276.6362
+</td>
+<td style="text-align:right;">
+276.4886
+</td>
+<td style="text-align:right;">
+276.3837
+</td>
+<td style="text-align:right;">
+277.1292
+</td>
+<td style="text-align:right;">
+277.5344
+</td>
+<td style="text-align:right;">
+277.0761
+</td>
+<td style="text-align:right;">
+277.1561
+</td>
+<td style="text-align:right;">
+276.3749
+</td>
+<td style="text-align:right;">
+276.5429
+</td>
+<td style="text-align:right;">
+275.9415
+</td>
+<td style="text-align:right;">
+275.3298
+</td>
+<td style="text-align:right;">
+275.2082
+</td>
+<td style="text-align:right;">
+274.4792
+</td>
+<td style="text-align:right;">
+274.6838
+</td>
+<td style="text-align:right;">
+274.3546
+</td>
+<td style="text-align:right;">
+274.9135
+</td>
+<td style="text-align:right;">
+276.1785
+</td>
+<td style="text-align:right;">
+277.0599
+</td>
+<td style="text-align:right;">
+278.5672
+</td>
+<td style="text-align:right;">
+279.1985
+</td>
+<td style="text-align:right;">
+279.7790
+</td>
+<td style="text-align:right;">
+279.8557
+</td>
+<td style="text-align:right;">
+279.1856
+</td>
+<td style="text-align:right;">
+277.3450
+</td>
+<td style="text-align:right;">
+275.2015
+</td>
+<td style="text-align:right;">
+274.3091
+</td>
+<td style="text-align:right;">
+274.2802
+</td>
+<td style="text-align:right;">
+274.1402
+</td>
+<td style="text-align:right;">
+273.9168
+</td>
+<td style="text-align:right;">
+274.1143
+</td>
+<td style="text-align:right;">
+274.3040
+</td>
+<td style="text-align:right;">
+274.0294
+</td>
+<td style="text-align:right;">
+273.7521
+</td>
+<td style="text-align:right;">
+273.5859
+</td>
+<td style="text-align:right;">
+273.3768
+</td>
+<td style="text-align:right;">
+272.4434
+</td>
+<td style="text-align:right;">
+271.5200
+</td>
+<td style="text-align:right;">
+271.4015
+</td>
+<td style="text-align:right;">
+271.3495
+</td>
+<td style="text-align:right;">
+271.4819
+</td>
+<td style="text-align:right;">
+271.6245
+</td>
+<td style="text-align:right;">
+272.0958
+</td>
+<td style="text-align:right;">
+272.8312
+</td>
+<td style="text-align:right;">
+273.4870
+</td>
+<td style="text-align:right;">
+274.1862
+</td>
+<td style="text-align:right;">
+273.8660
+</td>
+<td style="text-align:right;">
+273.3923
+</td>
+<td style="text-align:right;">
+272.2512
+</td>
+<td style="text-align:right;">
+271.2083
+</td>
+<td style="text-align:right;">
+270.5250
+</td>
+<td style="text-align:right;">
+270.6730
+</td>
+<td style="text-align:right;">
+270.4539
+</td>
+<td style="text-align:right;">
+270.3042
+</td>
+<td style="text-align:right;">
+270.0452
+</td>
+<td style="text-align:right;">
+269.8442
+</td>
+<td style="text-align:right;">
+269.7107
+</td>
+<td style="text-align:right;">
+269.2830
+</td>
+<td style="text-align:right;">
+269.1165
+</td>
+<td style="text-align:right;">
+269.3252
+</td>
+<td style="text-align:right;">
+269.4943
+</td>
+<td style="text-align:right;">
+269.7540
+</td>
+<td style="text-align:right;">
+269.7180
+</td>
+<td style="text-align:right;">
+269.7172
+</td>
+<td style="text-align:right;">
+270.2898
+</td>
+<td style="text-align:right;">
+270.9779
+</td>
+<td style="text-align:right;">
+272.1650
+</td>
+<td style="text-align:right;">
+273.4691
+</td>
+<td style="text-align:right;">
+274.5907
+</td>
+<td style="text-align:right;">
+275.5173
+</td>
+<td style="text-align:right;">
+275.9783
+</td>
+<td style="text-align:right;">
+275.8399
+</td>
+<td style="text-align:right;">
+274.5063
+</td>
+<td style="text-align:right;">
+273.7303
+</td>
+<td style="text-align:right;">
+273.4798
+</td>
+<td style="text-align:right;">
+273.3531
+</td>
+<td style="text-align:right;">
+273.1584
+</td>
+<td style="text-align:right;">
+272.9585
+</td>
+<td style="text-align:right;">
+272.2281
+</td>
+<td style="text-align:right;">
+272.5441
+</td>
+<td style="text-align:right;">
+272.9510
+</td>
+<td style="text-align:right;">
+272.7820
+</td>
+<td style="text-align:right;">
+272.3863
+</td>
+<td style="text-align:right;">
+271.9530
+</td>
+<td style="text-align:right;">
+271.8704
+</td>
+<td style="text-align:right;">
+271.8293
+</td>
+<td style="text-align:right;">
+271.1426
+</td>
+<td style="text-align:right;">
+270.5533
+</td>
+<td style="text-align:right;">
+271.1616
+</td>
+<td style="text-align:right;">
+272.7609
+</td>
+<td style="text-align:right;">
+274.1341
+</td>
+<td style="text-align:right;">
+274.7611
+</td>
+<td style="text-align:right;">
+275.6989
+</td>
+<td style="text-align:right;">
+276.2628
+</td>
+<td style="text-align:right;">
+276.3867
+</td>
+<td style="text-align:right;">
+275.6536
+</td>
+<td style="text-align:right;">
+273.8239
+</td>
+<td style="text-align:right;">
+272.9583
+</td>
+<td style="text-align:right;">
+272.9818
+</td>
+<td style="text-align:right;">
+273.0891
+</td>
+<td style="text-align:right;">
+273.0826
+</td>
+<td style="text-align:right;">
+273.9201
+</td>
+<td style="text-align:right;">
+274.4724
+</td>
+<td style="text-align:right;">
+274.5622
+</td>
+<td style="text-align:right;">
+274.4401
+</td>
+<td style="text-align:right;">
+274.4632
+</td>
+<td style="text-align:right;">
+273.7911
+</td>
+<td style="text-align:right;">
+273.3518
+</td>
+<td style="text-align:right;">
+273.1611
+</td>
+<td style="text-align:right;">
+273.4160
+</td>
+<td style="text-align:right;">
+273.7315
+</td>
+<td style="text-align:right;">
+274.1462
+</td>
+<td style="text-align:right;">
+274.9530
+</td>
+<td style="text-align:right;">
+276.1523
+</td>
+<td style="text-align:right;">
+276.9564
+</td>
+<td style="text-align:right;">
+277.5360
+</td>
+<td style="text-align:right;">
+277.9356
+</td>
+<td style="text-align:right;">
+279.0069
+</td>
+<td style="text-align:right;">
+279.2903
+</td>
+<td style="text-align:right;">
+279.2244
+</td>
+<td style="text-align:right;">
+278.2482
+</td>
+<td style="text-align:right;">
+276.9459
+</td>
+<td style="text-align:right;">
+277.0415
+</td>
+<td style="text-align:right;">
+276.1982
+</td>
+<td style="text-align:right;">
+276.9527
+</td>
+<td style="text-align:right;">
+277.3260
+</td>
+<td style="text-align:right;">
+275.6922
+</td>
+<td style="text-align:right;">
+275.0930
+</td>
+<td style="text-align:right;">
+275.5206
+</td>
+<td style="text-align:right;">
+275.5900
+</td>
+<td style="text-align:right;">
+275.7919
+</td>
+<td style="text-align:right;">
+275.5002
+</td>
+<td style="text-align:right;">
+275.6112
+</td>
+<td style="text-align:right;">
+275.2867
+</td>
+<td style="text-align:right;">
+275.4781
+</td>
+<td style="text-align:right;">
+276.0514
+</td>
+<td style="text-align:right;">
+276.0233
+</td>
+<td style="text-align:right;">
+276.8167
+</td>
+<td style="text-align:right;">
+277.9309
+</td>
+<td style="text-align:right;">
+278.8385
+</td>
+<td style="text-align:right;">
+279.0706
+</td>
+<td style="text-align:right;">
+279.1826
+</td>
+<td style="text-align:right;">
+279.2397
+</td>
+<td style="text-align:right;">
+279.1642
+</td>
+<td style="text-align:right;">
+277.8856
+</td>
+<td style="text-align:right;">
+277.2441
+</td>
+<td style="text-align:right;">
+277.3467
+</td>
+<td style="text-align:right;">
+276.5665
+</td>
+<td style="text-align:right;">
+275.9716
+</td>
+<td style="text-align:right;">
+275.8318
+</td>
+<td style="text-align:right;">
+276.3854
+</td>
+<td style="text-align:right;">
+276.1721
+</td>
+<td style="text-align:right;">
+275.6964
+</td>
+<td style="text-align:right;">
+274.9010
+</td>
+<td style="text-align:right;">
+274.0056
+</td>
+<td style="text-align:right;">
+274.2306
+</td>
+<td style="text-align:right;">
+274.1200
+</td>
+<td style="text-align:right;">
+273.8763
+</td>
+<td style="text-align:right;">
+273.6025
+</td>
+<td style="text-align:right;">
+273.0713
+</td>
+<td style="text-align:right;">
+273.8589
+</td>
+<td style="text-align:right;">
+275.5552
+</td>
+<td style="text-align:right;">
+277.2826
+</td>
+<td style="text-align:right;">
+277.5575
+</td>
+<td style="text-align:right;">
+278.2564
+</td>
+<td style="text-align:right;">
+278.5472
+</td>
+<td style="text-align:right;">
+279.1851
+</td>
+<td style="text-align:right;">
+279.0857
+</td>
+<td style="text-align:right;">
+277.4437
+</td>
+<td style="text-align:right;">
+39.17563
+</td>
+<td style="text-align:right;">
+-119.1760
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+276.2963
+</td>
+<td style="text-align:right;">
+276.6121
+</td>
+<td style="text-align:right;">
+276.2541
+</td>
+<td style="text-align:right;">
+276.8140
+</td>
+<td style="text-align:right;">
+276.6290
+</td>
+<td style="text-align:right;">
+276.9632
+</td>
+<td style="text-align:right;">
+276.5995
+</td>
+<td style="text-align:right;">
+276.6709
+</td>
+<td style="text-align:right;">
+276.0365
+</td>
+<td style="text-align:right;">
+276.1100
+</td>
+<td style="text-align:right;">
+275.2489
+</td>
+<td style="text-align:right;">
+274.7777
+</td>
+<td style="text-align:right;">
+273.9265
+</td>
+<td style="text-align:right;">
+274.3494
+</td>
+<td style="text-align:right;">
+274.4456
+</td>
+<td style="text-align:right;">
+274.8008
+</td>
+<td style="text-align:right;">
+276.1694
+</td>
+<td style="text-align:right;">
+277.3511
+</td>
+<td style="text-align:right;">
+278.7174
+</td>
+<td style="text-align:right;">
+279.6349
+</td>
+<td style="text-align:right;">
+280.0047
+</td>
+<td style="text-align:right;">
+280.0694
+</td>
+<td style="text-align:right;">
+279.4225
+</td>
+<td style="text-align:right;">
+277.7127
+</td>
+<td style="text-align:right;">
+275.6732
+</td>
+<td style="text-align:right;">
+274.8535
+</td>
+<td style="text-align:right;">
+274.1331
+</td>
+<td style="text-align:right;">
+273.7986
+</td>
+<td style="text-align:right;">
+273.4214
+</td>
+<td style="text-align:right;">
+273.5546
+</td>
+<td style="text-align:right;">
+273.8021
+</td>
+<td style="text-align:right;">
+273.3945
+</td>
+<td style="text-align:right;">
+273.0227
+</td>
+<td style="text-align:right;">
+272.9539
+</td>
+<td style="text-align:right;">
+272.6657
+</td>
+<td style="text-align:right;">
+271.6361
+</td>
+<td style="text-align:right;">
+271.8269
+</td>
+<td style="text-align:right;">
+271.5540
+</td>
+<td style="text-align:right;">
+271.5613
+</td>
+<td style="text-align:right;">
+271.6844
+</td>
+<td style="text-align:right;">
+272.0829
+</td>
+<td style="text-align:right;">
+272.5649
+</td>
+<td style="text-align:right;">
+273.0470
+</td>
+<td style="text-align:right;">
+273.5804
+</td>
+<td style="text-align:right;">
+274.1452
+</td>
+<td style="text-align:right;">
+274.0459
+</td>
+<td style="text-align:right;">
+273.6214
+</td>
+<td style="text-align:right;">
+272.1320
+</td>
+<td style="text-align:right;">
+271.2590
+</td>
+<td style="text-align:right;">
+270.6784
+</td>
+<td style="text-align:right;">
+270.2289
+</td>
+<td style="text-align:right;">
+270.3208
+</td>
+<td style="text-align:right;">
+270.5920
+</td>
+<td style="text-align:right;">
+270.0812
+</td>
+<td style="text-align:right;">
+269.7522
+</td>
+<td style="text-align:right;">
+269.5021
+</td>
+<td style="text-align:right;">
+269.7072
+</td>
+<td style="text-align:right;">
+270.0575
+</td>
+<td style="text-align:right;">
+269.9568
+</td>
+<td style="text-align:right;">
+269.7922
+</td>
+<td style="text-align:right;">
+269.6241
+</td>
+<td style="text-align:right;">
+269.6262
+</td>
+<td style="text-align:right;">
+269.7404
+</td>
+<td style="text-align:right;">
+270.2112
+</td>
+<td style="text-align:right;">
+270.9497
+</td>
+<td style="text-align:right;">
+271.6595
+</td>
+<td style="text-align:right;">
+273.2072
+</td>
+<td style="text-align:right;">
+274.6865
+</td>
+<td style="text-align:right;">
+275.6277
+</td>
+<td style="text-align:right;">
+275.9276
+</td>
+<td style="text-align:right;">
+275.9669
+</td>
+<td style="text-align:right;">
+274.9907
+</td>
+<td style="text-align:right;">
+273.9891
+</td>
+<td style="text-align:right;">
+273.7141
+</td>
+<td style="text-align:right;">
+273.4460
+</td>
+<td style="text-align:right;">
+273.1572
+</td>
+<td style="text-align:right;">
+273.0465
+</td>
+<td style="text-align:right;">
+272.5171
+</td>
+<td style="text-align:right;">
+272.5580
+</td>
+<td style="text-align:right;">
+272.5341
+</td>
+<td style="text-align:right;">
+272.3735
+</td>
+<td style="text-align:right;">
+272.1211
+</td>
+<td style="text-align:right;">
+271.8971
+</td>
+<td style="text-align:right;">
+271.7020
+</td>
+<td style="text-align:right;">
+271.4621
+</td>
+<td style="text-align:right;">
+271.2866
+</td>
+<td style="text-align:right;">
+270.7540
+</td>
+<td style="text-align:right;">
+271.1844
+</td>
+<td style="text-align:right;">
+272.5172
+</td>
+<td style="text-align:right;">
+274.0189
+</td>
+<td style="text-align:right;">
+275.0211
+</td>
+<td style="text-align:right;">
+275.8758
+</td>
+<td style="text-align:right;">
+276.8126
+</td>
+<td style="text-align:right;">
+276.7267
+</td>
+<td style="text-align:right;">
+275.9888
+</td>
+<td style="text-align:right;">
+273.9326
+</td>
+<td style="text-align:right;">
+272.7770
+</td>
+<td style="text-align:right;">
+272.6212
+</td>
+<td style="text-align:right;">
+272.4384
+</td>
+<td style="text-align:right;">
+272.6735
+</td>
+<td style="text-align:right;">
+273.5116
+</td>
+<td style="text-align:right;">
+274.4514
+</td>
+<td style="text-align:right;">
+274.4038
+</td>
+<td style="text-align:right;">
+274.5047
+</td>
+<td style="text-align:right;">
+274.7335
+</td>
+<td style="text-align:right;">
+273.9295
+</td>
+<td style="text-align:right;">
+273.2982
+</td>
+<td style="text-align:right;">
+273.4264
+</td>
+<td style="text-align:right;">
+273.7062
+</td>
+<td style="text-align:right;">
+273.9243
+</td>
+<td style="text-align:right;">
+273.8176
+</td>
+<td style="text-align:right;">
+274.5712
+</td>
+<td style="text-align:right;">
+275.9433
+</td>
+<td style="text-align:right;">
+276.9070
+</td>
+<td style="text-align:right;">
+277.3366
+</td>
+<td style="text-align:right;">
+277.8286
+</td>
+<td style="text-align:right;">
+279.2896
+</td>
+<td style="text-align:right;">
+279.5755
+</td>
+<td style="text-align:right;">
+279.7286
+</td>
+<td style="text-align:right;">
+278.7706
+</td>
+<td style="text-align:right;">
+277.3856
+</td>
+<td style="text-align:right;">
+277.4157
+</td>
+<td style="text-align:right;">
+276.2388
+</td>
+<td style="text-align:right;">
+276.1969
+</td>
+<td style="text-align:right;">
+278.2142
+</td>
+<td style="text-align:right;">
+277.4652
+</td>
+<td style="text-align:right;">
+274.4645
+</td>
+<td style="text-align:right;">
+275.0847
+</td>
+<td style="text-align:right;">
+275.4574
+</td>
+<td style="text-align:right;">
+276.1287
+</td>
+<td style="text-align:right;">
+276.6242
+</td>
+<td style="text-align:right;">
+275.9026
+</td>
+<td style="text-align:right;">
+275.5157
+</td>
+<td style="text-align:right;">
+275.7967
+</td>
+<td style="text-align:right;">
+275.7573
+</td>
+<td style="text-align:right;">
+276.8502
+</td>
+<td style="text-align:right;">
+277.3469
+</td>
+<td style="text-align:right;">
+277.9167
+</td>
+<td style="text-align:right;">
+278.5349
+</td>
+<td style="text-align:right;">
+278.7742
+</td>
+<td style="text-align:right;">
+278.9344
+</td>
+<td style="text-align:right;">
+278.9853
+</td>
+<td style="text-align:right;">
+278.9520
+</td>
+<td style="text-align:right;">
+278.1722
+</td>
+<td style="text-align:right;">
+277.3676
+</td>
+<td style="text-align:right;">
+276.3581
+</td>
+<td style="text-align:right;">
+275.8946
+</td>
+<td style="text-align:right;">
+275.8795
+</td>
+<td style="text-align:right;">
+275.7693
+</td>
+<td style="text-align:right;">
+275.3715
+</td>
+<td style="text-align:right;">
+274.9284
+</td>
+<td style="text-align:right;">
+275.0105
+</td>
+<td style="text-align:right;">
+274.4992
+</td>
+<td style="text-align:right;">
+274.5377
+</td>
+<td style="text-align:right;">
+274.8480
+</td>
+<td style="text-align:right;">
+274.6298
+</td>
+<td style="text-align:right;">
+273.9529
+</td>
+<td style="text-align:right;">
+273.4902
+</td>
+<td style="text-align:right;">
+273.1270
+</td>
+<td style="text-align:right;">
+273.5658
+</td>
+<td style="text-align:right;">
+274.8658
+</td>
+<td style="text-align:right;">
+277.0008
+</td>
+<td style="text-align:right;">
+277.3558
+</td>
+<td style="text-align:right;">
+278.1297
+</td>
+<td style="text-align:right;">
+278.3037
+</td>
+<td style="text-align:right;">
+278.4222
+</td>
+<td style="text-align:right;">
+278.5540
+</td>
+<td style="text-align:right;">
+277.4633
+</td>
+<td style="text-align:right;">
+39.20103
+</td>
+<td style="text-align:right;">
+-119.0394
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+276.4379
+</td>
+<td style="text-align:right;">
+276.8933
+</td>
+<td style="text-align:right;">
+276.3231
+</td>
+<td style="text-align:right;">
+277.0167
+</td>
+<td style="text-align:right;">
+276.6582
+</td>
+<td style="text-align:right;">
+277.1019
+</td>
+<td style="text-align:right;">
+276.3730
+</td>
+<td style="text-align:right;">
+277.1574
+</td>
+<td style="text-align:right;">
+275.9712
+</td>
+<td style="text-align:right;">
+276.2787
+</td>
+<td style="text-align:right;">
+275.8211
+</td>
+<td style="text-align:right;">
+275.0320
+</td>
+<td style="text-align:right;">
+274.1204
+</td>
+<td style="text-align:right;">
+274.3667
+</td>
+<td style="text-align:right;">
+274.8317
+</td>
+<td style="text-align:right;">
+275.1378
+</td>
+<td style="text-align:right;">
+276.1341
+</td>
+<td style="text-align:right;">
+277.2547
+</td>
+<td style="text-align:right;">
+278.3507
+</td>
+<td style="text-align:right;">
+279.4286
+</td>
+<td style="text-align:right;">
+279.7080
+</td>
+<td style="text-align:right;">
+279.9799
+</td>
+<td style="text-align:right;">
+279.5220
+</td>
+<td style="text-align:right;">
+278.0905
+</td>
+<td style="text-align:right;">
+275.9507
+</td>
+<td style="text-align:right;">
+275.5046
+</td>
+<td style="text-align:right;">
+275.0261
+</td>
+<td style="text-align:right;">
+274.4559
+</td>
+<td style="text-align:right;">
+273.4582
+</td>
+<td style="text-align:right;">
+273.1310
+</td>
+<td style="text-align:right;">
+273.2357
+</td>
+<td style="text-align:right;">
+272.9489
+</td>
+<td style="text-align:right;">
+272.5832
+</td>
+<td style="text-align:right;">
+272.7144
+</td>
+<td style="text-align:right;">
+272.4545
+</td>
+<td style="text-align:right;">
+271.6514
+</td>
+<td style="text-align:right;">
+271.9803
+</td>
+<td style="text-align:right;">
+271.6405
+</td>
+<td style="text-align:right;">
+271.3302
+</td>
+<td style="text-align:right;">
+271.5115
+</td>
+<td style="text-align:right;">
+271.7768
+</td>
+<td style="text-align:right;">
+272.2100
+</td>
+<td style="text-align:right;">
+272.7142
+</td>
+<td style="text-align:right;">
+272.9068
+</td>
+<td style="text-align:right;">
+273.5273
+</td>
+<td style="text-align:right;">
+274.1446
+</td>
+<td style="text-align:right;">
+274.1678
+</td>
+<td style="text-align:right;">
+272.6223
+</td>
+<td style="text-align:right;">
+271.9172
+</td>
+<td style="text-align:right;">
+271.2124
+</td>
+<td style="text-align:right;">
+271.2262
+</td>
+<td style="text-align:right;">
+271.2961
+</td>
+<td style="text-align:right;">
+271.0692
+</td>
+<td style="text-align:right;">
+270.6841
+</td>
+<td style="text-align:right;">
+270.2622
+</td>
+<td style="text-align:right;">
+269.9147
+</td>
+<td style="text-align:right;">
+269.8617
+</td>
+<td style="text-align:right;">
+270.1465
+</td>
+<td style="text-align:right;">
+269.7456
+</td>
+<td style="text-align:right;">
+269.6786
+</td>
+<td style="text-align:right;">
+269.5692
+</td>
+<td style="text-align:right;">
+269.5484
+</td>
+<td style="text-align:right;">
+269.3379
+</td>
+<td style="text-align:right;">
+269.6216
+</td>
+<td style="text-align:right;">
+269.8783
+</td>
+<td style="text-align:right;">
+271.0949
+</td>
+<td style="text-align:right;">
+272.6474
+</td>
+<td style="text-align:right;">
+273.9501
+</td>
+<td style="text-align:right;">
+275.0127
+</td>
+<td style="text-align:right;">
+275.4498
+</td>
+<td style="text-align:right;">
+275.6512
+</td>
+<td style="text-align:right;">
+274.6992
+</td>
+<td style="text-align:right;">
+273.4510
+</td>
+<td style="text-align:right;">
+273.1892
+</td>
+<td style="text-align:right;">
+272.9397
+</td>
+<td style="text-align:right;">
+272.8247
+</td>
+<td style="text-align:right;">
+272.5860
+</td>
+<td style="text-align:right;">
+272.4595
+</td>
+<td style="text-align:right;">
+272.4893
+</td>
+<td style="text-align:right;">
+272.3055
+</td>
+<td style="text-align:right;">
+272.0563
+</td>
+<td style="text-align:right;">
+271.7452
+</td>
+<td style="text-align:right;">
+271.4321
+</td>
+<td style="text-align:right;">
+271.1940
+</td>
+<td style="text-align:right;">
+271.0047
+</td>
+<td style="text-align:right;">
+270.7677
+</td>
+<td style="text-align:right;">
+270.2565
+</td>
+<td style="text-align:right;">
+270.5186
+</td>
+<td style="text-align:right;">
+271.8470
+</td>
+<td style="text-align:right;">
+273.5811
+</td>
+<td style="text-align:right;">
+274.2863
+</td>
+<td style="text-align:right;">
+274.8889
+</td>
+<td style="text-align:right;">
+275.6752
+</td>
+<td style="text-align:right;">
+275.8793
+</td>
+<td style="text-align:right;">
+275.5082
+</td>
+<td style="text-align:right;">
+273.6963
+</td>
+<td style="text-align:right;">
+272.9932
+</td>
+<td style="text-align:right;">
+272.6205
+</td>
+<td style="text-align:right;">
+272.4362
+</td>
+<td style="text-align:right;">
+272.9503
+</td>
+<td style="text-align:right;">
+273.9677
+</td>
+<td style="text-align:right;">
+275.0739
+</td>
+<td style="text-align:right;">
+274.7610
+</td>
+<td style="text-align:right;">
+274.4230
+</td>
+<td style="text-align:right;">
+274.7618
+</td>
+<td style="text-align:right;">
+273.9453
+</td>
+<td style="text-align:right;">
+273.2867
+</td>
+<td style="text-align:right;">
+273.5633
+</td>
+<td style="text-align:right;">
+273.7634
+</td>
+<td style="text-align:right;">
+273.9848
+</td>
+<td style="text-align:right;">
+274.2432
+</td>
+<td style="text-align:right;">
+274.9843
+</td>
+<td style="text-align:right;">
+275.9037
+</td>
+<td style="text-align:right;">
+276.7125
+</td>
+<td style="text-align:right;">
+277.1406
+</td>
+<td style="text-align:right;">
+277.4142
+</td>
+<td style="text-align:right;">
+278.4420
+</td>
+<td style="text-align:right;">
+278.5792
+</td>
+<td style="text-align:right;">
+278.4283
+</td>
+<td style="text-align:right;">
+278.1028
+</td>
+<td style="text-align:right;">
+277.7296
+</td>
+<td style="text-align:right;">
+278.1638
+</td>
+<td style="text-align:right;">
+276.6209
+</td>
+<td style="text-align:right;">
+275.8324
+</td>
+<td style="text-align:right;">
+276.9992
+</td>
+<td style="text-align:right;">
+276.8207
+</td>
+<td style="text-align:right;">
+274.6136
+</td>
+<td style="text-align:right;">
+276.1826
+</td>
+<td style="text-align:right;">
+275.8783
+</td>
+<td style="text-align:right;">
+276.6017
+</td>
+<td style="text-align:right;">
+276.2555
+</td>
+<td style="text-align:right;">
+275.6486
+</td>
+<td style="text-align:right;">
+275.3207
+</td>
+<td style="text-align:right;">
+275.5059
+</td>
+<td style="text-align:right;">
+275.5987
+</td>
+<td style="text-align:right;">
+276.5565
+</td>
+<td style="text-align:right;">
+277.1692
+</td>
+<td style="text-align:right;">
+277.7535
+</td>
+<td style="text-align:right;">
+277.9238
+</td>
+<td style="text-align:right;">
+278.3163
+</td>
+<td style="text-align:right;">
+278.3680
+</td>
+<td style="text-align:right;">
+278.4569
+</td>
+<td style="text-align:right;">
+278.4628
+</td>
+<td style="text-align:right;">
+277.4140
+</td>
+<td style="text-align:right;">
+276.6695
+</td>
+<td style="text-align:right;">
+276.5728
+</td>
+<td style="text-align:right;">
+275.8547
+</td>
+<td style="text-align:right;">
+275.5077
+</td>
+<td style="text-align:right;">
+275.1812
+</td>
+<td style="text-align:right;">
+274.7299
+</td>
+<td style="text-align:right;">
+274.7419
+</td>
+<td style="text-align:right;">
+274.7781
+</td>
+<td style="text-align:right;">
+274.3143
+</td>
+<td style="text-align:right;">
+274.2157
+</td>
+<td style="text-align:right;">
+274.5494
+</td>
+<td style="text-align:right;">
+274.4983
+</td>
+<td style="text-align:right;">
+274.0629
+</td>
+<td style="text-align:right;">
+273.4755
+</td>
+<td style="text-align:right;">
+273.0145
+</td>
+<td style="text-align:right;">
+273.2112
+</td>
+<td style="text-align:right;">
+274.5266
+</td>
+<td style="text-align:right;">
+276.0755
+</td>
+<td style="text-align:right;">
+276.7802
+</td>
+<td style="text-align:right;">
+277.3343
+</td>
+<td style="text-align:right;">
+277.4138
+</td>
+<td style="text-align:right;">
+277.7350
+</td>
+<td style="text-align:right;">
+277.7577
+</td>
+<td style="text-align:right;">
+276.7287
+</td>
+<td style="text-align:right;">
+39.22628
+</td>
+<td style="text-align:right;">
+-118.9028
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+277.1167
+</td>
+<td style="text-align:right;">
+277.0620
+</td>
+<td style="text-align:right;">
+276.7695
+</td>
+<td style="text-align:right;">
+277.0444
+</td>
+<td style="text-align:right;">
+276.7961
+</td>
+<td style="text-align:right;">
+277.3731
+</td>
+<td style="text-align:right;">
+276.5037
+</td>
+<td style="text-align:right;">
+276.9947
+</td>
+<td style="text-align:right;">
+276.0431
+</td>
+<td style="text-align:right;">
+276.5621
+</td>
+<td style="text-align:right;">
+276.0296
+</td>
+<td style="text-align:right;">
+274.5945
+</td>
+<td style="text-align:right;">
+274.3220
+</td>
+<td style="text-align:right;">
+274.4857
+</td>
+<td style="text-align:right;">
+274.7293
+</td>
+<td style="text-align:right;">
+274.6924
+</td>
+<td style="text-align:right;">
+275.9088
+</td>
+<td style="text-align:right;">
+277.2278
+</td>
+<td style="text-align:right;">
+278.5821
+</td>
+<td style="text-align:right;">
+279.5623
+</td>
+<td style="text-align:right;">
+280.1396
+</td>
+<td style="text-align:right;">
+280.4926
+</td>
+<td style="text-align:right;">
+280.0145
+</td>
+<td style="text-align:right;">
+278.7488
+</td>
+<td style="text-align:right;">
+276.4471
+</td>
+<td style="text-align:right;">
+276.2380
+</td>
+<td style="text-align:right;">
+275.7897
+</td>
+<td style="text-align:right;">
+275.2980
+</td>
+<td style="text-align:right;">
+274.1073
+</td>
+<td style="text-align:right;">
+273.6223
+</td>
+<td style="text-align:right;">
+273.5239
+</td>
+<td style="text-align:right;">
+273.3415
+</td>
+<td style="text-align:right;">
+273.1165
+</td>
+<td style="text-align:right;">
+273.0954
+</td>
+<td style="text-align:right;">
+272.8290
+</td>
+<td style="text-align:right;">
+272.2591
+</td>
+<td style="text-align:right;">
+272.4035
+</td>
+<td style="text-align:right;">
+272.3036
+</td>
+<td style="text-align:right;">
+272.1997
+</td>
+<td style="text-align:right;">
+272.0399
+</td>
+<td style="text-align:right;">
+272.4974
+</td>
+<td style="text-align:right;">
+272.8785
+</td>
+<td style="text-align:right;">
+273.6735
+</td>
+<td style="text-align:right;">
+273.8044
+</td>
+<td style="text-align:right;">
+273.8700
+</td>
+<td style="text-align:right;">
+273.9838
+</td>
+<td style="text-align:right;">
+274.3726
+</td>
+<td style="text-align:right;">
+273.3272
+</td>
+<td style="text-align:right;">
+272.4763
+</td>
+<td style="text-align:right;">
+272.1916
+</td>
+<td style="text-align:right;">
+271.8719
+</td>
+<td style="text-align:right;">
+271.6389
+</td>
+<td style="text-align:right;">
+271.5988
+</td>
+<td style="text-align:right;">
+271.4278
+</td>
+<td style="text-align:right;">
+271.2833
+</td>
+<td style="text-align:right;">
+271.1048
+</td>
+<td style="text-align:right;">
+270.7739
+</td>
+<td style="text-align:right;">
+270.7245
+</td>
+<td style="text-align:right;">
+270.6742
+</td>
+<td style="text-align:right;">
+270.6526
+</td>
+<td style="text-align:right;">
+270.7431
+</td>
+<td style="text-align:right;">
+270.4582
+</td>
+<td style="text-align:right;">
+270.0779
+</td>
+<td style="text-align:right;">
+270.5023
+</td>
+<td style="text-align:right;">
+270.5863
+</td>
+<td style="text-align:right;">
+270.8885
+</td>
+<td style="text-align:right;">
+271.9069
+</td>
+<td style="text-align:right;">
+273.2590
+</td>
+<td style="text-align:right;">
+274.6607
+</td>
+<td style="text-align:right;">
+275.6931
+</td>
+<td style="text-align:right;">
+276.1277
+</td>
+<td style="text-align:right;">
+275.7058
+</td>
+<td style="text-align:right;">
+274.6136
+</td>
+<td style="text-align:right;">
+274.1273
+</td>
+<td style="text-align:right;">
+273.8513
+</td>
+<td style="text-align:right;">
+273.6761
+</td>
+<td style="text-align:right;">
+273.2264
+</td>
+<td style="text-align:right;">
+273.0975
+</td>
+<td style="text-align:right;">
+273.0107
+</td>
+<td style="text-align:right;">
+272.9329
+</td>
+<td style="text-align:right;">
+272.6424
+</td>
+<td style="text-align:right;">
+272.2372
+</td>
+<td style="text-align:right;">
+271.8620
+</td>
+<td style="text-align:right;">
+271.6221
+</td>
+<td style="text-align:right;">
+271.4166
+</td>
+<td style="text-align:right;">
+271.1098
+</td>
+<td style="text-align:right;">
+270.5905
+</td>
+<td style="text-align:right;">
+270.9195
+</td>
+<td style="text-align:right;">
+271.9250
+</td>
+<td style="text-align:right;">
+273.6678
+</td>
+<td style="text-align:right;">
+274.0158
+</td>
+<td style="text-align:right;">
+274.7234
+</td>
+<td style="text-align:right;">
+275.8867
+</td>
+<td style="text-align:right;">
+275.9608
+</td>
+<td style="text-align:right;">
+275.4776
+</td>
+<td style="text-align:right;">
+273.9846
+</td>
+<td style="text-align:right;">
+273.5322
+</td>
+<td style="text-align:right;">
+272.7969
+</td>
+<td style="text-align:right;">
+272.8705
+</td>
+<td style="text-align:right;">
+273.5278
+</td>
+<td style="text-align:right;">
+274.0771
+</td>
+<td style="text-align:right;">
+274.6804
+</td>
+<td style="text-align:right;">
+274.9090
+</td>
+<td style="text-align:right;">
+274.7454
+</td>
+<td style="text-align:right;">
+274.6946
+</td>
+<td style="text-align:right;">
+273.9354
+</td>
+<td style="text-align:right;">
+273.5759
+</td>
+<td style="text-align:right;">
+273.5834
+</td>
+<td style="text-align:right;">
+273.7254
+</td>
+<td style="text-align:right;">
+273.9752
+</td>
+<td style="text-align:right;">
+274.1607
+</td>
+<td style="text-align:right;">
+274.8441
+</td>
+<td style="text-align:right;">
+275.7167
+</td>
+<td style="text-align:right;">
+276.6594
+</td>
+<td style="text-align:right;">
+277.2279
+</td>
+<td style="text-align:right;">
+277.1647
+</td>
+<td style="text-align:right;">
+277.9352
+</td>
+<td style="text-align:right;">
+278.3896
+</td>
+<td style="text-align:right;">
+279.0757
+</td>
+<td style="text-align:right;">
+279.0119
+</td>
+<td style="text-align:right;">
+278.2924
+</td>
+<td style="text-align:right;">
+278.1585
+</td>
+<td style="text-align:right;">
+276.8021
+</td>
+<td style="text-align:right;">
+276.3124
+</td>
+<td style="text-align:right;">
+277.3176
+</td>
+<td style="text-align:right;">
+275.3893
+</td>
+<td style="text-align:right;">
+275.5115
+</td>
+<td style="text-align:right;">
+275.7507
+</td>
+<td style="text-align:right;">
+275.3885
+</td>
+<td style="text-align:right;">
+276.4304
+</td>
+<td style="text-align:right;">
+275.7621
+</td>
+<td style="text-align:right;">
+275.1663
+</td>
+<td style="text-align:right;">
+274.5465
+</td>
+<td style="text-align:right;">
+275.0132
+</td>
+<td style="text-align:right;">
+275.5580
+</td>
+<td style="text-align:right;">
+276.1945
+</td>
+<td style="text-align:right;">
+276.7315
+</td>
+<td style="text-align:right;">
+277.7132
+</td>
+<td style="text-align:right;">
+277.8204
+</td>
+<td style="text-align:right;">
+278.4711
+</td>
+<td style="text-align:right;">
+278.9777
+</td>
+<td style="text-align:right;">
+279.1440
+</td>
+<td style="text-align:right;">
+279.1247
+</td>
+<td style="text-align:right;">
+278.5225
+</td>
+<td style="text-align:right;">
+277.6826
+</td>
+<td style="text-align:right;">
+276.7433
+</td>
+<td style="text-align:right;">
+276.0372
+</td>
+<td style="text-align:right;">
+275.8724
+</td>
+<td style="text-align:right;">
+275.5506
+</td>
+<td style="text-align:right;">
+274.9448
+</td>
+<td style="text-align:right;">
+274.7335
+</td>
+<td style="text-align:right;">
+274.6502
+</td>
+<td style="text-align:right;">
+274.5014
+</td>
+<td style="text-align:right;">
+274.1311
+</td>
+<td style="text-align:right;">
+274.9364
+</td>
+<td style="text-align:right;">
+274.6064
+</td>
+<td style="text-align:right;">
+273.6851
+</td>
+<td style="text-align:right;">
+273.5462
+</td>
+<td style="text-align:right;">
+273.3927
+</td>
+<td style="text-align:right;">
+273.4180
+</td>
+<td style="text-align:right;">
+274.6096
+</td>
+<td style="text-align:right;">
+275.9864
+</td>
+<td style="text-align:right;">
+277.0000
+</td>
+<td style="text-align:right;">
+277.5066
+</td>
+<td style="text-align:right;">
+278.1661
+</td>
+<td style="text-align:right;">
+278.6003
+</td>
+<td style="text-align:right;">
+278.5086
+</td>
+<td style="text-align:right;">
+277.5951
+</td>
+<td style="text-align:right;">
+39.25137
+</td>
+<td style="text-align:right;">
+-118.7661
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+277.2552
+</td>
+<td style="text-align:right;">
+277.3832
+</td>
+<td style="text-align:right;">
+277.1455
+</td>
+<td style="text-align:right;">
+276.9172
+</td>
+<td style="text-align:right;">
+276.7751
+</td>
+<td style="text-align:right;">
+277.0384
+</td>
+<td style="text-align:right;">
+276.7365
+</td>
+<td style="text-align:right;">
+276.4151
+</td>
+<td style="text-align:right;">
+276.2578
+</td>
+<td style="text-align:right;">
+276.1789
+</td>
+<td style="text-align:right;">
+275.7653
+</td>
+<td style="text-align:right;">
+274.8423
+</td>
+<td style="text-align:right;">
+274.3571
+</td>
+<td style="text-align:right;">
+273.8749
+</td>
+<td style="text-align:right;">
+274.2749
+</td>
+<td style="text-align:right;">
+274.5484
+</td>
+<td style="text-align:right;">
+276.5393
+</td>
+<td style="text-align:right;">
+277.5399
+</td>
+<td style="text-align:right;">
+278.4653
+</td>
+<td style="text-align:right;">
+279.5308
+</td>
+<td style="text-align:right;">
+280.3997
+</td>
+<td style="text-align:right;">
+280.8011
+</td>
+<td style="text-align:right;">
+280.4313
+</td>
+<td style="text-align:right;">
+279.1475
+</td>
+<td style="text-align:right;">
+276.7415
+</td>
+<td style="text-align:right;">
+276.4488
+</td>
+<td style="text-align:right;">
+276.1162
+</td>
+<td style="text-align:right;">
+275.7077
+</td>
+<td style="text-align:right;">
+274.6182
+</td>
+<td style="text-align:right;">
+273.9958
+</td>
+<td style="text-align:right;">
+273.6461
+</td>
+<td style="text-align:right;">
+273.2680
+</td>
+<td style="text-align:right;">
+273.1040
+</td>
+<td style="text-align:right;">
+273.0687
+</td>
+<td style="text-align:right;">
+273.0963
+</td>
+<td style="text-align:right;">
+272.9098
+</td>
+<td style="text-align:right;">
+273.1409
+</td>
+<td style="text-align:right;">
+272.8647
+</td>
+<td style="text-align:right;">
+272.7283
+</td>
+<td style="text-align:right;">
+272.6208
+</td>
+<td style="text-align:right;">
+272.7043
+</td>
+<td style="text-align:right;">
+273.0067
+</td>
+<td style="text-align:right;">
+273.4982
+</td>
+<td style="text-align:right;">
+274.3363
+</td>
+<td style="text-align:right;">
+274.7366
+</td>
+<td style="text-align:right;">
+275.0040
+</td>
+<td style="text-align:right;">
+274.9586
+</td>
+<td style="text-align:right;">
+273.7363
+</td>
+<td style="text-align:right;">
+273.2126
+</td>
+<td style="text-align:right;">
+272.8445
+</td>
+<td style="text-align:right;">
+272.5539
+</td>
+<td style="text-align:right;">
+272.3567
+</td>
+<td style="text-align:right;">
+272.3333
+</td>
+<td style="text-align:right;">
+272.2702
+</td>
+<td style="text-align:right;">
+271.9602
+</td>
+<td style="text-align:right;">
+271.6708
+</td>
+<td style="text-align:right;">
+271.3074
+</td>
+<td style="text-align:right;">
+271.1045
+</td>
+<td style="text-align:right;">
+270.9192
+</td>
+<td style="text-align:right;">
+270.8766
+</td>
+<td style="text-align:right;">
+271.0182
+</td>
+<td style="text-align:right;">
+270.8376
+</td>
+<td style="text-align:right;">
+270.6374
+</td>
+<td style="text-align:right;">
+270.8886
+</td>
+<td style="text-align:right;">
+270.6212
+</td>
+<td style="text-align:right;">
+270.9253
+</td>
+<td style="text-align:right;">
+272.0952
+</td>
+<td style="text-align:right;">
+273.6277
+</td>
+<td style="text-align:right;">
+275.1916
+</td>
+<td style="text-align:right;">
+276.2575
+</td>
+<td style="text-align:right;">
+276.6827
+</td>
+<td style="text-align:right;">
+276.1170
+</td>
+<td style="text-align:right;">
+275.0607
+</td>
+<td style="text-align:right;">
+274.4793
+</td>
+<td style="text-align:right;">
+274.2458
+</td>
+<td style="text-align:right;">
+273.9888
+</td>
+<td style="text-align:right;">
+273.5739
+</td>
+<td style="text-align:right;">
+273.5854
+</td>
+<td style="text-align:right;">
+273.3496
+</td>
+<td style="text-align:right;">
+273.0491
+</td>
+<td style="text-align:right;">
+272.4329
+</td>
+<td style="text-align:right;">
+272.2160
+</td>
+<td style="text-align:right;">
+271.9569
+</td>
+<td style="text-align:right;">
+271.7962
+</td>
+<td style="text-align:right;">
+271.6453
+</td>
+<td style="text-align:right;">
+271.4247
+</td>
+<td style="text-align:right;">
+271.3578
+</td>
+<td style="text-align:right;">
+271.4896
+</td>
+<td style="text-align:right;">
+272.1818
+</td>
+<td style="text-align:right;">
+273.7663
+</td>
+<td style="text-align:right;">
+274.3321
+</td>
+<td style="text-align:right;">
+275.4829
+</td>
+<td style="text-align:right;">
+276.4153
+</td>
+<td style="text-align:right;">
+276.4406
+</td>
+<td style="text-align:right;">
+275.9979
+</td>
+<td style="text-align:right;">
+274.6804
+</td>
+<td style="text-align:right;">
+273.9972
+</td>
+<td style="text-align:right;">
+273.4796
+</td>
+<td style="text-align:right;">
+273.7449
+</td>
+<td style="text-align:right;">
+274.2661
+</td>
+<td style="text-align:right;">
+274.6345
+</td>
+<td style="text-align:right;">
+274.6942
+</td>
+<td style="text-align:right;">
+275.0323
+</td>
+<td style="text-align:right;">
+275.2444
+</td>
+<td style="text-align:right;">
+275.1318
+</td>
+<td style="text-align:right;">
+274.8805
+</td>
+<td style="text-align:right;">
+274.7650
+</td>
+<td style="text-align:right;">
+274.3426
+</td>
+<td style="text-align:right;">
+274.0858
+</td>
+<td style="text-align:right;">
+274.4111
+</td>
+<td style="text-align:right;">
+274.7545
+</td>
+<td style="text-align:right;">
+275.2231
+</td>
+<td style="text-align:right;">
+276.1569
+</td>
+<td style="text-align:right;">
+277.2388
+</td>
+<td style="text-align:right;">
+277.9303
+</td>
+<td style="text-align:right;">
+277.5831
+</td>
+<td style="text-align:right;">
+278.5941
+</td>
+<td style="text-align:right;">
+279.3911
+</td>
+<td style="text-align:right;">
+280.0901
+</td>
+<td style="text-align:right;">
+279.9145
+</td>
+<td style="text-align:right;">
+279.3365
+</td>
+<td style="text-align:right;">
+278.8214
+</td>
+<td style="text-align:right;">
+277.5703
+</td>
+<td style="text-align:right;">
+276.6717
+</td>
+<td style="text-align:right;">
+277.0266
+</td>
+<td style="text-align:right;">
+275.4164
+</td>
+<td style="text-align:right;">
+276.2921
+</td>
+<td style="text-align:right;">
+276.4781
+</td>
+<td style="text-align:right;">
+275.6971
+</td>
+<td style="text-align:right;">
+276.0178
+</td>
+<td style="text-align:right;">
+275.6737
+</td>
+<td style="text-align:right;">
+275.3726
+</td>
+<td style="text-align:right;">
+274.1363
+</td>
+<td style="text-align:right;">
+274.1401
+</td>
+<td style="text-align:right;">
+274.4621
+</td>
+<td style="text-align:right;">
+275.4663
+</td>
+<td style="text-align:right;">
+276.1554
+</td>
+<td style="text-align:right;">
+277.5941
+</td>
+<td style="text-align:right;">
+277.5861
+</td>
+<td style="text-align:right;">
+278.1026
+</td>
+<td style="text-align:right;">
+279.4164
+</td>
+<td style="text-align:right;">
+279.5989
+</td>
+<td style="text-align:right;">
+279.4934
+</td>
+<td style="text-align:right;">
+279.2510
+</td>
+<td style="text-align:right;">
+278.0062
+</td>
+<td style="text-align:right;">
+276.8961
+</td>
+<td style="text-align:right;">
+276.1905
+</td>
+<td style="text-align:right;">
+275.8318
+</td>
+<td style="text-align:right;">
+275.7746
+</td>
+<td style="text-align:right;">
+275.3496
+</td>
+<td style="text-align:right;">
+275.3437
+</td>
+<td style="text-align:right;">
+275.1834
+</td>
+<td style="text-align:right;">
+274.7393
+</td>
+<td style="text-align:right;">
+274.3904
+</td>
+<td style="text-align:right;">
+274.6051
+</td>
+<td style="text-align:right;">
+274.3980
+</td>
+<td style="text-align:right;">
+273.7921
+</td>
+<td style="text-align:right;">
+273.1648
+</td>
+<td style="text-align:right;">
+273.2536
+</td>
+<td style="text-align:right;">
+273.4294
+</td>
+<td style="text-align:right;">
+274.6315
+</td>
+<td style="text-align:right;">
+276.1435
+</td>
+<td style="text-align:right;">
+277.3985
+</td>
+<td style="text-align:right;">
+278.1933
+</td>
+<td style="text-align:right;">
+278.9048
+</td>
+<td style="text-align:right;">
+279.1982
+</td>
+<td style="text-align:right;">
+279.0648
+</td>
+<td style="text-align:right;">
+278.0566
+</td>
+<td style="text-align:right;">
+39.27631
+</td>
+<td style="text-align:right;">
+-118.6293
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> This only shows the first 10 lines of the example data.
+</td>
+</tr>
+</tfoot>
+</table>
+<p><br></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># example data: population of 2020 at same 12-km resolution as WRF</span></span>
+<span><span class="va">path_to_population</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'population_conus_ssp2_2020wrf_wgs84.csv'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">population</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/read_population.html">read_population</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">path_to_population</span><span class="op">)</span></span></code></pre></div>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+Table. Population data.
+</caption>
+<thead><tr>
+<th style="text-align:right;">
+lat
+</th>
+<th style="text-align:right;">
+lon
+</th>
+<th style="text-align:left;">
+year
+</th>
+<th style="text-align:right;">
+value
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+39.71695
+</td>
+<td style="text-align:right;">
+-75.96228
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+13598.725
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39.69270
+</td>
+<td style="text-align:right;">
+-75.82443
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+42193.508
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39.70622
+</td>
+<td style="text-align:right;">
+-76.54523
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+10137.426
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39.68262
+</td>
+<td style="text-align:right;">
+-76.40723
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+8554.790
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39.65885
+</td>
+<td style="text-align:right;">
+-76.26929
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+8886.017
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39.63494
+</td>
+<td style="text-align:right;">
+-76.13144
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+13651.662
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39.61087
+</td>
+<td style="text-align:right;">
+-75.99368
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+20978.886
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39.58664
+</td>
+<td style="text-align:right;">
+-75.85602
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+32093.112
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39.71550
+</td>
+<td style="text-align:right;">
+-77.26627
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+7146.509
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39.69271
+</td>
+<td style="text-align:right;">
+-77.12799
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:right;">
+14249.995
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> This only shows the first 10 lines of the example data.
+</td>
+</tr>
+</tfoot>
+</table>
 <p><br></p>
 </div>
 <div class="section level3">
@@ -348,17 +6211,26 @@ from the netCDF, which is temperature in this case.</li>
 <code>model = 'wrf'</code> specifies the model used to produce the
 climate forcing data, which is WRF model in this case.</li>
 <li>
-<code>spatial = 'states_us_49'</code> specifies we are only
-calculating the cooling and heating degrees within 49 states of USA.
-This will produce outputs that can be used for <code>GCAM-USA</code>.
-For tutorial of using <code>helios</code> for global 32 regions, please
-check out <a href="vignette_gcam-regions.html">GCAM-regions</a> tutorial
-page.</li>
+<code>model_timestep = 'hourly'</code> indicates the temporal
+resolution of the climate forcing data, which is hourly in this
+case.</li>
 <li>
-<code>temporal = 2020</code> specifies the time period 2020 to
+<code>spatial = 'gcam_us49'</code> specifies we are only calculating
+the cooling and heating degrees within 49 states of USA. This will
+produce outputs that can be used for <code>GCAM-USA</code>. For tutorial
+of using <code>helios</code> for global 32 regions, please check out <a href="vignette_gcam-regions.html">GCAM-regions</a> tutorial page.</li>
+<li>
+<code>time_periods = 2020</code> specifies the time period 2020 to
 include since the example data only covers 7 days in 2020.</li>
+<li>
+<code>dispatch_segment = TRUE</code> asks the model to output
+heating and cooling degree-hours by segment when the input data is
+hourly. In addition, these two arguments need to be specified as
+<code>model_timestep = 'hourly'</code> and
+<code>spatial = 'gcam_us49'</code>, because the currently only GCAM-USA
+supports dispatch segment.</li>
 </ul>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/helios" class="external-link">helios</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># example data: WRF hourly climate at 12-km resolution</span></span>
@@ -371,15 +6243,17 @@ include since the example data only covers 7 days in 2020.</li>
 <span><span class="va">hdcd_usa</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/hdcd.html">hdcd</a></span><span class="op">(</span>ncdf <span class="op">=</span> <span class="va">path_to_climate_ncdf</span>,</span>
 <span>                         ncdf_var <span class="op">=</span> <span class="st">'T2'</span>,</span>
 <span>                         model <span class="op">=</span> <span class="st">'wrf'</span>,</span>
+<span>                         model_timestep <span class="op">=</span> <span class="st">'hourly'</span>,</span>
 <span>                         population <span class="op">=</span> <span class="va">path_to_population</span>,</span>
-<span>                         spatial <span class="op">=</span> <span class="st">'states_us_49'</span>,</span>
-<span>                         temporal <span class="op">=</span> <span class="fl">2020</span>,</span>
+<span>                         spatial <span class="op">=</span> <span class="st">'gcam_us49'</span>,</span>
+<span>                         time_periods <span class="op">=</span> <span class="fl">2020</span>,</span>
+<span>                         dispatch_segment <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                         reference_temp_F <span class="op">=</span> <span class="fl">65</span>,</span>
-<span>                         folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/output"</span><span class="op">)</span>,</span>
+<span>                         folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
 <span>                         diagnostics <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>                         xml <span class="op">=</span> <span class="cn">F</span>,</span>
-<span>                         name_append <span class="op">=</span> <span class="st">""</span>,</span>
-<span>                         save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<span>                         name_append <span class="op">=</span> <span class="st">''</span>,</span>
+<span>                         save <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
 <span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
 <span><span class="co">## [1] "........................................."</span></span>
@@ -396,15 +6270,18 @@ include since the example data only covers 7 days in 2020.</li>
 <span><span class="co">## [1] "Starting population weighting ..."</span></span>
 <span><span class="co">## [1] "Completed population weighting."</span></span>
 <span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
+<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_gcam.csv"</span></span>
+<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_monthly.csv"</span></span>
+<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_annual.csv"</span></span>
 <span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
 <p><br></p>
 <p>The output is a list containing three tables. Please note the
 different units (degree-hours or degree-days) for different outputs.</p>
 <ul>
 <li>
-<code>hdcd_usa$hdcd_comb</code>: Heating and cooling
+<code>hdcd_usa$hdcd_comb_gcam</code>: Heating and cooling
 <strong>degree-hours</strong> by dispatch segment for CONUS and by
-building thermal service.</li>
+building thermal service. GCAM/GCAM-USA required format.</li>
 <li>
 <code>hdcd_usa$hdcd_comb_monthly</code>: Heating and cooling
 <strong>degree-days</strong> by month for CONUS (part of USA in the
@@ -414,349 +6291,815 @@ example).</li>
 <strong>degree-days</strong> by year for CONUS (part of USA in the
 example).</li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p><br></p>
+<p><strong>1. By GCAM-USA Dispatch Segment and Building Thermal
+Service</strong></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-hours by dispatch segment and by building thermal service for CONUS</span></span>
-<span><span class="va">hdcd_segment</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">hdcd_segment</span>, </span>
-<span>             caption <span class="op">=</span> <span class="st">'Annual Heating and Cooling Degree-hours by Building Thermal Service'</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<caption>Annual Heating and Cooling Degree-hours by Building Thermal
-Service</caption>
-<colgroup>
-<col width="5%">
-<col width="7%">
-<col width="3%">
-<col width="7%">
-<col width="10%">
-<col width="7%">
-<col width="15%">
-<col width="23%">
-<col width="9%">
-<col width="9%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">region</th>
-<th align="left">subRegion</th>
-<th align="left">year</th>
-<th align="left">segment</th>
-<th align="left">gcam.consumer</th>
-<th align="left">nodeInput</th>
-<th align="left">building.node.input</th>
-<th align="left">thermal.building.service.input</th>
-<th align="left">unit</th>
-<th align="right">value</th>
+<span><span class="va">hdcd_segment</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_gcam</span></span></code></pre></div>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
+<caption>
+Table. Annual heating and cooling degree-hours by building thermal
+service
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+region
+</th>
+<th style="text-align:left;">
+subRegion
+</th>
+<th style="text-align:left;">
+year
+</th>
+<th style="text-align:left;">
+segment
+</th>
+<th style="text-align:left;">
+gcam.consumer
+</th>
+<th style="text-align:left;">
+nodeInput
+</th>
+<th style="text-align:left;">
+building.node.input
+</th>
+<th style="text-align:left;">
+thermal.building.service.input
+</th>
+<th style="text-align:left;">
+unit
+</th>
+<th style="text-align:right;">
+value
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">Dec_day</td>
-<td align="left">comm</td>
-<td align="left">comm</td>
-<td align="left">comm_building</td>
-<td align="left">comm heating Dec_day</td>
-<td align="left">degree-hours</td>
-<td align="right">-0.0114599</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_day
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm_building
+</td>
+<td style="text-align:left;">
+comm heating Dec_day
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-0.0114599
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">Dec_day</td>
-<td align="left">resid</td>
-<td align="left">resid</td>
-<td align="left">resid_building</td>
-<td align="left">resid heating Dec_day</td>
-<td align="left">degree-hours</td>
-<td align="right">-0.0114599</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_day
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid_building
+</td>
+<td style="text-align:left;">
+resid heating Dec_day
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-0.0114599
+</td>
 </tr>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">Dec_night</td>
-<td align="left">comm</td>
-<td align="left">comm</td>
-<td align="left">comm_building</td>
-<td align="left">comm heating Dec_night</td>
-<td align="left">degree-hours</td>
-<td align="right">-0.0414882</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_night
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm_building
+</td>
+<td style="text-align:left;">
+comm heating Dec_night
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-0.0414882
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">Dec_night</td>
-<td align="left">resid</td>
-<td align="left">resid</td>
-<td align="left">resid_building</td>
-<td align="left">resid heating Dec_night</td>
-<td align="left">degree-hours</td>
-<td align="right">-0.0414882</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_night
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid_building
+</td>
+<td style="text-align:left;">
+resid heating Dec_night
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-0.0414882
+</td>
 </tr>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">Jan_day</td>
-<td align="left">comm</td>
-<td align="left">comm</td>
-<td align="left">comm_building</td>
-<td align="left">comm heating Jan_day</td>
-<td align="left">degree-hours</td>
-<td align="right">-0.3393844</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Jan_day
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm_building
+</td>
+<td style="text-align:left;">
+comm heating Jan_day
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-0.3393844
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">Jan_day</td>
-<td align="left">resid</td>
-<td align="left">resid</td>
-<td align="left">resid_building</td>
-<td align="left">resid heating Jan_day</td>
-<td align="left">degree-hours</td>
-<td align="right">-0.3393844</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Jan_day
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid_building
+</td>
+<td style="text-align:left;">
+resid heating Jan_day
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-0.3393844
+</td>
 </tr>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">Jan_night</td>
-<td align="left">comm</td>
-<td align="left">comm</td>
-<td align="left">comm_building</td>
-<td align="left">comm heating Jan_night</td>
-<td align="left">degree-hours</td>
-<td align="right">-0.6256360</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Jan_night
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm_building
+</td>
+<td style="text-align:left;">
+comm heating Jan_night
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-0.6256360
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">Jan_night</td>
-<td align="left">resid</td>
-<td align="left">resid</td>
-<td align="left">resid_building</td>
-<td align="left">resid heating Jan_night</td>
-<td align="left">degree-hours</td>
-<td align="right">-0.6256360</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Jan_night
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid_building
+</td>
+<td style="text-align:left;">
+resid heating Jan_night
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-0.6256360
+</td>
 </tr>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">Dec_day</td>
-<td align="left">comm</td>
-<td align="left">comm</td>
-<td align="left">comm_building</td>
-<td align="left">comm heating Dec_day</td>
-<td align="left">degree-hours</td>
-<td align="right">-1.0170742</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_day
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm_building
+</td>
+<td style="text-align:left;">
+comm heating Dec_day
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-1.0170742
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">Dec_day</td>
-<td align="left">resid</td>
-<td align="left">resid</td>
-<td align="left">resid_building</td>
-<td align="left">resid heating Dec_day</td>
-<td align="left">degree-hours</td>
-<td align="right">-1.0170742</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_day
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid_building
+</td>
+<td style="text-align:left;">
+resid heating Dec_day
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-1.0170742
+</td>
 </tr>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">Dec_night</td>
-<td align="left">comm</td>
-<td align="left">comm</td>
-<td align="left">comm_building</td>
-<td align="left">comm heating Dec_night</td>
-<td align="left">degree-hours</td>
-<td align="right">-3.7933185</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_night
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm_building
+</td>
+<td style="text-align:left;">
+comm heating Dec_night
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-3.7933185
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">Dec_night</td>
-<td align="left">resid</td>
-<td align="left">resid</td>
-<td align="left">resid_building</td>
-<td align="left">resid heating Dec_night</td>
-<td align="left">degree-hours</td>
-<td align="right">-3.7933185</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_night
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid_building
+</td>
+<td style="text-align:left;">
+resid heating Dec_night
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-3.7933185
+</td>
 </tr>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">Jan_day</td>
-<td align="left">comm</td>
-<td align="left">comm</td>
-<td align="left">comm_building</td>
-<td align="left">comm heating Jan_day</td>
-<td align="left">degree-hours</td>
-<td align="right">-30.8660315</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Jan_day
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm_building
+</td>
+<td style="text-align:left;">
+comm heating Jan_day
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-30.8660315
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">Jan_day</td>
-<td align="left">resid</td>
-<td align="left">resid</td>
-<td align="left">resid_building</td>
-<td align="left">resid heating Jan_day</td>
-<td align="left">degree-hours</td>
-<td align="right">-30.8660315</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Jan_day
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid_building
+</td>
+<td style="text-align:left;">
+resid heating Jan_day
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-30.8660315
+</td>
 </tr>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">Jan_night</td>
-<td align="left">comm</td>
-<td align="left">comm</td>
-<td align="left">comm_building</td>
-<td align="left">comm heating Jan_night</td>
-<td align="left">degree-hours</td>
-<td align="right">-57.7348273</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Jan_night
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm
+</td>
+<td style="text-align:left;">
+comm_building
+</td>
+<td style="text-align:left;">
+comm heating Jan_night
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-57.7348273
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">Jan_night</td>
-<td align="left">resid</td>
-<td align="left">resid</td>
-<td align="left">resid_building</td>
-<td align="left">resid heating Jan_night</td>
-<td align="left">degree-hours</td>
-<td align="right">-57.7348273</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+Jan_night
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid
+</td>
+<td style="text-align:left;">
+resid_building
+</td>
+<td style="text-align:left;">
+resid heating Jan_night
+</td>
+<td style="text-align:left;">
+degree-hours
+</td>
+<td style="text-align:right;">
+-57.7348273
+</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p><br></p>
+<p><strong>2. By Month</strong></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at monthly scale for CONUS</span></span>
-<span><span class="va">hdcd_monthly</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_monthly</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">hdcd_monthly</span>, </span>
-<span>             caption <span class="op">=</span> <span class="st">'Monthly Heating and Cooling Degree-days'</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<caption>Monthly Heating and Cooling Degree-days</caption>
-<thead><tr class="header">
-<th align="left">region</th>
-<th align="left">subRegion</th>
-<th align="left">year</th>
-<th align="left">month</th>
-<th align="left">HDCD</th>
-<th align="left">unit</th>
-<th align="right">value</th>
+<span><span class="va">hdcd_monthly</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_monthly</span></span></code></pre></div>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
+<caption>
+Table. Monthly heating and cooling degree-days
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+region
+</th>
+<th style="text-align:left;">
+subRegion
+</th>
+<th style="text-align:left;">
+year
+</th>
+<th style="text-align:left;">
+month
+</th>
+<th style="text-align:left;">
+HDCD
+</th>
+<th style="text-align:left;">
+unit
+</th>
+<th style="text-align:right;">
+value
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">01</td>
-<td align="left">CD</td>
-<td align="left">degree-days</td>
-<td align="right">0.0000000</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+01
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">01</td>
-<td align="left">HD</td>
-<td align="left">degree-days</td>
-<td align="right">-0.0483388</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+01
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-0.0483388
+</td>
 </tr>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">01</td>
-<td align="left">CD</td>
-<td align="left">degree-days</td>
-<td align="right">0.0000000</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+01
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">01</td>
-<td align="left">HD</td>
-<td align="left">degree-days</td>
-<td align="right">-4.3027594</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+01
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-4.3027594
+</td>
 </tr>
 </tbody>
 </table>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<p><br></p>
+<p><strong>3. By Year</strong></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at annual scale for CONUS</span></span>
-<span><span class="va">hdcd_annual</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_annual</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">hdcd_annual</span>, </span>
-<span>             caption <span class="op">=</span> <span class="st">'Annual Heating and Cooling Degree-days'</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<caption>Annual Heating and Cooling Degree-days</caption>
-<thead><tr class="header">
-<th align="left">region</th>
-<th align="left">subRegion</th>
-<th align="left">year</th>
-<th align="left">HDCD</th>
-<th align="left">unit</th>
-<th align="right">value</th>
+<span><span class="va">hdcd_annual</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_annual</span></span></code></pre></div>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
+<caption>
+Table. Annual Heating and Cooling Degree-days
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+region
+</th>
+<th style="text-align:left;">
+subRegion
+</th>
+<th style="text-align:left;">
+year
+</th>
+<th style="text-align:left;">
+HDCD
+</th>
+<th style="text-align:left;">
+unit
+</th>
+<th style="text-align:right;">
+value
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">CD</td>
-<td align="left">degree-days</td>
-<td align="right">0.0000000</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">CA</td>
-<td align="left">2020</td>
-<td align="left">HD</td>
-<td align="left">degree-days</td>
-<td align="right">-0.0483388</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+CA
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-0.0483388
+</td>
 </tr>
-<tr class="odd">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">CD</td>
-<td align="left">degree-days</td>
-<td align="right">0.0000000</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+0.0000000
+</td>
 </tr>
-<tr class="even">
-<td align="left">USA</td>
-<td align="left">NV</td>
-<td align="left">2020</td>
-<td align="left">HD</td>
-<td align="left">degree-days</td>
-<td align="right">-4.3027594</td>
+<tr>
+<td style="text-align:left;">
+USA
+</td>
+<td style="text-align:left;">
+NV
+</td>
+<td style="text-align:left;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-4.3027594
+</td>
 </tr>
 </tbody>
 </table>
 <p><br></p>
-<p>*<strong>Note:</strong> Please note that we use a spatial subset of
-WRF input climate NetCDF data as an example, which only covers 7 days.
-To get heating and cooling degrees for a complete year, users need to
-run climate NetCDF files using <code>helios</code> that cover the length
-of a year. For example, if each climate NetCDF is for 7-days, then user
-need to include about 52 climate NetCDF to cover a whole year of climate
-data. Then, users can use <code>helios::diagnostic</code> to create
-plots to check heating and cooling degree behaviors throughout a
+<blockquote>
+<p><strong><em>NOTE:</em></strong> Please note that we use a spatial
+subset of WRF input climate NetCDF data as an example, which only covers
+7 days. To get heating and cooling degrees for a complete year, users
+need to run climate NetCDF files using <code>helios</code> that cover
+the length of a year. For example, if each climate NetCDF is for 7-days,
+then user need to include about 52 climate NetCDF to cover a whole year
+of climate data. Then, users can use <code><a href="../reference/diagnostics.html">helios::diagnostics</a></code> to
+create plots to check heating and cooling degree behaviors throughout a
 year.</p>
-<p><br></p>
+</blockquote>
 </div>
 <div class="section level3">
 <h3 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>
@@ -773,93 +7116,216 @@ and monthly time step:</p>
 heating and cooling degree data as long as they include those columns in
 the monthly data or the segment data: [subRegion, year, month/segment,
 HDCD, value]</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Heating and cooling degree-hours by dispatch segment</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_hdcd_segment_usa.html">example_hdcd_segment_usa</a></span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,<span class="op">]</span>, </span>
-<span>             caption <span class="op">=</span> <span class="st">'Heating and Cooling Degree-hours by Segment'</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<caption>Heating and Cooling Degree-hours by Segment</caption>
-<thead><tr class="header">
-<th align="left">subRegion</th>
-<th align="right">year</th>
-<th align="left">segment</th>
-<th align="right">value</th>
-<th align="left">HDCD</th>
+<p><br></p>
+<p><strong>1. By Month</strong></p>
+<p>Let’s run <code><a href="../reference/diagnostics.html">helios::diagnostics</a></code> to the example heating and
+cooling degree-days by month from 2020 to 2050.</p>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+Table. Example data for monthly heating and cooling degree-days from
+2020 to 2050 with 5-year interval.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+subRegion
+</th>
+<th style="text-align:right;">
+year
+</th>
+<th style="text-align:right;">
+month
+</th>
+<th style="text-align:left;">
+HDCD
+</th>
+<th style="text-align:right;">
+value
+</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td align="left">AL</td>
-<td align="right">2020</td>
-<td align="left">Apr_day</td>
-<td align="right">1658.2854</td>
-<td align="left">CD</td>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:right;">
+-554.602736
+</td>
 </tr>
-<tr class="even">
-<td align="left">AL</td>
-<td align="right">2020</td>
-<td align="left">Apr_day</td>
-<td align="right">-927.7123</td>
-<td align="left">HD</td>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:right;">
+3.119958
+</td>
 </tr>
-<tr class="odd">
-<td align="left">AL</td>
-<td align="right">2020</td>
-<td align="left">Apr_night</td>
-<td align="right">118.5805</td>
-<td align="left">CD</td>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:right;">
+-720.422022
+</td>
 </tr>
-<tr class="even">
-<td align="left">AL</td>
-<td align="right">2020</td>
-<td align="left">Apr_night</td>
-<td align="right">-2939.6348</td>
-<td align="left">HD</td>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:right;">
+6.460285
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:right;">
+-377.592511
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:right;">
+52.836382
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:right;">
+-121.201889
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:right;">
+272.250722
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:right;">
+-6.784828
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:right;">
+480.749542
+</td>
 </tr>
 </tbody>
-</table>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days by month</span></span>
-<span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_hdcd_monthly_usa.html">example_hdcd_monthly_usa</a></span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>,<span class="op">]</span>, </span>
-<span>             caption <span class="op">=</span> <span class="st">'Monthly Heating and Cooling Degree-days'</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<caption>Monthly Heating and Cooling Degree-days</caption>
-<thead><tr class="header">
-<th align="left">subRegion</th>
-<th align="right">year</th>
-<th align="right">month</th>
-<th align="left">HDCD</th>
-<th align="right">value</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">AL</td>
-<td align="right">2020</td>
-<td align="right">1</td>
-<td align="left">HD</td>
-<td align="right">-554.602736</td>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
 </tr>
-<tr class="even">
-<td align="left">AL</td>
-<td align="right">2020</td>
-<td align="right">2</td>
-<td align="left">CD</td>
-<td align="right">3.119958</td>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> This only shows the first 10 lines of the example data.
+</td>
 </tr>
-<tr class="odd">
-<td align="left">AL</td>
-<td align="right">2020</td>
-<td align="right">2</td>
-<td align="left">HD</td>
-<td align="right">-720.422022</td>
-</tr>
-<tr class="even">
-<td align="left">AL</td>
-<td align="right">2020</td>
-<td align="right">3</td>
-<td align="left">CD</td>
-<td align="right">6.460285</td>
-</tr>
-</tbody>
+</tfoot>
 </table>
 <p>If the data coverage is too short (e.g., less than 6 months),
 diagnostics will not create plot by default. Users can change the
@@ -868,11 +7334,11 @@ constraint on numbers of months in the data using argument
 data coverage. The followings show how to use diagnostics with example
 outputs of heating and cooling degrees at both segment and monthly time
 step.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Perform diagnostic on monthly data</span></span>
 <span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span>hdcd_monthly <span class="op">=</span> <span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_hdcd_monthly_usa.html">example_hdcd_monthly_usa</a></span>,</span>
 <span>                    min_diagnostic_months <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>                    folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/output"</span><span class="op">)</span>,</span>
+<span>                    folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
 <span>                    name_append <span class="op">=</span> <span class="st">'monthly'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p align="center">
@@ -883,14 +7349,221 @@ step.</p>
 degree-days from 2020 to 2050.
 </p>
 <p><br></p>
-<p>Segment output , set <code>spatial = 'states_us_49'</code> to
-indicate the data</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<p><strong>2. By GCAM-USA Dispatch Segment</strong></p>
+<p>Let’s run <code><a href="../reference/diagnostics.html">helios::diagnostics</a></code> to the example heating and
+cooling degree-hours by dispatch segment from 2020 to 2050.</p>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
+<caption>
+Table. Example data for heating and cooling degree-hours by Segment from
+2020 to 2050 with 5-year interval.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+subRegion
+</th>
+<th style="text-align:right;">
+year
+</th>
+<th style="text-align:left;">
+segment
+</th>
+<th style="text-align:right;">
+value
+</th>
+<th style="text-align:left;">
+HDCD
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Apr_day
+</td>
+<td style="text-align:right;">
+1658.28538
+</td>
+<td style="text-align:left;">
+CD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Apr_day
+</td>
+<td style="text-align:right;">
+-927.71234
+</td>
+<td style="text-align:left;">
+HD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Apr_night
+</td>
+<td style="text-align:right;">
+118.58054
+</td>
+<td style="text-align:left;">
+CD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Apr_night
+</td>
+<td style="text-align:right;">
+-2939.63478
+</td>
+<td style="text-align:left;">
+HD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Aug_day
+</td>
+<td style="text-align:right;">
+9653.28363
+</td>
+<td style="text-align:left;">
+CD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Aug_night
+</td>
+<td style="text-align:right;">
+4062.64718
+</td>
+<td style="text-align:left;">
+CD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_day
+</td>
+<td style="text-align:right;">
+117.39468
+</td>
+<td style="text-align:left;">
+CD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_day
+</td>
+<td style="text-align:right;">
+-4717.31780
+</td>
+<td style="text-align:left;">
+HD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_night
+</td>
+<td style="text-align:right;">
+1.09673
+</td>
+<td style="text-align:left;">
+CD
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+AL
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Dec_night
+</td>
+<td style="text-align:right;">
+-10669.04390
+</td>
+<td style="text-align:left;">
+HD
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> This only shows the first 10 lines of the example data.
+</td>
+</tr>
+</tfoot>
+</table>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Perform diagnostic on segment data</span></span>
-<span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span>hdcd <span class="op">=</span> <span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_hdcd_segment_usa.html">example_hdcd_segment_usa</a></span>,</span>
-<span>                    spatial <span class="op">=</span> <span class="st">'states_us_49'</span>,</span>
+<span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span>hdcd_segment <span class="op">=</span> <span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_hdcd_segment_usa.html">example_hdcd_segment_usa</a></span>,</span>
 <span>                    min_diagnostic_months <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>                    folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"/output"</span><span class="op">)</span>,</span>
+<span>                    folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
 <span>                    name_append <span class="op">=</span> <span class="st">'segment'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p align="center">
@@ -907,9 +7580,21 @@ degree-hours by dispatch segment from 2020 to 2050.
 </h3>
 <p>Finally, for GCAM users, <code>helios</code> can save the outputs by
 building thermal service to XML format, which is a required format for
-GCAM inputs. Set <code>xml = TRUE</code> in the
-<code><a href="../reference/hdcd.html">helios::hdcd</a></code> function will save the XML file to the output
-folder.</p>
+GCAM inputs. There are two ways to save <code>helios</code> output to
+XML file:</p>
+<ul>
+<li>Set <code>xml = TRUE</code> in the <code><a href="../reference/hdcd.html">helios::hdcd</a></code>
+function will automatically save the XML file to the output folder.</li>
+<li>Use <code><a href="../reference/save_xml.html">helios::save_xml</a></code> function.</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/save_xml.html">save_xml</a></span><span class="op">(</span>hdcd_gcam <span class="op">=</span> <span class="va">hdcd_segment</span>,</span>
+<span>                 folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
+<span>                 name_append <span class="op">=</span> <span class="st">'wrf'</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Starting function save_xml..."</span></span>
+<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf_xml.csv"</span></span>
+<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf.xml"</span></span>
+<span><span class="co">## [1] "save_xml complete."</span></span></code></pre>
 </div>
 </div>
   </div>

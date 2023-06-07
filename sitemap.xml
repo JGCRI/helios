@@ -58,6 +58,9 @@
     <loc>/reference/example_wrf_usa_ncdf.html</loc>
   </url>
   <url>
+    <loc>/reference/find_mapping_grid.html</loc>
+  </url>
+  <url>
     <loc>/reference/hdcd.html</loc>
   </url>
   <url>
@@ -71,6 +74,9 @@
   </url>
   <url>
     <loc>/reference/mapping_grid_region.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mapping_grid_region_US52.html</loc>
   </url>
   <url>
     <loc>/reference/mapping_wrf_us49.html</loc>
@@ -92,5 +98,8 @@
   </url>
   <url>
     <loc>/reference/segment_map_utc.html</loc>
+  </url>
+  <url>
+    <loc>/reference/spatial_options.html</loc>
   </url>
 </urlset>
