@@ -1,6 +1,17 @@
 
-library(tibble);library(dplyr);library(rgdal);library(devtools);library(rmap); library(raster);
-library(lubridate); library(httr); library(ggplot2); library(rchart); library(usethis)
+library(tibble)
+library(dplyr)
+library(rgdal)
+library(devtools)
+library(rmap)
+library(metis)
+library(raster)
+
+library(lubridate)
+library(httr)
+library(ggplot2)
+library(rchart)
+library(usethis)
 
 #-----------------
 # Initialize
@@ -274,6 +285,29 @@ mapping_grid_region <- rmap::mapping_tethys_grid_basin_region_country %>%
 
 usethis::use_data(mapping_grid_region, overwrite=T)
 
+#----------------------
+# Map 0.5 grid to GCAM 32 regions with 52 US states (all including AK, HI, DC and PR)
+#-----------------------
+gridTable <- data.frame(lat = rmap::mapping_tethys_grid_basin_region_country$lat,
+                        lon = rmap::mapping_tethys_grid_basin_region_country$lon)
+GCAMReg32US52_grid <- metis::metis.gridByPoly(gridTable = gridTable,
+                                              shape = metis::mapGCAMReg32US52,
+                                              colName = 'subRegion')
+
+mapping_grid_region_US52 <- GCAMReg32US52_grid %>%
+  dplyr::group_by(lat, lon) %>%
+  dplyr::mutate(max = max(gridCellAreaRatio)) %>%
+  dplyr::ungroup() %>%
+  dplyr::filter(gridCellAreaRatio == max) %>%
+  dplyr::select(lat, lon, subRegion) %>%
+  dplyr::left_join(rmap::mapping_tethys_grid_basin_region_country %>%
+                     dplyr::select(lat, lon, ID = regionID, region = regionName),
+                   by = c('lat', 'lon')) %>%
+  dplyr::mutate(subRegion = dplyr::if_else(region == 'Taiwan' & subRegion == 'China',
+                                           'Taiwan', subRegion))
+
+usethis::use_data(mapping_grid_region_US52, overwrite = T)
+
 #-----------------------
 # WRF example data
 #-----------------------
@@ -340,3 +374,16 @@ example_hdcd_monthly_usa <- data.table::fread('inst/extras/monthly_ncdf_2020-210
                 HDCD = gsub('CDD', 'CD', HDCD),
                 value = dplyr::if_else(HDCD == 'HD', -value, value))
 usethis::use_data(example_hdcd_monthly_usa, version = 3, overwrite = T)
+
+
+#--------------------------------
+# Available Spatial Options
+#--------------------------------
+
+spatial_options <- tibble::tribble(
+  ~spatial, ~description,
+  'gcam_us49', '49 U.S. States including D.C.and excluding Hawaii and Alaska',
+  'gcam_regions32', 'Global 32 GCAM Regions',
+  'gcam_regions31_us52', 'Global GCAM Regions (excluding USA as one region) + 52 U.S. States including D.C, Puerto Rico'
+)
+usethis::use_data(spatial_options, version = 3, overwrite = T)

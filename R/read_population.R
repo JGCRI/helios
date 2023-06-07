@@ -2,7 +2,7 @@
 #'
 #' Process population file depends on the input
 #'
-#' @param file Default = NULL. Path to ncdf file
+#' @param file Default = NULL. Path to population file. NetCDF or CSV
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -51,7 +51,7 @@ read_population <- function(file = NULL) {
                           value = 'value',
                           -RID, -lat, -lon, -region, -ID, -subRegion) %>%
             tibble::as_tibble() %>%
-            dplyr::select(-RID)
+            dplyr::select(lat, lon, year, value)
 
         } # end of CSV file processing
 
@@ -92,11 +92,13 @@ read_population <- function(file = NULL) {
               dplyr::rename(lat = y,
                             lon = x,
                             value = layer) %>%
-              tibble::as_tibble() %>%
-              dplyr::left_join(helios::mapping_grid_region, by = c('lat', 'lon')) %>%
-              dplyr::filter(!is.na(ID)) %>%
               dplyr::mutate(value = dplyr::if_else(is.na(value), 0, value),
-                            year = year)
+                            year = year) %>%
+              tibble::as_tibble()
+            # %>%
+            #   dplyr::left_join(helios::mapping_grid_region, by = c('lat', 'lon')) %>%
+            #   dplyr::filter(!is.na(ID))
+
 
             pop_df <- dplyr::bind_rows(pop_df, pop_temp)
           }

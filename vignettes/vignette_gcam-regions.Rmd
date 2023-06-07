@@ -98,13 +98,62 @@ Please note that `helios` can process multiple climate NetCDF files with one pop
 <!-------------------------->
 <p align="center"> <img src="vignetteFigs/divider.png"></p>
 
-## Example climate and population dataset
+## Example climate and population data
 
-Due to large size of the climate data (netCDF file), `helios` provide spatially subsetted example dataset for demonstration purpose.
+Due to large size of the climate data (NetCDF file), `helios` provide spatially subset of example data for demonstration purpose.
 
-* **Climate NetCDF File**: `helios::example_wrf_china_ncdf` subsets a [100,110,30,40] longitude and latitude box within China (0.5-degree resolotion) from the global CMIP daily data. Data time ranges from 2015 to 2020.
+* **Climate NetCDF File**: `helios::example_wrf_china_ncdf` subsets a [100,110,30,40] longitude and latitude box within China (0.5-degree resolution) from the global CMIP daily data. Data time ranges from 2015 to 2020.
 * **Population NetCDF File**: `helios::example_pop_china_ncdf` subsets 121 0.5-degree grid cells within China from the 2020 population data under SSP1. The data is at 0.125 degree resolution.
 
+
+<br />
+
+
+## Read climate and population data
+
+Users can use `helios` functions to read climate and population data and convert to tabular table with latitudes and longitudes.
+
+* `helios::read_ncdf` accepts NetCDF format
+* `helios::read_population` accepts NetCDF and CSV formats
+
+```{r eval=TRUE}
+
+# example data: CMIP6 daily climate at 0.5 degree resolution
+path_to_climate_ncdf <- helios::pkg_example('gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc')
+
+temperature <- helios::read_ncdf(ncdf = path_to_climate_ncdf,
+                                 model = 'cmip',
+                                 var = 'tas',
+                                 time_periods = 2020)
+
+```
+
+```{r eval=TRUE, echo=FALSE}
+library(dplyr)
+library(kableExtra)
+knitr::kable(temperature[1:10, ], 
+             caption = 'Table. Temperature data extracted from CMIP NetCDF.') %>% 
+  kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
+  footnote(general = 'This only shows the first 10 lines of the example data.')
+```
+
+<br />
+
+```{r eval=TRUE}
+
+# example data: population of 2020 at 0.125 degree resolution
+path_to_population <- helios::pkg_example('ssp1_2020_sub.nc')
+
+population <- helios::read_population(file = path_to_population)
+
+```
+
+```{r eval=TRUE, echo=FALSE}
+knitr::kable(population[1:10, ], 
+             caption = 'Table. Population data.') %>% 
+  kable_styling(bootstrap_options = "striped", full_width = T, position = 'center') %>% 
+  footnote(general = 'This only shows the first 10 lines of the example data.')
+```
 
 <br />
 
@@ -114,8 +163,10 @@ The following example specifies the arguments for processing CMIP6 dataset. More
 
 * `ncdf_var = 'tas'` specifies climate variable to extract from the netCDF, which is temperature in this case.
 * `model = 'cmip'` specifies the model used to produce the climate forcing data, which is CMIP6 model in this case.
-* `spatial = 'gcam_region_32'` specifies we are  calculating the cooling and heating degree-days for 32 GCAM regions. This will produce outputs that can be used for general GCAM. For tutorial of using `helios` to calculate heating and cooling degree-hours for CONUS in GCAM-USA, please check out [GCAM-USA](vignette_gcam-usa.html) tutorial page.
-* `temporal = 2020` specifies the time period (e.g., 2020) to extract from the dataset covering 2015 - 2020. Users can also specify multiple time period (e.g. `temporal = c(2017, 2018, 2019, 2020)`) if those time periods are within the time span of the climate and population dataset.
+* `model_timestep = 'daily'` indicates the temporal resolution of the climate forcing data, which is daily in this case.
+* `spatial = 'gcam_regions32'` specifies we are  calculating the cooling and heating degree-days for 32 GCAM regions. This will produce outputs that can be used for general GCAM. For tutorial of using `helios` to calculate heating and cooling degree-hours for CONUS in GCAM-USA, please check out [GCAM-USA](vignette_gcam-usa.html) tutorial page.
+* `time_periods = 2020` specifies the time period (e.g., 2020) to extract from the dataset covering 2015 - 2020. Users can also specify multiple time period (e.g. `time_periods = c(2017, 2018, 2019, 2020)`) if those time periods are within the time span of the climate and population dataset.
+* `dispatch_segment = FALSE` indicates the model will output annual heating and cooling degree-days for selected spatial scale. Annual HDD/CDD is the common input time step for GCAM core.
 
 
 ```{r eval=TRUE}
@@ -131,40 +182,70 @@ path_to_population <- helios::pkg_example('ssp1_2020_sub.nc')
 hdcd_china <- helios::hdcd(ncdf = path_to_climate_ncdf,
                            ncdf_var = 'tas',
                            model = 'cmip',
+                           model_timestep = 'daily',
                            population = path_to_population,
-                           spatial = 'gcam_region_32',
-                           temporal = 2020,
+                           spatial = 'gcam_regions32',
+                           time_periods = 2020,
+                           dispatch_segment = FALSE,
                            reference_temp_F = 65,
-                           folder = paste0(getwd(), "/output"),
+                           folder = file.path(getwd(), 'output'),
                            diagnostics = F,
                            xml = F,
-                           name_append = "",
-                           save = F)
+                           name_append = '',
+                           save = T)
 ```
 
 <br />
 
 The output is a list containing three tables. All outputs are in degree-days.
 
-* `hdcd_china$hdcd_comb`: Heating and cooling **degree-days** by GCAM region and building thermal service.
+* `hdcd_china$hdcd_comb_gcam`: Heating and cooling **degree-days** by GCAM region and building thermal service. GCAM required format.
 * `hdcd_china$hdcd_comb_monthly`: Heating and cooling **degree-days** by month for the Globe (part of China in the example).
 * `hdcd_china$hdcd_comb_annual`: Heating and cooling **degree-days** by year for the Globe (part of China in the example).
 
+<br />
+
+**1. By GCAM Building Thermal Service**
+
 ```{r eval=TRUE}
 # Heating and cooling degree-days by year and by building thermal service for GCAM regions
-hdcd_bldg <- hdcd_china$hdcd_comb
-knitr::kable(hdcd_bldg, 
-             caption = 'Annual Heating and Cooling Degree-days by Building Thermal Service')
+hdcd_gcam <- hdcd_china$hdcd_comb_gcam
+```
 
+```{r eval=TRUE, echo=FALSE}
+knitr::kable(hdcd_gcam, 
+             caption = 'Table. Annual hating and cooling degree-days by building thermal service.') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, position = 'center')
+```
+
+<br />
+
+**2. By Month**
+
+```{r eval=TRUE}
 # Heating and cooling degree-days at monthly scale for GCAM regions
 hdcd_monthly <- hdcd_china$hdcd_comb_monthly
-knitr::kable(hdcd_monthly, 
-             caption = 'Monthly Heating and Cooling Degree-days')
+```
 
+```{r eval=TRUE, echo=FALSE}
+knitr::kable(hdcd_monthly, 
+             caption = 'Table. Monthly heating and cooling degree-days.') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, position = 'center')
+```
+
+<br />
+
+**3. By Year**
+
+```{r eval=TRUE, echo=FALSE}
 # Heating and cooling degree-days at annual scale for GCAM regions
 hdcd_annual <- hdcd_china$hdcd_comb_annual
+```
+
+```{r eval=TRUE, echo=FALSE}
 knitr::kable(hdcd_annual, 
-             caption = 'Annual Heating and Cooling Degree-days')
+             caption = 'Table. Annual heating and cooling degree-days.') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, position = 'center')
 ```
 
 <br />
@@ -175,21 +256,20 @@ knitr::kable(hdcd_annual,
 
 ## Diagnostics
 
-After getting the data table for heating and cooling degrees, users can perform diagnostics. The following example is only for demonstration of how to use `helios::diagnostic`.
+After getting the data table for heating and cooling degrees, users can perform diagnostics. The following example is only for demonstration of how to use `helios::diagnostics`.
 
 
 ```{r eval=FALSE}
 # Perform diagnostic on monthly data
 helios::diagnostics(hdcd_monthly = hdcd_monthly,
                     min_diagnostic_months = 6,
-                    folder = paste0(getwd(), "/output"),
+                    folder = file.path(getwd(), 'output'),
                     name_append = 'monthly')
 
-# Perform diagnostic on segment data
-helios::diagnostics(hdcd = hdcd,
-                    spatial = 'states_us_49',
+# if input non-dispatch segment data, there will be no diagnostics
+helios::diagnostics(hdcd_segment = hdcd_gcam,
                     min_diagnostic_months = 6,
-                    folder = paste0(getwd(), "/output"),
+                    folder = file.path(getwd(), 'output'),
                     name_append = 'segment')
 ```
 
@@ -198,5 +278,16 @@ helios::diagnostics(hdcd = hdcd,
 
 ## XML file for GCAM
 
-Finally, for GCAM users, `helios` can save the outputs by building thermal service to XML format, which is a required format for GCAM inputs. Set `xml = TRUE` in the `helios::hdcd` function will save the XML file to the output folder.
+Finally, for GCAM users, `helios` can save the outputs by building thermal service to XML format, which is a required format for GCAM inputs. There are two ways to save `helios` output to XML file:
+
+* Set `xml = TRUE` in the `helios::hdcd` function will automatically save the XML file to the output folder.
+* Use `helios::save_xml` function.
+
+```{r eval=TRUE}
+
+helios::save_xml(hdcd_gcam = hdcd_gcam,
+                 folder = file.path(getwd(), 'output'),
+                 name_append = 'cmip')
+
+```
 

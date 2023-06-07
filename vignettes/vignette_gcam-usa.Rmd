@@ -100,12 +100,58 @@ Please note that `helios` can process multiple climate NetCDF files with one pop
 <!-------------------------->
 <p align="center"> <img src="vignetteFigs/divider.png"></p>
 
-## Example climate and population dataset
+## Example climate and population data
 
-Due to large size of the climate data (netCDF file), `helios` provide spatially subsetted example dataset for demonstration purpose.
+Due to large size of the climate data (NetCDF file), `helios` provide spatially subset of example data for demonstration purpose.
 
-* **Climate NetCDF File**: `helios::example_wrf_usa_ncdf` subsets subsets an approxmitely [-119.86,-118.18,37.99, 39.30] longitude and latitude box within the U.S. (12-km resolution) from the WRF hourly data. Data time ranges from 2020-01-01 01:00:00 to 2020-01-08 00:00:00.
+* **Climate NetCDF File**: `helios::example_wrf_usa_ncdf` subsets an approximately [-119.86,-118.18,37.99, 39.30] longitude and latitude box within the U.S. (12-km resolution) from the WRF hourly data. Data time ranges from 2020-01-01 01:00:00 to 2020-01-08 00:00:00.
 * **Population CSV File**: `helios::example_pop_usa_csv` is population for 2020, which is geo-referenced to WRF grid cells.
+
+<br />
+
+## Read climate and population data
+
+Users can use `helios` functions to read climate and population data and convert to tabular table with latitudes and longitudes.
+
+* `helios::read_ncdf` accepts NetCDF format
+* `helios::read_population` accepts NetCDF and CSV formats
+
+```{r eval=TRUE}
+
+# example data: WRF hourly climate at 12-km resolution
+path_to_climate_ncdf <- helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc')
+
+temperature <- helios::read_ncdf(ncdf = path_to_climate_ncdf,
+                                 model = 'wrf',
+                                 var = 'T2',
+                                 time_periods = 2020)
+```
+```{r eval=TRUE, echo=FALSE}
+library(dplyr)
+library(kableExtra)
+knitr::kable(temperature[1:10, ], 
+             caption = 'Table. Temperature data extracted from WRF NetCDF.') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, latex_options = 'HOLD_position') %>% 
+  footnote(general = 'This only shows the first 10 lines of the example data.')
+```
+
+<br />
+
+```{r eval=TRUE}
+
+# example data: population of 2020 at same 12-km resolution as WRF
+path_to_population <- helios::pkg_example('population_conus_ssp2_2020wrf_wgs84.csv')
+
+population <- helios::read_population(file = path_to_population)
+
+```
+
+```{r eval=TRUE, echo=FALSE}
+knitr::kable(population[1:10, ], 
+             caption = 'Table. Population data.') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, position = 'center') %>% 
+  footnote(general = 'This only shows the first 10 lines of the example data.')
+```
 
 <br />
 
@@ -115,9 +161,10 @@ The following example specifies the arguments for processing WRF dataset. More i
 
 * `ncdf_var = 'T2'` specifies climate variable to extract from the netCDF, which is temperature in this case.
 * `model = 'wrf'` specifies the model used to produce the climate forcing data, which is WRF model in this case.
-* `spatial = 'states_us_49'` specifies we are only calculating the cooling and heating degrees within 49 states of USA. This will produce outputs that can be used for `GCAM-USA`. For tutorial of using `helios` for global 32 regions, please check out [GCAM-regions](vignette_gcam-regions.html) tutorial page.
-* `temporal = 2020` specifies the time period 2020 to include since the example data only covers 7 days in 2020.
-
+* `model_timestep = 'hourly'` indicates the temporal resolution of the climate forcing data, which is hourly in this case.
+* `spatial = 'gcam_us49'` specifies we are only calculating the cooling and heating degrees within 49 states of USA. This will produce outputs that can be used for `GCAM-USA`. For tutorial of using `helios` for global 32 regions, please check out [GCAM-regions](vignette_gcam-regions.html) tutorial page.
+* `time_periods = 2020` specifies the time period 2020 to include since the example data only covers 7 days in 2020.
+* `dispatch_segment = TRUE` asks the model to output heating and cooling degree-hours by segment when the input data is hourly. In addition, these two arguments need to be specified as `model_timestep = 'hourly'` and ` spatial = 'gcam_us49'`, because the currently only GCAM-USA supports dispatch segment.
 
 ```{r eval=TRUE}
 library(helios)
@@ -132,15 +179,17 @@ path_to_population <- helios::pkg_example('population_conus_ssp2_2020wrf_wgs84.c
 hdcd_usa <- helios::hdcd(ncdf = path_to_climate_ncdf,
                          ncdf_var = 'T2',
                          model = 'wrf',
+                         model_timestep = 'hourly',
                          population = path_to_population,
-                         spatial = 'states_us_49',
-                         temporal = 2020,
+                         spatial = 'gcam_us49',
+                         time_periods = 2020,
+                         dispatch_segment = TRUE,
                          reference_temp_F = 65,
-                         folder = paste0(getwd(), "/output"),
+                         folder = file.path(getwd(), 'output'),
                          diagnostics = F,
                          xml = F,
-                         name_append = "",
-                         save = F)
+                         name_append = '',
+                         save = T)
 ```
 
 
@@ -148,32 +197,58 @@ hdcd_usa <- helios::hdcd(ncdf = path_to_climate_ncdf,
 
 The output is a list containing three tables. Please note the different units (degree-hours or degree-days) for different outputs.
 
-* `hdcd_usa$hdcd_comb`: Heating and cooling **degree-hours** by dispatch segment for CONUS and by building thermal service.
+* `hdcd_usa$hdcd_comb_gcam`: Heating and cooling **degree-hours** by dispatch segment for CONUS and by building thermal service. GCAM/GCAM-USA required format.
 * `hdcd_usa$hdcd_comb_monthly`: Heating and cooling **degree-days** by month for CONUS (part of USA in the example).
 * `hdcd_usa$hdcd_comb_annual`: Heating and cooling **degree-days** by year for CONUS (part of USA in the example).
 
-```{r eval=TRUE, results='asis'}
+<br />
+
+**1. By GCAM-USA Dispatch Segment and Building Thermal Service**
+
+```{r eval=TRUE}
 # Heating and cooling degree-hours by dispatch segment and by building thermal service for CONUS
-hdcd_segment <- hdcd_usa$hdcd_comb
+hdcd_segment <- hdcd_usa$hdcd_comb_gcam
+```
+
+```{r eval=TRUE, echo=FALSE}
 knitr::kable(hdcd_segment, 
-             caption = 'Annual Heating and Cooling Degree-hours by Building Thermal Service')
-
-# Heating and cooling degree-days at monthly scale for CONUS
-hdcd_monthly <- hdcd_usa$hdcd_comb_monthly
-knitr::kable(hdcd_monthly, 
-             caption = 'Monthly Heating and Cooling Degree-days')
-
-# Heating and cooling degree-days at annual scale for CONUS
-hdcd_annual <- hdcd_usa$hdcd_comb_annual
-knitr::kable(hdcd_annual, 
-             caption = 'Annual Heating and Cooling Degree-days')
+             caption = 'Table. Annual heating and cooling degree-hours by building thermal service') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, position = 'center')
 ```
 
 <br />
 
-***Note:** Please note that we use a spatial subset of WRF input climate NetCDF data as an example, which only covers 7 days. To get heating and cooling degrees for a complete year, users need to run climate NetCDF files using `helios` that cover the length of a year. For example, if each climate NetCDF is for 7-days, then user need to include about 52 climate NetCDF to cover a whole year of climate data. Then, users can use `helios::diagnostic` to create plots to check  heating and cooling degree behaviors throughout a year.
+**2. By Month**
+
+```{r eval=TRUE}
+# Heating and cooling degree-days at monthly scale for CONUS
+hdcd_monthly <- hdcd_usa$hdcd_comb_monthly
+```
+
+```{r eval=TRUE, echo=FALSE}
+knitr::kable(hdcd_monthly, 
+             caption = 'Table. Monthly heating and cooling degree-days') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, position = 'center')
+```
 
 <br />
+
+**3. By Year**
+
+```{r eval=TRUE}
+# Heating and cooling degree-days at annual scale for CONUS
+hdcd_annual <- hdcd_usa$hdcd_comb_annual
+```
+
+```{r eval=TRUE, echo=FALSE}
+knitr::kable(hdcd_annual, 
+             caption = 'Table. Annual Heating and Cooling Degree-days') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, position = 'center')
+```
+
+<br />
+
+> **_NOTE:_** Please note that we use a spatial subset of WRF input climate NetCDF data as an example, which only covers 7 days. To get heating and cooling degrees for a complete year, users need to run climate NetCDF files using `helios` that cover the length of a year. For example, if each climate NetCDF is for 7-days, then user need to include about 52 climate NetCDF to cover a whole year of climate data. Then, users can use `helios::diagnostics` to create plots to check  heating and cooling degree behaviors throughout a year.
 
 ## Diagnostics
 
@@ -184,14 +259,18 @@ After getting the data table for heating and cooling degrees, users can perform 
 
 Users can also use `helios::diagnostics` to visualize any heating and cooling degree data as long as they include those columns in the monthly data or the segment data: [subRegion, year, month/segment, HDCD, value]
 
-```{r eval=TRUE, results='asis'}
-# Heating and cooling degree-hours by dispatch segment
-knitr::kable(helios::example_hdcd_segment_usa[1:4,], 
-             caption = 'Heating and Cooling Degree-hours by Segment')
+<br />
 
+**1. By Month**
+
+Let's run `helios::diagnostics` to the example heating and cooling degree-days by month from 2020 to 2050.
+
+```{r eval=TRUE, echo=FALSE}
 # Heating and cooling degree-days by month
-knitr::kable(helios::example_hdcd_monthly_usa[1:4,], 
-             caption = 'Monthly Heating and Cooling Degree-days')
+knitr::kable(helios::example_hdcd_monthly_usa[1:10,], 
+             caption = 'Table. Example data for monthly heating and cooling degree-days from 2020 to 2050 with 5-year interval.') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, position = 'center') %>% 
+  footnote(general = 'This only shows the first 10 lines of the example data.')
 
 ```
 
@@ -201,7 +280,7 @@ If the data coverage is too short (e.g., less than 6 months), diagnostics will n
 # Perform diagnostic on monthly data
 helios::diagnostics(hdcd_monthly = helios::example_hdcd_monthly_usa,
                     min_diagnostic_months = 6,
-                    folder = paste0(getwd(), "/output"),
+                    folder = file.path(getwd(), 'output'),
                     name_append = 'monthly')
 ```
 
@@ -213,14 +292,26 @@ helios::diagnostics(hdcd_monthly = helios::example_hdcd_monthly_usa,
 
 <br />
 
-Segment output , set `spatial = 'states_us_49'` to indicate the data
+**2. By GCAM-USA Dispatch Segment**
+
+Let's run `helios::diagnostics` to the example heating and cooling degree-hours by dispatch segment from 2020 to 2050.
+
+```{r eval=TRUE, echo=FALSE}
+# Heating and cooling degree-hours by dispatch segment
+knitr::kable(helios::example_hdcd_segment_usa[1:10,], 
+             caption = 'Table. Example data for heating and cooling degree-hours by Segment from 2020 to 2050 with 5-year interval.') %>% 
+  kable_styling(bootstrap_options = 'striped', full_width = T, position = 'center') %>% 
+  footnote(general = 'This only shows the first 10 lines of the example data.')
+
+```
+
+
 
 ```{r eval=FALSE}
 # Perform diagnostic on segment data
-helios::diagnostics(hdcd = helios::example_hdcd_segment_usa,
-                    spatial = 'states_us_49',
+helios::diagnostics(hdcd_segment = helios::example_hdcd_segment_usa,
                     min_diagnostic_months = 6,
-                    folder = paste0(getwd(), "/output"),
+                    folder = file.path(getwd(), 'output'),
                     name_append = 'segment')
 
 ```
@@ -236,4 +327,15 @@ helios::diagnostics(hdcd = helios::example_hdcd_segment_usa,
 
 ## XML file for GCAM-USA
 
-Finally, for GCAM users, `helios` can save the outputs by building thermal service to XML format, which is a required format for GCAM inputs. Set `xml = TRUE` in the `helios::hdcd` function will save the XML file to the output folder.
+Finally, for GCAM users, `helios` can save the outputs by building thermal service to XML format, which is a required format for GCAM inputs. There are two ways to save `helios` output to XML file:
+
+* Set `xml = TRUE` in the `helios::hdcd` function will automatically save the XML file to the output folder.
+* Use `helios::save_xml` function.
+
+```{r eval=TRUE}
+
+helios::save_xml(hdcd_gcam = hdcd_segment,
+                 folder = file.path(getwd(), 'output'),
+                 name_append = 'wrf')
+
+```

@@ -35,11 +35,13 @@ reference:
   - save_xml
   - pkg_example
   - create_name
+  - find_mapping_grid
 - title: "Pre-loaded Data"
 - contents:
   - L2441.HDDCDD_Fixed_gcamusa_seg
   - L244.HDDCDD_building
   - mapping_grid_region
+  - mapping_grid_region_US52
   - mapping_wrf_us49
   - mapUS52
   - noaa_hddcdd
@@ -50,6 +52,7 @@ reference:
   - example_pop_usa_csv
   - example_hdcd_segment_usa
   - example_hdcd_monthly_usa
+  - spatial_options
 - title: "Package File"
 - contents:
   - helios

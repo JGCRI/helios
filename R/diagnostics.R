@@ -2,8 +2,8 @@
 #'
 #' Heating and Cooling Degree diagnostic scripts
 #'
-#' @param hdcd Default = tibble::tibble()
-#' @param hdcd_monthly Default = tibble::tibble()
+#' @param hdcd_segment Default = tibble::tibble(). hdcd output by segment
+#' @param hdcd_monthly Default = tibble::tibble(). hdcd output by month
 #' @param min_diagnostic_months Default = 6. Months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.
 #' @param folder Default = paste0(getwd()).
 #' @param name_append Default = ''. Name to append to all filenames
@@ -12,7 +12,7 @@
 #' @importFrom grDevices colorRampPalette
 #' @export
 
-diagnostics <- function(hdcd = tibble::tibble(),
+diagnostics <- function(hdcd_segment = tibble::tibble(),
                         hdcd_monthly = tibble::tibble(),
                         min_diagnostic_months = 6,
                         folder = paste0(getwd()),
@@ -42,7 +42,7 @@ diagnostics <- function(hdcd = tibble::tibble(),
   }
 
 
-  if(nrow(hdcd) > 0){
+  if(nrow(hdcd_segment) > 0){
 
     # --------------------------------------
     # By Segment
@@ -57,14 +57,14 @@ diagnostics <- function(hdcd = tibble::tibble(),
                         'Nov_day', 'Nov_night', 'Dec_day', 'Dec_night',
                         'superpeak')
 
-    if(any(unique(hdcd$segment) %in% segment_levels)) {
+    if(any(unique(hdcd_segment$segment) %in% segment_levels)) {
 
       # Check if the outputs cover a full year
       # Only plot when the outputs are more than 4 months
-      if(length(unique(hdcd$segment)) >= min_diagnostic_months * 2) {
+      if(length(unique(hdcd_segment$segment)) >= min_diagnostic_months * 2) {
 
         # assign heat and cool based on the value
-        hdcd_comb_diagnostics <- hdcd %>%
+        hdcd_comb_diagnostics <- hdcd_segment %>%
           dplyr::select(subRegion, year, segment, value) %>%
           unique() %>%
           dplyr::mutate(heatcool = dplyr::if_else(value < 0, 'heat','cool'),
@@ -182,18 +182,18 @@ diagnostics <- function(hdcd = tibble::tibble(),
 
       } else {
         warning(paste0('Data is less than ', min_diagnostic_months, ' months. No diagnostic plots by dispatch segment are created.'))
-      } # end of if(length(unique(hdcd$segment)) >= min_diagnostic_months * 2)
+      } # end of if(length(unique(hdcd_segment$segment)) >= min_diagnostic_months * 2)
 
     } else {
       warning('hdcd input is not by dispatch segment. Skip the diagnostic for segment.')
-    } # end of if(any(unique(hdcd$segment) %in% segment_levels))
+    } # end of if(any(unique(hdcd_segment$segment) %in% segment_levels))
 
 
     } else {
 
       warning('No segment data provided. Skip segment diagnostics.')
 
-    } # end of if(nrow(hdcd) > 0)
+    } # end of if(nrow(hdcd_segment) > 0)
 
 
     # --------------------------------------

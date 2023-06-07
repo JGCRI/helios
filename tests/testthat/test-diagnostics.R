@@ -35,14 +35,14 @@ test_that('dianostics produces outputs', {
 
 test_that('warning message when conditions not apply', {
 
-  testthat::expect_warning(run_diagnostics(hdcd = helios::example_hdcd_monthly_usa))
+  testthat::expect_warning(run_diagnostics(hdcd_segment = helios::example_hdcd_monthly_usa))
 
-  testthat::expect_warning(run_diagnostics(hdcd = tibble::tibble()))
+  testthat::expect_warning(run_diagnostics(hdcd_segment = tibble::tibble()))
 
   testthat::expect_warning(run_diagnostics(hdcd_monthly = tibble::tibble()))
 
   testthat::expect_warning(
-    run_diagnostics(hdcd = helios::example_hdcd_segment_usa %>%
+    run_diagnostics(hdcd_segment = helios::example_hdcd_segment_usa %>%
                       dplyr::filter(year %in% 2020, segment == 'Jan_day')))
   testthat::expect_warning(
     run_diagnostics(hdcd_monthly = helios::example_hdcd_monthly_usa %>%

@@ -4,10 +4,12 @@
 #'
 #' @param ncdf Default = NULL. Path to ncdf file.
 #' @param ncdf_var Default = NULL. Variable to extract from NetCDF file.
-#' @param model Default = NULL. Climate model that generates the ncdf file. Options: 'wrf' or 'cmip'
+#' @param model Default = NULL. Climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.
+#' @param model_timestep Default = NULL. String for time step of input climate data. Options: 'hourly' or 'daily'
 #' @param population Default = NULL. Path to population files to population weight data.
-#' @param spatial Default = NULL. Options: 'states_us_49', 'gcam_regions_32'. Aggregate to different spatial boundaries.
-#' @param temporal Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).
+#' @param spatial Default = NULL. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52'. Aggregate to different spatial boundaries.
+#' @param time_periods Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).
+#' @param dispatch_segment Default = FALSE. TRUE if want to output degree-hours by GCAM-USA dispatch segment. This can only be TRUE when model time_step is set to 'hourly'.
 #' @param reference_temp_F Default = 65
 #' @param folder Default = paste0(getwd(),'/output').
 #' @param diagnostics Default = F.
@@ -21,11 +23,13 @@
 hdcd <- function(ncdf = NULL,
                  ncdf_var = NULL,
                  model = NULL,
+                 model_timestep = NULL,
                  population = NULL,
                  spatial = NULL,
-                 temporal = NULL,
+                 time_periods = NULL,
+                 dispatch_segment = FALSE,
                  reference_temp_F = 65,
-                 folder = paste0(getwd(),'/output'),
+                 folder = file.path(getwd(), 'output'),
                  diagnostics = F,
                  xml = F,
                  name_append = '',
@@ -56,16 +60,30 @@ hdcd <- function(ncdf = NULL,
     }
 
     # Pick up on intermediate files if program crashed before.
-    hdcd_comb <- tibble::tibble()
+    hdcd_comb_gcam <- tibble::tibble()
     hdcd_comb_monthly <- tibble::tibble()
     hdcd_comb_annual <- tibble::tibble()
     hdcd_region_bld <- tibble::tibble()
     hdcd_region_monthly <- tibble::tibble()
     hdcd_region_annual<- tibble::tibble()
 
+    # check population input format
     if (any(grepl('tbl_df|tbl|data.frame', class(population)))) {
       population <- list('pop' = population)
     }
+
+    # check if there is valid model_step input
+    if(any(is.null(model_timestep), !model_timestep %in% c('hourly', 'daily'))){
+      stop('Please provide model time step. Options: daily or hourly')
+    }
+
+    # check if there is valid spatial input
+    if(any(is.null(spatial), !spatial %in% helios::spatial_options$spatial)){
+      stop(paste0('Please provide a valid spatial scale. Options: ',
+                  paste0(helios::spatial_options$spatial, collapse = ', ')))
+    }
+
+
   }
 
   #......................
@@ -86,15 +104,15 @@ hdcd <- function(ncdf = NULL,
         # Step 1: Process Temperature netCDF file
         #......................
         # Assign time_periods
-        if (is.null(temporal)) {
+        if (is.null(time_periods)) {
           message('Setting time periods to default 2020 to 2100 with 5 year interval.')
           time_periods <- seq(2020, 2100, by = 5)
 
         } else {
 
-          if (all(temporal == floor(temporal))) {
+          if (all(time_periods == floor(time_periods))) {
 
-            time_periods <- temporal
+            time_periods <- time_periods
 
           } else {
             stop('Please provide valid vector. For example, c(2020, 2030).')
@@ -109,6 +127,14 @@ hdcd <- function(ncdf = NULL,
                                        model = model,
                                        var = ncdf_var,
                                        time_periods = time_periods)
+
+        # find region and subRegion info based on data grid lat lon
+        mapping_grid <- helios::find_mapping_grid(spatial = spatial,
+                                                  lat = ncdf_grid$lat,
+                                                  lon = ncdf_grid$lon)
+        ncdf_grid <- ncdf_grid %>%
+            dplyr::left_join(mapping_grid, by = c('lat', 'lon')) %>%
+            dplyr::filter(!is.na(ID))
 
         ncdf_times <- names(ncdf_grid)[
           !names(ncdf_grid) %in% c('lat', 'lon', 'region', 'subRegion', 'ID')]
@@ -138,6 +164,7 @@ hdcd <- function(ncdf = NULL,
 
         }
 
+
         #......................
         # Step 2: Population weighted grid
         #......................
@@ -150,6 +177,16 @@ hdcd <- function(ncdf = NULL,
           # output from wrf resolution: ['ID', 'subRegion', 'lat', 'lon', 'year', 'value' ]
           # output from 1/8th degree pop data: ['ID', 'subRegion', 'lat', 'lon', 'year', 'value' ]
           population_j_grid <- helios::read_population(file = population_j)
+
+          population_j_grid <- population_j_grid %>%
+            dplyr::left_join(mapping_grid, by = c('lat', 'lon')) %>%
+            dplyr::filter(!is.na(ID))
+
+          # check if population's grid matches climate data's grids
+          if(nrow(population_j_grid) == 0) {
+            stop('Climate and population data has different resolutions.')
+          }
+
 
           # Create population weighted raster if any population years in ncdf years
           if (any(unique(population_j_grid$year) %in% as.character(years))) {
@@ -194,16 +231,15 @@ hdcd <- function(ncdf = NULL,
         # Subset raster brick to selected times
         if (length(index_subset) > 0) {
 
-          if (spatial == 'states_us_49') {
+          if (model_timestep == 'hourly') {
 
             # Equivalent to step 6: Aggregate to regions
             hdcd_region <- ncdf_hdcd_pop_weighted %>%
               dplyr::filter(!is.na(subRegion)) %>%
               dplyr::select(-lat, -lon) %>%
-              dplyr::group_by(subRegion, ID, year, datetime) %>%
+              dplyr::group_by(region, subRegion, ID, year, datetime) %>%
               dplyr::summarise(value = dplyr::if_else(any(is.na(pop_weight)), mean(value), sum(value))) %>%
-              dplyr::ungroup() %>%
-              dplyr::mutate(region = 'USA')
+              dplyr::ungroup()
 
             # Assign HDCD categories
             hdcd_region <- hdcd_region %>%
@@ -264,17 +300,64 @@ hdcd <- function(ncdf = NULL,
             # Step 7a: Add in building components for GCAMUSA
             #......................
 
-            hdcd_region_bld <- hdcd_region_segments %>%
-              dplyr::left_join(helios::L2441.HDDCDD_Fixed_gcamusa_seg,
-                               by = c('subRegion', 'segment')) %>%
-              # Remove columns with -ve hdcd/cooling and +ve/heating
-              dplyr::filter(
-                !((value < 0) & grepl('cool', thermal.building.service.input, ignore.case = T)),
-                !((value > 0) & grepl('heat', thermal.building.service.input, ignore.case = T))) %>%
-              dplyr::select(-HDCD)
+            if (dispatch_segment == TRUE){
 
-          }
-          else if(spatial == 'gcam_region_32') {
+              if(spatial == 'gcam_us49') {
+
+                hdcd_region_bld <- hdcd_region_segments %>%
+                  dplyr::left_join(helios::L2441.HDDCDD_Fixed_gcamusa_seg,
+                                   by = c('subRegion', 'segment')) %>%
+                  # Remove columns with -ve hdcd/cooling and +ve/heating
+                  dplyr::filter(
+                    !((value < 0) & grepl('cool', thermal.building.service.input, ignore.case = T)),
+                    !((value > 0) & grepl('heat', thermal.building.service.input, ignore.case = T))) %>%
+                  dplyr::select(-HDCD)
+
+              } else {
+                # only gcam_us49 can have dispatch segment because
+                # we don't have day, night segement for other regions
+                stop(paste0('Dispatch segments cannot be applied to: ', spatial))
+
+              }
+
+            } else {
+
+              if(spatial =='gcam_regions32'){
+
+                hdcd_region_bld <- hdcd_region_annual %>%
+                  dplyr::left_join(helios::L244.HDDCDD_building,
+                                   by = c('region')) %>%
+                  # Remove columns with -ve hdcd/cooling and +ve/heating
+                  dplyr::filter(
+                    !((value < 0) & grepl('cool', thermal.building.service.input, ignore.case = T)),
+                    !((value > 0) & grepl('heat', thermal.building.service.input, ignore.case = T))) %>%
+                  dplyr::select(-HDCD)
+
+              }
+
+              if (spatial %in% c('gcam_regions31_us52', 'gcam_us49')) {
+
+                hdcd_region_bld <- hdcd_region_annual %>%
+                  dplyr::left_join(dplyr::bind_rows(
+                    helios::L244.HDDCDD_building,
+                    unique(helios::L2441.HDDCDD_Fixed_gcamusa_seg %>%
+                             dplyr::mutate(thermal.building.service.input =
+                                             gsub("^(\\S*\\s+\\S+).*", "\\1", thermal.building.service.input)) %>%
+                             dplyr::select(-segment) %>%
+                             dplyr::rename(region = subRegion))),
+                                   by = c('region')) %>%
+                  # Remove columns with -ve hdcd/cooling and +ve/heating
+                  dplyr::filter(
+                    !((value < 0) & grepl('cool', thermal.building.service.input, ignore.case = T)),
+                    !((value > 0) & grepl('heat', thermal.building.service.input, ignore.case = T))) %>%
+                  dplyr::select(-HDCD)
+
+              }
+
+            }
+
+
+          } else if(model_timestep == 'daily') {
 
             #......................
             # Step 6b: Aggregate over monthly and annual
@@ -282,26 +365,24 @@ hdcd <- function(ncdf = NULL,
 
             hdcd_region_monthly <- ncdf_hdcd_pop_weighted %>%
               dplyr::filter(!is.na(subRegion)) %>%
-              dplyr::select(-lat, -lon, -region, -ID) %>%
+              dplyr::select(-lat, -lon, -ID) %>%
               dplyr::mutate(month = lubridate::month(datetime)) %>%
-              dplyr::group_by(subRegion, year, month) %>%
+              dplyr::group_by(region, subRegion, year, month) %>%
               dplyr::summarise(HD = sum(value[value < 0]),
                                CD = sum(value[value > 0])) %>%
               dplyr::ungroup() %>%
               tidyr::pivot_longer(cols = c('HD', 'CD'), names_to = 'HDCD') %>%
-              dplyr::filter(value != 0) %>%
-              dplyr::mutate(region = subRegion)
+              dplyr::filter(value != 0)
 
             hdcd_region_annual <- ncdf_hdcd_pop_weighted %>%
               dplyr::filter(!is.na(subRegion)) %>%
-              dplyr::select(-lat, -lon, -region, -ID) %>%
-              dplyr::group_by(subRegion, year) %>%
+              dplyr::select(-lat, -lon, -ID) %>%
+              dplyr::group_by(region, subRegion, year) %>%
               dplyr::summarise(HD = sum(value[value < 0]),
                                CD = sum(value[value > 0])) %>%
               dplyr::ungroup() %>%
               tidyr::pivot_longer(cols = c('HD', 'CD'), names_to = 'HDCD') %>%
-              dplyr::filter(value != 0) %>%
-              dplyr::mutate(region = subRegion)
+              dplyr::filter(value != 0)
 
             #......................
             # Step 7b: Add in building components for GCAM
@@ -315,10 +396,7 @@ hdcd <- function(ncdf = NULL,
                 !((value < 0) & grepl('cool', thermal.building.service.input, ignore.case = T)),
                 !((value > 0) & grepl('heat', thermal.building.service.input, ignore.case = T))) %>%
               dplyr::select(-HDCD)
-          }
-          else {
-            stop('Please provide a valid spatial scale. Options: states_us_49, gcam_region_32.')
-          }
+          } # end of if(model_timestep == 'hourly')
 
         } else {
           print(paste0('None of the selected time_periods: ',
@@ -328,12 +406,12 @@ hdcd <- function(ncdf = NULL,
 
           print(paste0('Processing hdcd completed for file: ', ncdf_i))
 
-      }
+      } # end of for(j in 1:length(population))
 
 
     } else { # Close if(file.exists(ncdf_i)){
       print(paste0('Skipping hdcd for file which does not exist: ', ncdf_i))
-    }
+    } # end of if(file.exists(ncdf_i))
 
     #......................
     # Step 9a: Save segment data as combined csv files in Level 2 XML format for US or GCAM regions
@@ -343,8 +421,8 @@ hdcd <- function(ncdf = NULL,
 
     if(nrow(hdcd_region_bld) > 0){
 
-      if (spatial == 'states_us_49'){
-        hdcd_comb <- hdcd_comb %>%
+      if (model_timestep == 'hourly' & dispatch_segment == TRUE){
+        hdcd_comb_gcam <- hdcd_comb_gcam %>%
           dplyr::bind_rows(hdcd_region_bld %>%
                              dplyr::mutate(unit = 'degree-hours')) %>%
           dplyr::ungroup() %>%
@@ -356,8 +434,9 @@ hdcd <- function(ncdf = NULL,
           dplyr::filter(!is.na(subRegion),
                         !is.na(year),
                         !is.na(segment))
-      } else if (spatial == 'gcam_region_32'){
-        hdcd_comb <- hdcd_comb %>%
+      } else if ((model_timestep == 'daily' & dispatch_segment == FALSE) |
+                 (model_timestep == 'hourly' & dispatch_segment == FALSE)){
+        hdcd_comb_gcam <- hdcd_comb_gcam %>%
           dplyr::bind_rows(hdcd_region_bld %>%
                              dplyr::mutate(unit = 'degree-days')) %>%
           dplyr::ungroup() %>%
@@ -368,11 +447,13 @@ hdcd <- function(ncdf = NULL,
           dplyr::ungroup() %>%
           dplyr::filter(!is.na(subRegion),
                         !is.na(year))
+      } else {
+        stop('Output by dispatch segment requires hourly climate data.')
       }
 
 
-      year_min_i <- min(hdcd_comb$year, na.rm = T)
-      year_max_i <- max(hdcd_comb$year, na.rm = T)
+      year_min_i <- min(hdcd_comb_gcam$year, na.rm = T)
+      year_max_i <- max(hdcd_comb_gcam$year, na.rm = T)
 
       if(i < length(ncdf)){
         filename_i <- file.path(
@@ -385,7 +466,7 @@ hdcd <- function(ncdf = NULL,
         }
 
       if(save){
-        data.table::fwrite(hdcd_comb, file = filename_i)
+        data.table::fwrite(hdcd_comb_gcam, file = filename_i)
         print(paste0('File saved as : ', filename_i))
         }
       }
@@ -394,7 +475,7 @@ hdcd <- function(ncdf = NULL,
     # Step 9b: Save monthly as combined csv files
     #......................
 
-    if(nrow(hdcd_region_monthly)>0){
+    if(nrow(hdcd_region_monthly) > 0){
 
       hdcd_comb_monthly <- hdcd_comb_monthly %>%
         dplyr::bind_rows(hdcd_region_monthly %>%
@@ -431,7 +512,7 @@ hdcd <- function(ncdf = NULL,
     # Step 9c: Save annual as combined csv files
     #......................
 
-    if(nrow(hdcd_region_annual)>0){
+    if(nrow(hdcd_region_annual) > 0){
 
       hdcd_comb_annual <- hdcd_comb_annual %>%
         dplyr::bind_rows(hdcd_region_annual %>%
@@ -471,7 +552,7 @@ hdcd <- function(ncdf = NULL,
   #......................
 
   if(xml){
-    helios::save_xml(hdcd = hdcd_comb,
+    helios::save_xml(hdcd_gcam = hdcd_comb_gcam,
                      folder = folder,
                      filename = filename_i,
                      name_append = name_append)
@@ -485,7 +566,7 @@ hdcd <- function(ncdf = NULL,
   if(diagnostics){
 
     helios::diagnostics(
-      hdcd = hdcd_comb,
+      hdcd_segment = hdcd_comb_gcam,
       hdcd_monthly = hdcd_comb_monthly,
       min_diagnostic_months = length(unique(hdcd_comb_monthly$month)),
       folder = folder,
@@ -500,7 +581,7 @@ hdcd <- function(ncdf = NULL,
   print('process_hdcd completed.')
 
   # return data
-  invisible(list(hdcd_comb = hdcd_comb,
+  invisible(list(hdcd_comb_gcam = hdcd_comb_gcam,
                  hdcd_comb_monthly = hdcd_comb_monthly,
                  hdcd_comb_annual = hdcd_comb_annual))
 

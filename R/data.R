@@ -108,6 +108,21 @@
 "mapping_grid_region"
 
 #.................................
+# Map 0.5 grid to GCAM 32 regions with 52 US states (all including AK, HI, DC and PR)
+#................................
+
+#' mapping_grid_region_US52
+#'
+#' @source rmap::mapping_tethys_grid_basin_region_country, metis::mapGCAMReg32US52
+#' @format tibble
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  mapping_grid_region_US52 <- helios::mapping_grid_region_US52
+#' }
+"mapping_grid_region_US52"
+
+#.................................
 # WRF Example Data
 #.................................
 
@@ -194,6 +209,20 @@
 #'  example_hdcd_monthly_usa <- helios::example_hdcd_monthly_usa
 #' }
 "example_hdcd_monthly_usa"
+
+#.................................
+# Available Spatial Options
+#.................................
+#' spatial_options
+#'
+#' @source tibble creation
+#' @format tibble::tribble
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  spatial_options <- helios::spatial_options
+#' }
+"spatial_options"
 
 
 #.................................

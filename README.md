@@ -29,7 +29,7 @@ alt="https://jgcri.github.io/helios/" height="60"/></a>
 <!-- ------------------------>
 <!-- ------------------------>
 
-Zhao, M., Khan, Z., Dorheim, K., Vernon, C., 2022. helios - An R package to process heating and cooling degrees for GCAM. (In progress) Journal of Open Source Software, DOI: XXXX
+Zhao, M., Khan, Z., Dorheim, K., Vernon, C., 2023. helios - An R package to process heating and cooling degrees for GCAM. (In progress) Journal of Open Source Software, DOI: XXXX
 
 <!-- ------------------------>
 <!-- ------------------------>

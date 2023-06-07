@@ -5,14 +5,14 @@
 \title{save_xml}
 \usage{
 save_xml(
-  hdcd = tibble::tibble(),
+  hdcd_gcam = tibble::tibble(),
   folder = file.path(getwd(), "output"),
-  filename = "hdcd_xml",
+  filename = "hdcd",
   name_append = ""
 )
 }
 \arguments{
-\item{hdcd}{Default = tibble::tibble()}
+\item{hdcd_gcam}{Default = tibble::tibble(). hdcd output with GCAM required format}
 
 \item{folder}{Default = file.path(getwd(), 'output').}
 

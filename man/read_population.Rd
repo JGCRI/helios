@@ -7,7 +7,7 @@
 read_population(file = NULL)
 }
 \arguments{
-\item{file}{Default = NULL. Path to ncdf file}
+\item{file}{Default = NULL. Path to population file. NetCDF or CSV}
 }
 \description{
 Process population file depends on the input

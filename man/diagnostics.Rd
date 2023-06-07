@@ -5,7 +5,7 @@
 \title{diagnostics}
 \usage{
 diagnostics(
-  hdcd = tibble::tibble(),
+  hdcd_segment = tibble::tibble(),
   hdcd_monthly = tibble::tibble(),
   min_diagnostic_months = 6,
   folder = paste0(getwd()),
@@ -13,9 +13,9 @@ diagnostics(
 )
 }
 \arguments{
-\item{hdcd}{Default = tibble::tibble()}
+\item{hdcd_segment}{Default = tibble::tibble(). hdcd output by segment}
 
-\item{hdcd_monthly}{Default = tibble::tibble()}
+\item{hdcd_monthly}{Default = tibble::tibble(). hdcd output by month}
 
 \item{min_diagnostic_months}{Default = 6. Months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.}
 

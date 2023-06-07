@@ -8,11 +8,13 @@ hdcd(
   ncdf = NULL,
   ncdf_var = NULL,
   model = NULL,
+  model_timestep = NULL,
   population = NULL,
   spatial = NULL,
-  temporal = NULL,
+  time_periods = NULL,
+  dispatch_segment = FALSE,
   reference_temp_F = 65,
-  folder = paste0(getwd(), "/output"),
+  folder = file.path(getwd(), "output"),
   diagnostics = F,
   xml = F,
   name_append = "",
@@ -24,13 +26,17 @@ hdcd(
 
 \item{ncdf_var}{Default = NULL. Variable to extract from NetCDF file.}
 
-\item{model}{Default = NULL. Climate model that generates the ncdf file. Options: 'wrf' or 'cmip'}
+\item{model}{Default = NULL. Climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.}
+
+\item{model_timestep}{Default = NULL. String for time step of input climate data. Options: 'hourly' or 'daily'}
 
 \item{population}{Default = NULL. Path to population files to population weight data.}
 
-\item{spatial}{Default = NULL. Options: 'states_us_49', 'gcam_regions_32'. Aggregate to different spatial boundaries.}
+\item{spatial}{Default = NULL. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52'. Aggregate to different spatial boundaries.}
 
-\item{temporal}{Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).}
+\item{time_periods}{Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).}
+
+\item{dispatch_segment}{Default = FALSE. TRUE if want to output degree-hours by GCAM-USA dispatch segment. This can only be TRUE when model time_step is set to 'hourly'.}
 
 \item{reference_temp_F}{Default = 65}
 

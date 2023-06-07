@@ -15,11 +15,11 @@ test_that("returns a list containing 3 elements", {
 })
 
 test_that("segment, monthly, and annual output exists", {
-  testthat::expect_gt(nrow(hdcd_usa$hdcd_comb), 0)
+  testthat::expect_gt(nrow(hdcd_usa$hdcd_comb_gcam), 0)
   testthat::expect_gt(nrow(hdcd_usa$hdcd_comb_monthly), 0)
   testthat::expect_gt(nrow(hdcd_usa$hdcd_comb_annual), 0)
 
-  testthat::expect_gt(nrow(hdcd_china$hdcd_comb), 0)
+  testthat::expect_gt(nrow(hdcd_china$hdcd_comb_gcam), 0)
   testthat::expect_gt(nrow(hdcd_china$hdcd_comb_monthly), 0)
   testthat::expect_gt(nrow(hdcd_china$hdcd_comb_annual), 0)
 })
@@ -44,7 +44,7 @@ run_hdcd_usa(xml = TRUE)
 # ------------------------------------
 test_that('if temporal is NULL, set as 2020 - 2100', {
   testthat::expect_message(
-    run_hdcd_usa(temporal = NULL),
+    run_hdcd_usa(time_periods = NULL),
     'Setting time periods to default 2020 to 2100 with 5 year interval.')
 })
 
@@ -80,13 +80,31 @@ test_that('population input that does not exist gives error', {
   testthat::expect_error(run_hdcd_usa(population = 'invalid/path/population.csv'), class = 'error')
 })
 
+test_that('different resolution between population and climate data gives error', {
+  testthat::expect_error(run_hdcd_china(population = helios::pkg_example('population_conus_ssp2_2020wrf_wgs84.csv')), class = 'error')
+})
+
 test_that('invalid spatial input type gives error', {
   testthat::expect_error(run_hdcd_usa(spatial = 'gcam'), class = 'error')
 })
 
 test_that('invalid temporal input type gives error', {
-  testthat::expect_error(run_hdcd_usa(temporal = '2020'), class = 'error')
+  testthat::expect_error(run_hdcd_usa(time_periods = '2020'), class = 'error')
 })
+
+test_that('set spatial arg to other than gcam_us49 when dispatch_segment = T gives error', {
+  testthat::expect_error(run_hdcd_usa(spatial = 'gcam_regions32'), class = 'error')
+})
+
+test_that('invalid dispatch segment when spatial is not right gives error', {
+  testthat::expect_error(run_hdcd_china(dispatch_segment = T), class = 'error')
+})
+
+test_that('invalid model_timestep input gives error', {
+  testthat::expect_error(run_hdcd_china(model_timestep = 'annual'), class = 'error')
+})
+
+
 
 
 

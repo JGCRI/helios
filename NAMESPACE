@@ -2,6 +2,7 @@
 
 export(create_name)
 export(diagnostics)
+export(find_mapping_grid)
 export(hdcd)
 export(pkg_example)
 export(read_ncdf)
