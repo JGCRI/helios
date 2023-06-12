@@ -176,6 +176,7 @@ find_mapping_grid <- function(data = NULL, spatial = NULL) {
 
 }
 
+
 #' is_regular
 #'
 #' check if the grids have regular or irregular spacing
@@ -185,7 +186,7 @@ find_mapping_grid <- function(data = NULL, spatial = NULL) {
 #' @importFrom data.table :=
 #' @export
 
-is_regular <- function(grid){
+is_regular <- function(grid = NULL){
 
   NULL -> check -> ID -> lon -> lon_lag -> lon_space -> lat -> lat_lag -> lat_space
 
@@ -215,6 +216,7 @@ is_regular <- function(grid){
 
   return(check)
 }
+
 
 #' match_grids
 #'
