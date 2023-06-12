@@ -144,7 +144,8 @@ knitr::kable(temperature[1:10, ],
 # example data: population of 2020 at 0.125 degree resolution
 path_to_population <- helios::pkg_example('ssp1_2020_sub.nc')
 
-population <- helios::read_population(file = path_to_population)
+population <- helios::read_population(file = path_to_population,
+                                      time_periods = 2020)
 
 ```
 

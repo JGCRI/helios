@@ -42,7 +42,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
   }
 
 
-  if(nrow(hdcd_segment) > 0){
+  if(all(nrow(hdcd_segment) > 0, 'segment' %in% names(hdcd_segment))){
 
     # --------------------------------------
     # By Segment
@@ -181,17 +181,17 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
         }
 
       } else {
-        warning(paste0('Data is less than ', min_diagnostic_months, ' months. No diagnostic plots by dispatch segment are created.'))
+        message(paste0('Data is less than ', min_diagnostic_months, ' months. No diagnostic plots by dispatch segment are created.'))
       } # end of if(length(unique(hdcd_segment$segment)) >= min_diagnostic_months * 2)
 
     } else {
-      warning('hdcd input is not by dispatch segment. Skip the diagnostic for segment.')
+      message('hdcd input is not by dispatch segment. Skip diagnostics for segment.')
     } # end of if(any(unique(hdcd_segment$segment) %in% segment_levels))
 
 
     } else {
 
-      warning('No segment data provided. Skip segment diagnostics.')
+      message('No segment data provided. Skip segment diagnostics.')
 
     } # end of if(nrow(hdcd_segment) > 0)
 
@@ -200,7 +200,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
     # By Month (compare against NOAA if States exist)
     # --------------------------------------
 
-    if(nrow(hdcd_monthly) > 0){
+    if(all(nrow(hdcd_monthly) > 0, 'month' %in% names(hdcd_monthly))){
 
       n_months <- length(unique(hdcd_monthly$month))
       hdcd_monthly_year_range <- paste(unique(c(min(unique(hdcd_monthly$year)),
@@ -415,13 +415,13 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
 
 
       } else {
-        warning(paste0('Data is less than ', min_diagnostic_months, ' months. No diagnostic plots by monthly time step are created.'))
+        message(paste0('Data is less than ', min_diagnostic_months, ' months. No diagnostic plots by monthly time step are created.'))
       } # end of if(n_months >= min_diagnostic_months)
 
 
     } else {
 
-      warning('No monthly data provided. Skip mothly diagnostics.')
+      message('No monthly data provided. Skip mothly diagnostics.')
 
     }# end of if(nrow(hdcd_monthly) > 0)
 

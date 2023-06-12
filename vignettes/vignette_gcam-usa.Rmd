@@ -142,7 +142,8 @@ knitr::kable(temperature[1:10, ],
 # example data: population of 2020 at same 12-km resolution as WRF
 path_to_population <- helios::pkg_example('population_conus_ssp2_2020wrf_wgs84.csv')
 
-population <- helios::read_population(file = path_to_population)
+population <- helios::read_population(file = path_to_population,
+                                      time_periods = 2020)
 
 ```
 

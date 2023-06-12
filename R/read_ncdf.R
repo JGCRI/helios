@@ -79,11 +79,6 @@ read_ncdf <- function(ncdf = NULL,
       ncdf_grid <- ncdf_brick_df %>%
         dplyr::rename(setNames(c(name_brick, 'lat', 'lon'),
                                c(ncdf_times, 'lat', 'lon')))
-      # %>%
-      #   dplyr::left_join(helios::mapping_grid_region,
-      #                    by = c('lat', 'lon')) %>%
-      #   dplyr::filter(!is.na(ID))
-
 
     } # end of isimip netcdf processing
 
@@ -150,9 +145,6 @@ read_ncdf <- function(ncdf = NULL,
       ncdf_grid <- ncdf_brick_df %>%
         dplyr::rename(setNames(c(name_brick, 'lat', 'lon'),
                                c(ncdf_times, 'lat', 'lon')))
-      # %>%
-      #   dplyr::left_join(helios::mapping_wrf_us49, by = c('lat', 'lon')) %>%
-      #   dplyr::filter(!is.na(ID))
 
     }# end of wrf netcdf processing
 

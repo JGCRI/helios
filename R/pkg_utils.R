@@ -45,27 +45,30 @@ create_name <- function(str_vec = NULL, file_ext = NULL) {
 #'
 #' map shape attributes (region names) to grid
 #'
+#'@param data Default = NULL. data frame with lat and lon
 #' @param spatial Default = NULL. Options: 'states_us_49', 'gcam_regions_32'. Aggregate to different spatial boundaries.
-#' @param lat Default = NULL. Latitudes of the grid cells
-#' @param lon Default = NULL. Longitudes of the grid cells
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
 
-find_mapping_grid <- function(spatial = NULL, lat = NULL, lon = NULL) {
+find_mapping_grid <- function(data = NULL, spatial = NULL) {
 
-  NULL -> geometry -> intersection -> X -> Y -> region -> subRegion
+  NULL -> geometry -> intersection -> X -> Y -> region -> subRegion -> ID
 
   if(is.null(spatial)) {
     stop('Must provide spatial scales.')
   }
 
-  if(any(is.null(lat), is.null(lon))) {
-    stop('Must provide both latitudes and longitudes.')
+  if(any(is.null(data), !c('lat', 'lon') %in% names(data))) {
+    stop('Must provide valide table with both lat and lon columns')
   }
 
-  grid <- data.frame(lat = lat,
-                     lon = lon)
+  grid <- data %>%
+    dplyr::select(lat, lon) %>%
+    dplyr::distinct()
+
+  lat <- grid$lat
+  lon <- grid$lon
 
   # function to find region, subregion, and ID from map based on lat and lon
   mapping_grid <- function(grid, shape){
@@ -74,13 +77,19 @@ find_mapping_grid <- function(spatial = NULL, lat = NULL, lon = NULL) {
                             coords = c('lon', 'lat'),
                             crs = sf::st_crs(shape))
 
+
     pnts_sf <- pnts_sf %>%
       dplyr::mutate(
-        intersection = as.integer(sf::st_intersects(geometry, shape)),
-        ID = dplyr::if_else(is.na(intersection), '', shape$subRegionAlt[intersection]),
-        region = dplyr::if_else(is.na(intersection), '', shape$region[intersection]),
-        subRegion = dplyr::if_else(is.na(intersection), '', shape$subRegion[intersection])
+        intersection = as.character(sf::st_intersects(geometry, shape)),
+        intersection = as.numeric(sub("\\D*(\\d+).*", "\\1", intersection))
     )
+
+    pnts_sf$intersection[pnts_sf$intersection == 0] <- NA
+
+    pnts_sf <- pnts_sf %>%
+      dplyr::mutate(ID = dplyr::if_else(is.na(intersection), '', shape$subRegionAlt[intersection]),
+                    region = dplyr::if_else(is.na(intersection), '', shape$region[intersection]),
+                    subRegion = dplyr::if_else(is.na(intersection), '', shape$subRegion[intersection]))
 
     pnts_df <- sf::st_coordinates(pnts_sf) %>%
       as.data.frame() %>%
@@ -100,8 +109,11 @@ find_mapping_grid <- function(spatial = NULL, lat = NULL, lon = NULL) {
 
       mapping <- helios::mapping_wrf_us49
 
-      if(!all(cbind(lat = lat, lon = lon) %in%
-              cbind(lat = mapping$lat, lon = mapping$lon))){
+      intersect <- grid %>%
+        dplyr::inner_join(mapping %>% dplyr::select(lat, lon),
+                          by = c('lat', 'lon'))
+
+      if(nrow(intersect) == 0){
         mapping <- mapping_grid(grid = grid,
                                 shape = rmap::mapUS49)
       }
@@ -111,8 +123,10 @@ find_mapping_grid <- function(spatial = NULL, lat = NULL, lon = NULL) {
 
       mapping <- helios::mapping_grid_region
 
-      if(!all(cbind(lat = lat, lon = lon) %in%
-              cbind(lat = mapping$lat, lon = mapping$lon))){
+      intersect <- grid %>%
+        dplyr::inner_join(mapping %>% dplyr::select(lat, lon))
+
+      if(nrow(intersect) == 0){
         mapping <- mapping_grid(grid = grid,
                                 shape = rmap::mapGCAMReg32)
       }
@@ -121,8 +135,10 @@ find_mapping_grid <- function(spatial = NULL, lat = NULL, lon = NULL) {
 
       mapping <- helios::mapping_grid_region_US52
 
-      if(!all(cbind(lat = lat, lon = lon) %in%
-              cbind(lat = mapping$lat, lon = mapping$lon))){
+      intersect <- grid %>%
+        dplyr::inner_join(mapping %>% dplyr::select(lat, lon))
+
+      if(nrow(intersect) == 0){
         mapping <- mapping_grid(grid = grid,
                                 shape = rmap::mapGCAMReg32US52)
       }
@@ -152,6 +168,136 @@ find_mapping_grid <- function(spatial = NULL, lat = NULL, lon = NULL) {
     stop(paste0('Climate data is not within the selected spatial map: ', spatial))
   }
 
-  return(mapping)
+  mapping_data <- data %>%
+  dplyr::left_join(mapping, by = c('lat', 'lon')) %>%
+    dplyr::filter(!is.na(ID))
 
+  return(mapping_data)
+
+}
+
+#' is_regular
+#'
+#' check if the grids have regular or irregular spacing
+#'
+#' @param grid Default = NULL. data frame with lon and lat columns
+#' @importFrom magrittr %>%
+#' @importFrom data.table :=
+#' @export
+
+is_regular <- function(grid){
+
+  NULL -> check -> ID -> lon -> lon_lag -> lon_space -> lat -> lat_lag -> lat_space
+
+  lon_resolution <- grid %>%
+    dplyr::select(lon) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(lon) %>%
+    dplyr::mutate(lon_lag=dplyr::lag(lon),
+                  lon_space = lon - lon_lag) %>%
+    dplyr::filter(!is.na(lon_space))
+  lon_resolution <- unique(lon_resolution$lon_space)
+
+  lat_resolution <- grid %>%
+    dplyr::select(lat) %>%
+    dplyr::distinct() %>%
+    dplyr::arrange(lat) %>%
+    dplyr::mutate(lat_lag=dplyr::lag(lat),
+                  lat_space = lat - lat_lag) %>%
+    dplyr::filter(!is.na(lat_space))
+  lat_resolution <- unique(lat_resolution$lat_space)
+
+  if(any(length(lon_resolution) > 1, length(lat_resolution) > 1)){
+    check <- FALSE
+  } else {
+    check <- TRUE
+  }
+
+  return(check)
+}
+
+#' match_grids
+#'
+#' match population data to the same resolution and grids with climate data
+#'
+#' @param from_df Default = NULL. data frame with lat and lon columns to provide the original grids
+#' @param to_df Default = NULL. data frame with lat and lon columns to provide the base grids to convert to
+#' @param time_periods Defualt = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).
+#' @importFrom magrittr %>%
+#' @importFrom data.table :=
+#' @export
+
+match_grids <- function(from_df = NULL, to_df = NULL, time_periods = NULL){
+
+  NULL -> lon -> lat -> year -> value -> y -> x
+
+  to_grid <- to_df %>%
+    dplyr::select(lon, lat) %>%
+    dplyr::distinct()
+
+  from_grid <- from_df %>%
+  dplyr::select(lon, lat) %>%
+    dplyr::distinct()
+
+  if(all(is_regular(to_grid), is_regular(from_grid))) {
+    to_ras <- terra::rast(to_grid)
+    to_res <- unique(terra::res(to_ras))
+
+    from_ras <- terra::rast(from_grid)
+    from_res <- unique(terra::res(from_ras))
+
+    if(to_res != from_res){
+
+      out <- data.frame()
+
+      for(yr in time_periods){
+
+
+        from_grid <- from_df %>%
+          dplyr::filter(year == yr) %>%
+          dplyr::select(lon, lat, value) %>%
+          dplyr::distinct()
+
+        from_ras <- terra::rast(from_grid)
+
+        if(to_res > from_res){
+
+          agg <- terra::aggregate(from_ras, fact = to_res / from_res, fun = sum)
+
+          agg_resample <- terra::resample(agg, to_ras, method = 'bilinear')
+
+        } else {
+
+          agg <- terra::disagg(from_ras, fact = from_res / to_res, fun = sum) / (from_res / to_res)^2
+
+          agg_resample <- terra::resample(agg, to_ras, method = 'bilinear')
+
+        }
+
+        temp <- terra::as.data.frame(agg_resample, xy = TRUE, na.rm = FALSE) %>%
+          dplyr::rename(lat = y,
+                        lon = x) %>%
+          dplyr::mutate(year = yr) %>%
+          tibble::as_tibble()
+
+        out <- dplyr::bind_rows(out, temp)
+
+      }# end of for(year in time_periods)
+
+    } else {
+
+      print('The resolution for both climate and opulation data is the same: ', to_res)
+
+    }
+
+  } else {
+
+    message('Cannot map irregular grid cells. Skip matching population to climate grid cells.')
+
+    out <- from_df
+
+  } # end of if(all(is.regular(to_grid), is.regular(from_grid)))
+
+
+  return(out)
 }

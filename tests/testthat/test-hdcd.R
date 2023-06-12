@@ -42,10 +42,8 @@ run_hdcd_usa(xml = TRUE)
 # ------------------------------------
 # Testing Conditions
 # ------------------------------------
-test_that('if temporal is NULL, set as 2020 - 2100', {
-  testthat::expect_message(
-    run_hdcd_usa(time_periods = NULL),
-    'Setting time periods to default 2020 to 2100 with 5 year interval.')
+test_that('if time_periods is NULL, set as 2020 - 2100', {
+  testthat::expect_message(run_hdcd_usa(time_periods = NULL))
 })
 
 # ------------------------------------

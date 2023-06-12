@@ -4,14 +4,12 @@
 \alias{find_mapping_grid}
 \title{find_mapping_grid}
 \usage{
-find_mapping_grid(spatial = NULL, lat = NULL, lon = NULL)
+find_mapping_grid(data = NULL, spatial = NULL)
 }
 \arguments{
+\item{data}{Default = NULL. data frame with lat and lon}
+
 \item{spatial}{Default = NULL. Options: 'states_us_49', 'gcam_regions_32'. Aggregate to different spatial boundaries.}
-
-\item{lat}{Default = NULL. Latitudes of the grid cells}
-
-\item{lon}{Default = NULL. Longitudes of the grid cells}
 }
 \description{
 map shape attributes (region names) to grid

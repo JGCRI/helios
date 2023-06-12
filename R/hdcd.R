@@ -129,12 +129,8 @@ hdcd <- function(ncdf = NULL,
                                        time_periods = time_periods)
 
         # find region and subRegion info based on data grid lat lon
-        mapping_grid <- helios::find_mapping_grid(spatial = spatial,
-                                                  lat = ncdf_grid$lat,
-                                                  lon = ncdf_grid$lon)
-        ncdf_grid <- ncdf_grid %>%
-            dplyr::left_join(mapping_grid, by = c('lat', 'lon')) %>%
-            dplyr::filter(!is.na(ID))
+        ncdf_grid <- helios::find_mapping_grid(data = ncdf_grid,
+                                               spatial = spatial)
 
         ncdf_times <- names(ncdf_grid)[
           !names(ncdf_grid) %in% c('lat', 'lon', 'region', 'subRegion', 'ID')]
@@ -151,7 +147,7 @@ hdcd <- function(ncdf = NULL,
             dplyr::mutate(datetime = as.POSIXct(datetime,
                                                 format = '%Y-%m-%d_%H:%M:%S',
                                                 tz = 'UTC')) %>%
-            dplyr::mutate(year = as.character(lubridate::year(datetime)))
+            dplyr::mutate(year = lubridate::year(datetime))
 
         } else if (model == 'cmip') {
 
@@ -160,7 +156,7 @@ hdcd <- function(ncdf = NULL,
             dplyr::mutate(datetime = as.POSIXct(datetime,
                                                 format = '%Y-%m-%d',
                                                 tz = 'UTC')) %>%
-            dplyr::mutate(year = as.character(lubridate::year(datetime)))
+            dplyr::mutate(year = lubridate::year(datetime))
 
         }
 
@@ -176,20 +172,30 @@ hdcd <- function(ncdf = NULL,
           # read population based on the population data type
           # output from wrf resolution: ['ID', 'subRegion', 'lat', 'lon', 'year', 'value' ]
           # output from 1/8th degree pop data: ['ID', 'subRegion', 'lat', 'lon', 'year', 'value' ]
-          population_j_grid <- helios::read_population(file = population_j)
+          population_j_grid <- helios::read_population(file = population_j,
+                                                       time_periods = time_periods)
 
-          population_j_grid <- population_j_grid %>%
-            dplyr::left_join(mapping_grid, by = c('lat', 'lon')) %>%
-            dplyr::filter(!is.na(ID))
+          population_j_grid <- helios::match_grids(from_df = population_j_grid,
+                                                   to_df = ncdf_pivot,
+                                                   time_periods = time_periods)
 
+          grid_intersect <- ncdf_grid %>%
+            dplyr::select(lon, lat) %>%
+            dplyr::inner_join(population_j_grid %>% dplyr::select(lon, lat),
+                              by = c('lon', 'lat'))
           # check if population's grid matches climate data's grids
-          if(nrow(population_j_grid) == 0) {
+          if(nrow(grid_intersect) == 0) {
             stop('Climate and population data has different resolutions.')
           }
 
+          population_j_grid <- helios::find_mapping_grid(data = population_j_grid,
+                                                         spatial = spatial)
+
+
+
 
           # Create population weighted raster if any population years in ncdf years
-          if (any(unique(population_j_grid$year) %in% as.character(years))) {
+          if (any(unique(population_j_grid$year) %in% years)) {
 
             # Weighted population tibble
             print('Starting population weighting ...')
@@ -258,8 +264,7 @@ hdcd <- function(ncdf = NULL,
                             day = lubridate::day(datetime),
                             hour = lubridate::hour(datetime),
                             timezone = lubridate::tz(datetime)) %>%
-              dplyr::mutate(year = as.character(year),
-                            month = dplyr::if_else(month < 10, paste0('0', month), paste0(month)),
+              dplyr::mutate(month = dplyr::if_else(month < 10, paste0('0', month), paste0(month)),
                             day = dplyr::if_else(day < 10, paste0('0', day), paste0(day)),
                             hour = dplyr::if_else(hour < 10, paste0('0', hour), paste0(hour)) )
 

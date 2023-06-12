@@ -4,10 +4,12 @@
 \alias{read_population}
 \title{read_population}
 \usage{
-read_population(file = NULL)
+read_population(file = NULL, time_periods = NULL)
 }
 \arguments{
 \item{file}{Default = NULL. Path to population file. NetCDF or CSV}
+
+\item{time_periods}{Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).}
 }
 \description{
 Process population file depends on the input

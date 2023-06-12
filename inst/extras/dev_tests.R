@@ -26,10 +26,11 @@ ncdf_grid <- helios::read_ncdf(ncdf = path_to_climate_ncdf,
                                var = 'T2',
                                time_periods = 2020)
 
+pop <- helios::read_population(path_to_population, time_periods = 2020)
+
 # check mapping grid
-mapping <- helios::find_mapping_grid(spatial = 'gcam_regions31_us52',
-                                     lat = ncdf_grid$lat,
-                                     lon = ncdf_grid$lon)
+mapping <- helios::find_mapping_grid(data = pop,
+                                     spatial = 'gcam_regions31_us52')
 
 # Calculate heating and coolong degrees for CONUS (e.g., part of USA in the example)
 hdcd_wrf <- helios::hdcd(
@@ -39,7 +40,7 @@ hdcd_wrf <- helios::hdcd(
   model_timestep = 'hourly',
   population = path_to_population,
   spatial = 'gcam_us49',
-  time_periods = 2020,
+  time_periods = NULL,
   dispatch_segment = T,
   reference_temp_F = 65,
   folder = file.path(getwd(), 'output'),
@@ -59,6 +60,23 @@ path_to_climate_ncdf <- helios::pkg_example('gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_
 
 # example data: population of 2020 at 0.125 degree resolution
 path_to_population <- helios::pkg_example('ssp1_2020_sub.nc')
+
+# read ncdf data
+ncdf_grid <- helios::read_ncdf(ncdf = path_to_climate_ncdf,
+                               model = 'cmip',
+                               var = 'tas',
+                               time_periods = 2020)
+
+pop <- helios::read_population(path_to_population, time_periods = 2020)
+
+# try match grids from pop to ncdf_grid
+pop_match <- helios::match_grids(from_df = pop,
+                                 to_df = ncdf_grid,
+                                 time_periods = 2020)
+
+# check mapping grid
+mapping <- helios::find_mapping_grid(data = pop,
+                                     spatial = 'gcam_regions31_us52')
 
 # Calculate heating and coolong degrees for GCAM regions (e.g., part of China in the example)
 hdcd_cmip <- helios::hdcd(
@@ -112,7 +130,7 @@ hdcd_wrf_all <- helios::hdcd(
 )
 
 helios::diagnostics(
-  hdcd_segment = hdcd_wrf_all$hdcd_comb,
+  hdcd_segment = hdcd_wrf_all$hdcd_comb_gcam,
   hdcd_monthly = hdcd_wrf_all$hdcd_comb_monthly,
   min_diagnostic_months = 1,
   folder = file.path(getwd(), 'output'),
@@ -147,7 +165,7 @@ hdcd_cmip_all <- helios::hdcd(
 )
 
 helios::diagnostics(
-  hdcd_segment = hdcd_cmip_all$hdcd_comb,
+  hdcd_segment = hdcd_cmip_all$hdcd_comb_gcam,
   hdcd_monthly = hdcd_cmip_all$hdcd_comb_monthly,
   min_diagnostic_months = 6,
   folder = file.path(getwd(), 'output'),

@@ -36,6 +36,8 @@ reference:
   - pkg_example
   - create_name
   - find_mapping_grid
+  - is_regular
+  - match_grids
 - title: "Pre-loaded Data"
 - contents:
   - L2441.HDDCDD_Fixed_gcamusa_seg
