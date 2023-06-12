@@ -85,13 +85,17 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_population</span><span class="op">(</span>file <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">read_population</span><span class="op">(</span>file <span class="op">=</span> <span class="cn">NULL</span>, time_periods <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>file</dt>
 <dd><p>Default = NULL. Path to population file. NetCDF or CSV</p></dd>
+
+
+<dt>time_periods</dt>
+<dd><p>Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).</p></dd>
 
 </dl></div>
 

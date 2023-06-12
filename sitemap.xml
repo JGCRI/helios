@@ -70,6 +70,9 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/is_regular.html</loc>
+  </url>
+  <url>
     <loc>/reference/mapUS52.html</loc>
   </url>
   <url>
@@ -80,6 +83,9 @@
   </url>
   <url>
     <loc>/reference/mapping_wrf_us49.html</loc>
+  </url>
+  <url>
+    <loc>/reference/match_grids.html</loc>
   </url>
   <url>
     <loc>/reference/noaa_hddcdd.html</loc>

@@ -6021,7 +6021,8 @@ lon
 <code class="sourceCode R"><span><span class="co"># example data: population of 2020 at same 12-km resolution as WRF</span></span>
 <span><span class="va">path_to_population</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'population_conus_ssp2_2020wrf_wgs84.csv'</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">population</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/read_population.html">read_population</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">path_to_population</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">population</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/read_population.html">read_population</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">path_to_population</span>,</span>
+<span>                                      time_periods <span class="op">=</span> <span class="fl">2020</span><span class="op">)</span></span></code></pre></div>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;border-bottom: 0;">
 <caption>
 Table. Population data.
@@ -6033,7 +6034,7 @@ lat
 <th style="text-align:right;">
 lon
 </th>
-<th style="text-align:left;">
+<th style="text-align:right;">
 year
 </th>
 <th style="text-align:right;">
@@ -6043,142 +6044,142 @@ value
 <tbody>
 <tr>
 <td style="text-align:right;">
-39.71695
+21.04686
 </td>
 <td style="text-align:right;">
--75.96228
+-120.9716
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-13598.725
+0
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-39.69270
+21.07325
 </td>
 <td style="text-align:right;">
--75.82443
+-120.8631
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-42193.508
+0
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-39.70622
+21.09951
 </td>
 <td style="text-align:right;">
--76.54523
+-120.7545
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-10137.426
+0
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-39.68262
+21.12567
 </td>
 <td style="text-align:right;">
--76.40723
+-120.6458
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-8554.790
+0
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-39.65885
+21.15170
 </td>
 <td style="text-align:right;">
--76.26929
+-120.5371
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-8886.017
+0
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-39.63494
+21.17762
 </td>
 <td style="text-align:right;">
--76.13144
+-120.4284
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-13651.662
+0
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-39.61087
+21.20343
 </td>
 <td style="text-align:right;">
--75.99368
+-120.3196
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-20978.886
+0
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-39.58664
+21.22913
 </td>
 <td style="text-align:right;">
--75.85602
+-120.2107
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-32093.112
+0
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-39.71550
+21.25471
 </td>
 <td style="text-align:right;">
--77.26627
+-120.1017
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-7146.509
+0
 </td>
 </tr>
 <tr>
 <td style="text-align:right;">
-39.69271
+21.28017
 </td>
 <td style="text-align:right;">
--77.12799
+-119.9927
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:right;">
-14249.995
+0
 </td>
 </tr>
 </tbody>
@@ -6309,7 +6310,7 @@ region
 <th style="text-align:left;">
 subRegion
 </th>
-<th style="text-align:left;">
+<th style="text-align:right;">
 year
 </th>
 <th style="text-align:left;">
@@ -6342,7 +6343,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6374,7 +6375,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6406,7 +6407,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6438,7 +6439,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6470,7 +6471,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6502,7 +6503,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6534,7 +6535,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6566,7 +6567,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6598,7 +6599,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6630,7 +6631,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6662,7 +6663,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6694,7 +6695,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6726,7 +6727,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6758,7 +6759,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6790,7 +6791,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6822,7 +6823,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6865,7 +6866,7 @@ region
 <th style="text-align:left;">
 subRegion
 </th>
-<th style="text-align:left;">
+<th style="text-align:right;">
 year
 </th>
 <th style="text-align:left;">
@@ -6889,7 +6890,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6912,7 +6913,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6935,7 +6936,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6958,7 +6959,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -6992,7 +6993,7 @@ region
 <th style="text-align:left;">
 subRegion
 </th>
-<th style="text-align:left;">
+<th style="text-align:right;">
 year
 </th>
 <th style="text-align:left;">
@@ -7013,7 +7014,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -7033,7 +7034,7 @@ USA
 <td style="text-align:left;">
 CA
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -7053,7 +7054,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
@@ -7073,7 +7074,7 @@ USA
 <td style="text-align:left;">
 NV
 </td>
-<td style="text-align:left;">
+<td style="text-align:right;">
 2020
 </td>
 <td style="text-align:left;">
