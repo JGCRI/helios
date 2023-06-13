@@ -27,9 +27,9 @@ read_ncdf <- function(ncdf = NULL,
       ncdf_in <- ncdf4::nc_open(ncdf)
       var_names <- attributes(ncdf_in$var)$names
 
-      dims <- c(ncdf_in$var[[var_names]]$dim[[1]]$name,
-                ncdf_in$var[[var_names]]$dim[[2]]$name,
-                ncdf_in$var[[var_names]]$dim[[3]]$name)
+      dims <- c(ncdf_in$var[[var]]$dim[[1]]$name,
+                ncdf_in$var[[var]]$dim[[2]]$name,
+                ncdf_in$var[[var]]$dim[[3]]$name)
       dims_order <- match(c('lon', 'lat', 'time'), dims)
 
       if(!any(var %in% var_names)){
@@ -94,10 +94,10 @@ read_ncdf <- function(ncdf = NULL,
       ncdf_in <- ncdf4::nc_open(ncdf)
       var_names <- attributes(ncdf_in$var)$names
 
-      dims <- c(ncdf_in$var[[var_names]]$dim[[1]]$name,
-                ncdf_in$var[[var_names]]$dim[[2]]$name,
-                ncdf_in$var[[var_names]]$dim[[3]]$name)
-      dims_order <- match(c('lon', 'lat', 'time'), dims)
+      dims <- c(ncdf_in$var[[var]]$dim[[1]]$name,
+                ncdf_in$var[[var]]$dim[[2]]$name,
+                ncdf_in$var[[var]]$dim[[3]]$name)
+      dims_order <- match(c('west_east', 'south_north', 'Time'), dims)
 
       if(!any(var %in% var_names)){
         stop('Climate variable name is not valid. Please provide valid ncdf_var name.')
