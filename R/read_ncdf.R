@@ -27,12 +27,18 @@ read_ncdf <- function(ncdf = NULL,
       ncdf_in <- ncdf4::nc_open(ncdf)
       var_names <- attributes(ncdf_in$var)$names
 
+      dims <- c(ncdf_in$var[[var_names]]$dim[[1]]$name,
+                ncdf_in$var[[var_names]]$dim[[2]]$name,
+                ncdf_in$var[[var_names]]$dim[[3]]$name)
+      dims_order <- match(c('lon', 'lat', 'time'), dims)
+
       if(!any(var %in% var_names)){
         stop('Climate variable name is not valid. Please provide valid ncdf_var name.')
       }
 
       # get the data time series
-      ncdf_brick <- raster::brick(ncdf, varname = var, ncdf = TRUE)
+      ncdf_brick <- raster::brick(ncdf, varname = var, ncdf = TRUE,
+                                  dims = dims_order, stopIfNotEqualSpaced = F)
       time_index <- ncdf4::ncvar_get(ncdf_in, 'time')
 
       time_start <- time_end <- as.POSIXlt(
@@ -88,11 +94,17 @@ read_ncdf <- function(ncdf = NULL,
       ncdf_in <- ncdf4::nc_open(ncdf)
       var_names <- attributes(ncdf_in$var)$names
 
+      dims <- c(ncdf_in$var[[var_names]]$dim[[1]]$name,
+                ncdf_in$var[[var_names]]$dim[[2]]$name,
+                ncdf_in$var[[var_names]]$dim[[3]]$name)
+      dims_order <- match(c('lon', 'lat', 'time'), dims)
+
       if(!any(var %in% var_names)){
         stop('Climate variable name is not valid. Please provide valid ncdf_var name.')
       }
 
-      ncdf_brick <- raster::brick(ncdf, varname = var, ncdf = TRUE)
+      ncdf_brick <- raster::brick(ncdf, varname = var, ncdf = TRUE,
+                                  dims = dims_order, stopIfNotEqualSpaced = F)
 
       # Index of Times available
       ncdf_times <-  ncdf4::ncvar_get(ncdf_in, 'Times')

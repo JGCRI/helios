@@ -48,7 +48,7 @@ read_population <- function(file = NULL, time_periods = NULL) {
           # Replace with helios::mapping_wrf_us49
           pop_df <- file_raw %>%
             dplyr::mutate(across(c(lat, lon), ~ round(., 5))) %>%
-            tidyr::pivot_longer(cols = !c(lat, lon),
+            tidyr::pivot_longer(cols = -c('lat', 'lon'),
                                 names_to = 'year',
                                 values_to = 'value') %>%
             tibble::as_tibble() %>%
