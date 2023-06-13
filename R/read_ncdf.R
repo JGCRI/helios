@@ -39,13 +39,27 @@ read_ncdf <- function(ncdf = NULL,
       # get the data time series
       ncdf_brick <- raster::brick(ncdf, varname = var, ncdf = TRUE,
                                   dims = dims_order, stopIfNotEqualSpaced = F)
-      time_index <- ncdf4::ncvar_get(ncdf_in, 'time')
 
-      time_start <- time_end <- as.POSIXlt(
-        gsub('days since ', '', ncdf4::ncatt_get(ncdf_in, 'time')$units),
-        tz = 'UTC')
-      time_end$mday <- time_start$mday + time_index[length(time_index)]
-      ncdf_times <- format(seq(time_start, time_end, by = '1 day'), '%Y-%m-%d')
+      # Base raster
+      ncdf_ras <- ncdf_brick[[1]]
+
+      # Get layer names
+      name_brick <- names(ncdf_brick)
+
+      # get date time
+      ncdf_times <- gsub('\\.', '-', gsub('X', '', name_brick))
+
+      # get time series index
+      time_index <- seq(1, length(ncdf_times), 1)
+
+      # # get time series
+      # time_index <- ncdf4::ncvar_get(ncdf_in, 'time')
+      #
+      # time_start <- time_end <- as.POSIXlt(
+      #   ncdf_ras@z[[1]],
+      #   tz = 'UTC')
+      # time_end$mday <- time_start$mday + time_index[length(time_index)]
+      # ncdf_times <- format(seq(time_start, time_end, by = '1 day'), '%Y-%m-%d')
 
       # subset ncdf times within selected periods
       indices <- as.integer(grepl(paste0(time_periods, collapse = '|'), ncdf_times))
@@ -55,15 +69,10 @@ read_ncdf <- function(ncdf = NULL,
 
       ncdf_brick <- ncdf_brick[[index_subset]]
 
-      # Get layer names
-      name_brick <- names(ncdf_brick)
 
       #......................
       # Step 1: Map grid (lat/lon) to each shape in the polygons being mapped to
       #......................
-
-      # Base raster
-      ncdf_ras <- ncdf_brick[[1]]
 
       # Lat and Lon from ncdf
       lat <- ncdf4::ncvar_get(ncdf_in, 'lat')
