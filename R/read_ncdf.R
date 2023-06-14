@@ -43,6 +43,10 @@ read_ncdf <- function(ncdf = NULL,
       # Base raster
       ncdf_ras <- ncdf_brick[[1]]
 
+      if(is.nan(ncdf_ras@file@nodatavalue)) {
+        raster::NAvalue(ncdf_brick) <- 0
+      }
+
       # Get layer names
       name_brick <- names(ncdf_brick)
 
@@ -69,6 +73,8 @@ read_ncdf <- function(ncdf = NULL,
 
       ncdf_brick <- ncdf_brick[[index_subset]]
 
+      # Get new layer names
+      name_brick <- names(ncdf_brick)
 
       #......................
       # Step 1: Map grid (lat/lon) to each shape in the polygons being mapped to
@@ -77,10 +83,10 @@ read_ncdf <- function(ncdf = NULL,
       # Lat and Lon from ncdf
       lat <- ncdf4::ncvar_get(ncdf_in, 'lat')
       lon <- ncdf4::ncvar_get(ncdf_in, 'lon')
-      latlon <- data.frame(lat = rep(lat, each = length(lon)),
-                           lon = rep(lon, times = length(lat)))
+      latlon <- data.frame(lon = rep(lon, times = length(lat)),
+                           lat = rep(lat, each = length(lon)))
       latlon_intersect <- helios::mapping_grid_region %>%
-        dplyr::select(lat, lon) %>%
+        dplyr::select(lon, lat) %>%
         dplyr::intersect(latlon)
 
       ncdf_dim <- sp::SpatialPoints(cbind(lon = latlon_intersect$lon,
@@ -88,7 +94,7 @@ read_ncdf <- function(ncdf = NULL,
                                     proj4string = raster::crs(ncdf_ras))
 
       ncdf_brick_df <- dplyr::bind_cols(
-        raster::as.data.frame(raster::extract(x = ncdf_brick, y = ncdf_dim, sp = T))) %>%
+        raster::as.data.frame(raster::extract(x = ncdf_brick, y = ncdf_dim,  sp = T))) %>%
         tibble::as_tibble()
 
       ncdf_grid <- ncdf_brick_df %>%
