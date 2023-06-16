@@ -45,6 +45,7 @@ read_ncdf <- function(ncdf = NULL,
 
       if(is.nan(ncdf_ras@file@nodatavalue)) {
         raster::NAvalue(ncdf_brick) <- 0
+        ncdf_ras <- ncdf_brick[[1]]
       }
 
       # Get layer names
@@ -75,6 +76,9 @@ read_ncdf <- function(ncdf = NULL,
 
       # Get new layer names
       name_brick <- names(ncdf_brick)
+
+      # reset date time
+      ncdf_times <- gsub('\\.', '-', gsub('X', '', name_brick))
 
       #......................
       # Step 1: Map grid (lat/lon) to each shape in the polygons being mapped to
