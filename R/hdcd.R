@@ -179,8 +179,9 @@ hdcd <- function(ncdf = NULL,
                                                    to_df = ncdf_pivot,
                                                    time_periods = time_periods)
 
-          grid_intersect <- ncdf_grid %>%
+          grid_intersect <- ncdf_pivot %>%
             dplyr::select(lon, lat) %>%
+            dplyr::distinct() %>%
             dplyr::inner_join(population_j_grid %>% dplyr::select(lon, lat),
                               by = c('lon', 'lat'))
           # check if population's grid matches climate data's grids

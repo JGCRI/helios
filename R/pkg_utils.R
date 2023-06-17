@@ -241,7 +241,13 @@ match_grids <- function(from_df = NULL, to_df = NULL, time_periods = NULL){
   dplyr::select(lon, lat) %>%
     dplyr::distinct()
 
-  if(all(is_regular(to_grid), is_regular(from_grid))) {
+  out <- tryCatch(terra::rast(to_grid), error = function(e) e)
+  is_to_regular <- !any(class(out) == 'error')
+
+  out <- tryCatch(terra::rast(from_grid), error = function(e) e)
+  is_from_regular <- !any(class(out) == 'error')
+
+  if(all(is_to_regular, is_from_regular)) {
     to_ras <- terra::rast(to_grid)
     to_res <- unique(terra::res(to_ras))
 
@@ -288,7 +294,8 @@ match_grids <- function(from_df = NULL, to_df = NULL, time_periods = NULL){
 
     } else {
 
-      print('The resolution for both climate and opulation data is the same: ', to_res)
+      print(paste0('The resolution for both climate and opulation data is the same: ', to_res))
+      out <- from_df
 
     }
 
