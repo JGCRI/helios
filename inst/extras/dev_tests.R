@@ -40,7 +40,7 @@ hdcd_wrf <- helios::hdcd(
   model_timestep = 'hourly',
   population = path_to_population,
   spatial = 'gcam_us49',
-  time_periods = NULL,
+  time_periods = 2020,
   dispatch_segment = T,
   reference_temp_F = 65,
   folder = file.path(getwd(), 'output'),
@@ -50,8 +50,29 @@ hdcd_wrf <- helios::hdcd(
   save = T
 )
 
+
 helios::save_xml(hdcd_gcam = hdcd_wrf$hdcd_comb,
                  folder = file.path(getwd(), 'output'))
+
+# # Test when spatial is a data frame with subRegions
+# spatial <- data.frame(subRegion = c("CA","FL","ID","MO","TX","WY"))
+#
+# hdcd_wrf <- helios::hdcd(
+#   ncdf = path_to_climate_ncdf,
+#   ncdf_var = 'T2',
+#   model = 'wrf',
+#   model_timestep = 'hourly',
+#   population = path_to_population,
+#   spatial = spatial,
+#   time_periods = 2020,
+#   dispatch_segment = T,
+#   reference_temp_F = 65,
+#   folder = file.path(getwd(), 'output'),
+#   diagnostics = F,
+#   xml = F,
+#   name_append = '',
+#   save = F
+# )
 
 # CMIP data ----------------
 
@@ -145,7 +166,15 @@ helios::diagnostics(
 
 path_to_climate_ncdf <- file.path(data_dir, 'climate', 'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020.nc')
 path_to_population <- file.path(data_dir, 'population', 'ssp1_2020.nc')
+
 # path_to_climate_ncdf <- 'C:/WorkSpace/GCIMS/data/climate/isimip/isimip3b/cmip6/gfdl-esm4/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020.nc'
+# path_to_population <- 'C:/WorkSpace/IM3/helios/example_data/population/popdynamics-1-8th-pop-base-year-projection-ssp-2000-2100-rev01-proj-ssp5-netcdf/SSP5/Total/NetCDF/population_ssp5_interp.csv'
+
+ncdf_grid <- helios::read_ncdf(ncdf = path_to_climate_ncdf,
+                               model = 'cmip',
+                               var = 'tas',
+                               time_periods = 2020)
+population_j_grid <- helios::read_population(path_to_population, time_periods = 2020)
 
 hdcd_cmip_all <- helios::hdcd(
   ncdf = path_to_climate_ncdf,
@@ -154,7 +183,7 @@ hdcd_cmip_all <- helios::hdcd(
   model_timestep = 'daily',
   population = path_to_population,
   spatial = 'gcam_regions32',
-  time_periods = 2020,
+  time_periods = c(2015),
   dispatch_segment = F,
   reference_temp_F = 65,
   folder = paste0(getwd(), '/output'),

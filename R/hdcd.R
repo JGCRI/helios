@@ -78,7 +78,8 @@ hdcd <- function(ncdf = NULL,
     }
 
     # check if there is valid spatial input
-    if(any(is.null(spatial), !spatial %in% helios::spatial_options$spatial)){
+    if(any(is.null(spatial),
+           !any(spatial %in% helios::spatial_options$spatial, class(spatial) %in% c("tbl_df","tbl","data.frame")))){
       stop(paste0('Please provide a valid spatial scale. Options: ',
                   paste0(helios::spatial_options$spatial, collapse = ', ')))
     }

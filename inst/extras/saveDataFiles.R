@@ -290,6 +290,7 @@ usethis::use_data(mapping_grid_region, overwrite=T)
 #-----------------------
 gridTable <- data.frame(lat = rmap::mapping_tethys_grid_basin_region_country$lat,
                         lon = rmap::mapping_tethys_grid_basin_region_country$lon)
+
 GCAMReg32US52_grid <- metis::metis.gridByPoly(gridTable = gridTable,
                                               shape = metis::mapGCAMReg32US52,
                                               colName = 'subRegion')
@@ -304,7 +305,10 @@ mapping_grid_region_US52 <- GCAMReg32US52_grid %>%
                      dplyr::select(lat, lon, ID = regionID, region = regionName),
                    by = c('lat', 'lon')) %>%
   dplyr::mutate(subRegion = dplyr::if_else(region == 'Taiwan' & subRegion == 'China',
-                                           'Taiwan', subRegion))
+                                           'Taiwan', subRegion),
+                region = dplyr::if_else(subRegion %in% us_states & region != 'USA',
+                                        'USA', region),
+                ID = ifelse(region == 'USA', 1, ID))
 
 usethis::use_data(mapping_grid_region_US52, overwrite = T)
 
@@ -384,6 +388,8 @@ spatial_options <- tibble::tribble(
   ~spatial, ~description,
   'gcam_us49', '49 U.S. States including D.C.and excluding Hawaii and Alaska',
   'gcam_regions32', 'Global 32 GCAM Regions',
-  'gcam_regions31_us52', 'Global GCAM Regions (excluding USA as one region) + 52 U.S. States including D.C, Puerto Rico'
+  'gcam_regions31_us52', 'Global 31 GCAM Regions (excluding USA as one region) + 52 U.S. States including D.C, Puerto Rico',
+  'gcam_countries', 'Global 240 countries',
+  'gcam_basins', 'Global 235 GCAM water basins'
 )
 usethis::use_data(spatial_options, version = 3, overwrite = T)
