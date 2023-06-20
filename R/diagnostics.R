@@ -278,15 +278,13 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
 
           # get NOAA data of the latest year
           noaa_latest <- hdcd_comb_monthly_diagnostics %>%
-            dplyr::filter((year == noaa_year_latest & scenario == 'noaa') &
-                            (!subRegion %in% c('AK', 'HI'))) %>%
+            dplyr::filter((year == noaa_year_latest & scenario == 'noaa')) %>%
             dplyr::rename(noaa = value) %>%
             dplyr::select(subRegion, month, HDCD, noaa)
 
           # combine calculated hdcd and NOAA data
           hdcd_comb_monthly_diagnostics_all <- hdcd_comb_monthly_diagnostics %>%
-            dplyr::filter(scenario == 'ncdf',
-                          !subRegion %in% c('AK', 'HI')) %>%
+            dplyr::filter(scenario == 'ncdf') %>%
             dplyr::left_join(noaa_latest, by = c('subRegion', 'month', 'HDCD')) %>%
             dplyr::mutate(noaa = dplyr::if_else(is.na(noaa), 0, noaa),
                           month = factor(month, levels = months)) %>%
@@ -296,8 +294,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
           noaa_name <- ''
 
           hdcd_comb_monthly_diagnostics_all <- hdcd_comb_monthly_diagnostics %>%
-            dplyr::filter(scenario == 'ncdf',
-                          !subRegion %in% c('AK', 'HI')) %>%
+            dplyr::filter(scenario == 'ncdf') %>%
             dplyr::mutate(month = factor(month, levels = months))
         } # end of if(use_noaa)
 
