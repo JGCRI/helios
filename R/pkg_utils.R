@@ -157,6 +157,8 @@ find_mapping_grid <- function(data = NULL, spatial = NULL) {
 
 mapping_grid <- function(grid = NULL, shape = NULL){
 
+  NULL -> X -> Y
+
   if(is.null(grid)) {
     stop('Must provide gride data with longitudes and latitudes.')
   }

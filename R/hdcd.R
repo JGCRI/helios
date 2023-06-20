@@ -339,7 +339,7 @@ hdcd <- function(ncdf = NULL,
               region <- unique(hdcd_region_annual$region)
 
               # expand building info to each region
-              hdcd_building <- building %>%
+              hdcd_building <- hdcd_building %>%
                 tidyr::expand(
                   tidyr::nesting(gcam.consumer, nodeInput, building.node.input, thermal.building.service.input),
                   region)
@@ -417,7 +417,7 @@ hdcd <- function(ncdf = NULL,
             region <- unique(hdcd_region_annual$region)
 
             # expand building info to each region
-            hdcd_building <- building %>%
+            hdcd_building <- hdcd_building %>%
               tidyr::expand(
                 tidyr::nesting(gcam.consumer, nodeInput, building.node.input, thermal.building.service.input),
                 region)

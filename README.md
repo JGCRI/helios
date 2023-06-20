@@ -48,6 +48,11 @@ Zhao, M., Khan, Z., Dorheim, K., Vernon, C., 2023. helios - An R package to proc
 install.packages("devtools")
 devtools::install_github("JGCRI/helios")
 ```
+or
+```r
+install.packages("remotes")
+remotes::install_github("JGCRI/helios")
+```
 
 Additional steps for UBUNTU from a terminal
 ```
