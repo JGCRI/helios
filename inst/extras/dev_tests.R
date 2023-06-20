@@ -182,7 +182,7 @@ hdcd_cmip_all <- helios::hdcd(
   model = 'cmip',
   model_timestep = 'daily',
   population = path_to_population,
-  spatial = 'gcam_regions32',
+  spatial = 'gcam_regions31_us52', # gcam_regions32
   time_periods = c(2015),
   dispatch_segment = F,
   reference_temp_F = 65,

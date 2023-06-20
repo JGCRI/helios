@@ -329,37 +329,49 @@ hdcd <- function(ncdf = NULL,
 
             } else {
 
-              if(spatial =='gcam_regions32'){
+              # basic structure of building thermal service
+              hdcd_building <- data.frame(
+                gcam.consumer = c('comm', 'comm', 'resid', 'resid'),
+                nodeInput = c('comm', 'comm', 'resid', 'resid'),
+                building.node.input = c('comm_building', 'comm_building', 'resid_building', 'resid_building'),
+                thermal.building.service.input = c('comm cooling', 'comm heating', 'resid cooling', 'resid heating'))
 
-                hdcd_region_bld <- hdcd_region_annual %>%
-                  dplyr::left_join(helios::L244.HDDCDD_building,
-                                   by = c('region')) %>%
-                  # Remove columns with -ve hdcd/cooling and +ve/heating
-                  dplyr::filter(
-                    !((value < 0) & grepl('cool', thermal.building.service.input, ignore.case = T)),
-                    !((value > 0) & grepl('heat', thermal.building.service.input, ignore.case = T))) %>%
-                  dplyr::select(-HDCD)
+              region <- unique(hdcd_region_annual$region)
 
-              }
+              # expand building info to each region
+              hdcd_building <- building %>%
+                tidyr::expand(
+                  tidyr::nesting(gcam.consumer, nodeInput, building.node.input, thermal.building.service.input),
+                  region)
 
-              if (spatial %in% c('gcam_regions31_us52', 'gcam_us49')) {
+              hdcd_region_bld <- hdcd_region_annual %>%
+                dplyr::left_join(hdcd_building,
+                                 by = c('region')) %>%
+                # Remove columns with -ve hdcd/cooling and +ve/heating
+                dplyr::filter(
+                  !((value < 0) & grepl('cool', thermal.building.service.input, ignore.case = T)),
+                  !((value > 0) & grepl('heat', thermal.building.service.input, ignore.case = T))) %>%
+                dplyr::select(-HDCD)
 
-                hdcd_region_bld <- hdcd_region_annual %>%
-                  dplyr::left_join(dplyr::bind_rows(
-                    helios::L244.HDDCDD_building,
-                    unique(helios::L2441.HDDCDD_Fixed_gcamusa_seg %>%
-                             dplyr::mutate(thermal.building.service.input =
-                                             gsub("^(\\S*\\s+\\S+).*", "\\1", thermal.building.service.input)) %>%
-                             dplyr::select(-segment) %>%
-                             dplyr::rename(region = subRegion))),
-                                   by = c('region')) %>%
-                  # Remove columns with -ve hdcd/cooling and +ve/heating
-                  dplyr::filter(
-                    !((value < 0) & grepl('cool', thermal.building.service.input, ignore.case = T)),
-                    !((value > 0) & grepl('heat', thermal.building.service.input, ignore.case = T))) %>%
-                  dplyr::select(-HDCD)
 
-              }
+              # if (spatial %in% c('gcam_regions31_us52', 'gcam_us49')) {
+              #
+              #   hdcd_region_bld <- hdcd_region_annual %>%
+              #     dplyr::left_join(dplyr::bind_rows(
+              #       helios::L244.HDDCDD_building,
+              #       unique(helios::L2441.HDDCDD_Fixed_gcamusa_seg %>%
+              #                dplyr::mutate(thermal.building.service.input =
+              #                                gsub("^(\\S*\\s+\\S+).*", "\\1", thermal.building.service.input)) %>%
+              #                dplyr::select(-segment) %>%
+              #                dplyr::rename(region = subRegion))),
+              #                      by = c('region')) %>%
+              #     # Remove columns with -ve hdcd/cooling and +ve/heating
+              #     dplyr::filter(
+              #       !((value < 0) & grepl('cool', thermal.building.service.input, ignore.case = T)),
+              #       !((value > 0) & grepl('heat', thermal.building.service.input, ignore.case = T))) %>%
+              #     dplyr::select(-HDCD)
+              #
+              # }
 
             }
 
@@ -395,8 +407,23 @@ hdcd <- function(ncdf = NULL,
             # Step 7b: Add in building components for GCAM
             #......................
 
+            # basic structure of building thermal service
+            hdcd_building <- data.frame(
+              gcam.consumer = c('comm', 'comm', 'resid', 'resid'),
+              nodeInput = c('comm', 'comm', 'resid', 'resid'),
+              building.node.input = c('comm_building', 'comm_building', 'resid_building', 'resid_building'),
+              thermal.building.service.input = c('comm cooling', 'comm heating', 'resid cooling', 'resid heating'))
+
+            region <- unique(hdcd_region_annual$region)
+
+            # expand building info to each region
+            hdcd_building <- building %>%
+              tidyr::expand(
+                tidyr::nesting(gcam.consumer, nodeInput, building.node.input, thermal.building.service.input),
+                region)
+
             hdcd_region_bld <- hdcd_region_annual %>%
-              dplyr::left_join(helios::L244.HDDCDD_building,
+              dplyr::left_join(hdcd_building,
                                by = c('region')) %>%
               # Remove columns with -ve hdcd/cooling and +ve/heating
               dplyr::filter(
