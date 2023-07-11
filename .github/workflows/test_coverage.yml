@@ -12,6 +12,8 @@ jobs:
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.PAT}}
+      CC: clang
+      CXX: clang++
 
     steps:
       - uses: actions/checkout@v3
@@ -28,14 +30,13 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
-      - name: Configure
-        run: |
-          cmake -S . -B build -D CMAKE_C_COMPILER=$(brew --prefix llvm@15)/bin/clang -D CMAKE_CXX_COMPILER=$(brew --prefix llvm)/bin/clang++
-
       - name: MacOS Config
         run: |
+          brew update
           brew install pkg-config
           brew install gdal
+          module load llvm/15.0.0  # Load the Clang module
+          export PATH="/usr/local/opt/llvm@15/bin:$PATH"
 
       - name: Install dependencies
         run: |
@@ -46,5 +47,11 @@ jobs:
       - name: Test coverage
         run: |
           remotes::install_cran("covr")
+          export PATH="/usr/local/opt/llvm@15/bin:$PATH"
+          R CMD INSTALL --configure-args="--with-clang" .
           covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")
         shell: Rscript {0}
+
+      - name: Check for failures
+        if: failure()
+        run: exit 1
