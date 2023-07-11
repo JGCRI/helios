@@ -29,7 +29,6 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: MacOS Config
-        if: startsWith(matrix.config.os, 'macOS')
         run: |
           brew install pkg-config
           brew install gdal
