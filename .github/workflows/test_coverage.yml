@@ -35,6 +35,7 @@ jobs:
           brew install gdal
           brew install udunits
           brew install imagemagick@6
+          brew link --overwrite python@3.11
 
       - name: Install dependencies
         run: |
