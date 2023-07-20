@@ -296,7 +296,7 @@ hdcd <- helios::hdcd(ncdf = path_to_climate_ncdf,
                      name_append = '',
                      save = F)
 ```
-```{r eval=FALSE, echo=FALSE}
+```{r eval=FALSE, echo=TRUE}
 # Heating and cooling degree-days at annual scale
 hdcd$hdcd_comb_annual
 ```
@@ -336,7 +336,7 @@ hdcd <- helios::hdcd(ncdf = path_to_climate_ncdf,
                      name_append = '',
                      save = F)
 ```
-```{r eval=FALSE, echo=FALSE}
+```{r eval=FALSE, echo=TRUE}
 # Heating and cooling degree-days at annual scale
 hdcd$hdcd_comb_annual
 ```
@@ -380,7 +380,7 @@ hdcd <- helios::hdcd(ncdf = path_to_climate_ncdf,
                      name_append = '',
                      save = F)
 ```
-```{r eval=FALSE, echo=FALSE}
+```{r eval=FALSE, echo=TRUE}
 # Heating and cooling degree-days at annual scale
 hdcd$hdcd_comb_annual
 ```
