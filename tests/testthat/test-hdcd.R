@@ -38,6 +38,12 @@ test_that("monthly and annual HD values are negative, CD values are positive", {
 run_diagnostics()
 run_hdcd_usa(xml = TRUE)
 
+# ------------------------------------
+# Testing Different scales
+# ------------------------------------
+
+run_hdcd_china(spatial = 'gcam_countries')
+run_hdcd_china(spatial = data.frame(subRegion = 'China'))
 
 # ------------------------------------
 # Testing Conditions

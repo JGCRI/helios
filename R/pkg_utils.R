@@ -115,7 +115,7 @@ find_mapping_grid <- function(data = NULL, spatial = NULL) {
 
     if ('subRegion' %in% names(spatial)){
 
-      shape <- rmap::map_find(spatial)[[2]]
+      shape <- rmap::map_find(spatial)
 
       mapping <- helios::mapping_grid(grid = grid,
                                       shape = shape)
@@ -177,7 +177,7 @@ mapping_grid <- function(grid = NULL, shape = NULL){
   pnts_sf <- sf::st_as_sf(grid,
                           coords = c('lon', 'lat'),
                           crs = sf::st_crs(shape))
-
+  sf::sf_use_s2(FALSE)
   pnts_sf <- sf::st_join(pnts_sf, shape,
                          join = sf::st_nearest_feature,
                          suffix = c('', '.nearest'))
