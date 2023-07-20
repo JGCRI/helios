@@ -32,7 +32,8 @@ save_xml <- function(hdcd_gcam = tibble::tibble(),
   # Format to match GCAM output file L2441.HDDCDD_Fixed_rcp4p5_gcamusa.csv
   if (nrow(hdcd_gcam) > 0) {
     hdcd_comb_xml <- hdcd_gcam %>%
-      dplyr::mutate(value = abs(value)) %>%
+      dplyr::mutate(value = abs(value),
+                    value = round(value, 2)) %>%
       dplyr::select(
         region = subRegion,
         gcam.consumer,
@@ -40,8 +41,8 @@ save_xml <- function(hdcd_gcam = tibble::tibble(),
         building.node.input,
         thermal.building.service.input,
         year,
-        degree.days = value
-      )
+        degree.days = value) %>%
+      tibble::as_tibble()
 
     # Save csv corresponding to xml
     filename_i_xml_csv <- file.path(

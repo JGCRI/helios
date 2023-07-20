@@ -137,7 +137,14 @@ find_mapping_grid <- function(data = NULL, spatial = NULL) {
   }
 
   mapping_data <- data %>%
-  dplyr::left_join(mapping, by = c('lat', 'lon')) %>%
+    dplyr::left_join(mapping, by = c('lat', 'lon')) %>%
+    # correct the EU region name for XML
+    dplyr::mutate(region = dplyr::case_when(region == 'EU_12' ~ 'EU-12',
+                                            region == 'EU_15' ~ 'EU-15',
+                                            TRUE ~ region),
+                  subRegion = dplyr::case_when(subRegion == 'EU_12' ~ 'EU-12',
+                                               subRegion == 'EU_15' ~ 'EU-15',
+                                               TRUE ~ subRegion)) %>%
     dplyr::filter(!is.na(ID))
 
   return(mapping_data)
