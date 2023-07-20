@@ -12704,7 +12704,7 @@ year
 <p><br></p>
 </div>
 <div class="section level3">
-<h3 id="calculate-heating-and-cooling-degree-days">Calculate heating and cooling degree-days<a class="anchor" aria-label="anchor" href="#calculate-heating-and-cooling-degree-days"></a>
+<h3 id="calculate-hdd-and-cdd">Calculate HDD and CDD<a class="anchor" aria-label="anchor" href="#calculate-hdd-and-cdd"></a>
 </h3>
 <p>The following example specifies the arguments for processing CMIP6
 dataset. More information for the arguments can be found in
@@ -13523,12 +13523,751 @@ used.</p>
 <p><br></p>
 </div>
 <div class="section level3">
+<h3 id="various-spatial-scales">Various Spatial Scales<a class="anchor" aria-label="anchor" href="#various-spatial-scales"></a>
+</h3>
+<p>Beyond using <code>helios</code> for GCAM regions (e.g.,
+<code>spatial = 'gcam_region32'</code>), we can use <code>helios</code>
+as a general tool to calculate heating and cooling degrees at various
+spatial scales by using <code>spatial</code> argument. More details
+about available spatial scales are described in
+<code><a href="../reference/spatial_options.html">helios::spatial_options</a></code>.</p>
+<ul>
+<li>
+<code>spatial = 'gcam_region32'</code> for global countries</li>
+<li>
+<code>spatial = 'gcam_countries'</code> for global countries</li>
+<li>
+<code>spatial = 'gcam_basins'</code> for global 235 basins</li>
+<li>
+<code>spatial = data.frame(subRegion = c('Shanghai', 'Beijing'))</code>
+will automatically find the corresponding spatial map that is at the
+same scale with the <code>subRegion</code> names provided. In this case,
+<code>helios</code> will identify states/province level spatial scale.
+The final output will depend on input climate data’s coverage. Users
+need to provide this in the format of data frame or tibble.</li>
+</ul>
+<p><br></p>
+<p><strong>1. Country Scale</strong></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/helios" class="external-link">helios</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># example data: CMIP6 daily climate at 0.5 degree resolution</span></span>
+<span><span class="va">path_to_climate_ncdf</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># example data: population of 2020 at 0.125 degree resolution</span></span>
+<span><span class="va">path_to_population</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'ssp1_2020_sub.nc'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Calculate heating and coolong degrees for GCAM regions (e.g., part of China in the example)</span></span>
+<span><span class="va">hdcd</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/hdcd.html">hdcd</a></span><span class="op">(</span>ncdf <span class="op">=</span> <span class="va">path_to_climate_ncdf</span>,</span>
+<span>                     ncdf_var <span class="op">=</span> <span class="st">'tas'</span>,</span>
+<span>                     model <span class="op">=</span> <span class="st">'cmip'</span>,</span>
+<span>                     model_timestep <span class="op">=</span> <span class="st">'daily'</span>,</span>
+<span>                     population <span class="op">=</span> <span class="va">path_to_population</span>,</span>
+<span>                     spatial <span class="op">=</span> <span class="st">'gcam_countries'</span>,</span>
+<span>                     time_periods <span class="op">=</span> <span class="fl">2020</span>,</span>
+<span>                     dispatch_segment <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                     reference_temp_F <span class="op">=</span> <span class="fl">65</span>,</span>
+<span>                     folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
+<span>                     diagnostics <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                     xml <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                     name_append <span class="op">=</span> <span class="st">''</span>,</span>
+<span>                     save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
+<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "........................................."</span></span>
+<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Starting population weighting ..."</span></span>
+<span><span class="co">## [1] "Completed population weighting."</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
+<caption>
+Table. Annual heating and cooling degree-days for global countries.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+region
+</th>
+<th style="text-align:left;">
+subRegion
+</th>
+<th style="text-align:right;">
+year
+</th>
+<th style="text-align:left;">
+HDCD
+</th>
+<th style="text-align:left;">
+unit
+</th>
+<th style="text-align:right;">
+value
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+1260.400
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-4366.006
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>2. Basin Scale</strong></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/helios" class="external-link">helios</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># example data: CMIP6 daily climate at 0.5 degree resolution</span></span>
+<span><span class="va">path_to_climate_ncdf</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># example data: population of 2020 at 0.125 degree resolution</span></span>
+<span><span class="va">path_to_population</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'ssp1_2020_sub.nc'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Calculate heating and coolong degrees for GCAM regions (e.g., part of China in the example)</span></span>
+<span><span class="va">hdcd</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/hdcd.html">hdcd</a></span><span class="op">(</span>ncdf <span class="op">=</span> <span class="va">path_to_climate_ncdf</span>,</span>
+<span>                     ncdf_var <span class="op">=</span> <span class="st">'tas'</span>,</span>
+<span>                     model <span class="op">=</span> <span class="st">'cmip'</span>,</span>
+<span>                     model_timestep <span class="op">=</span> <span class="st">'daily'</span>,</span>
+<span>                     population <span class="op">=</span> <span class="va">path_to_population</span>,</span>
+<span>                     spatial <span class="op">=</span> <span class="st">'gcam_basins'</span>,</span>
+<span>                     time_periods <span class="op">=</span> <span class="fl">2020</span>,</span>
+<span>                     dispatch_segment <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                     reference_temp_F <span class="op">=</span> <span class="fl">65</span>,</span>
+<span>                     folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
+<span>                     diagnostics <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                     xml <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                     name_append <span class="op">=</span> <span class="st">''</span>,</span>
+<span>                     save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
+<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "........................................."</span></span>
+<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Starting population weighting ..."</span></span>
+<span><span class="co">## [1] "Completed population weighting."</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
+<caption>
+Table. Annual heating and cooling degree-days for global basins.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+region
+</th>
+<th style="text-align:left;">
+subRegion
+</th>
+<th style="text-align:right;">
+year
+</th>
+<th style="text-align:left;">
+HDCD
+</th>
+<th style="text-align:left;">
+unit
+</th>
+<th style="text-align:right;">
+value
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Gobi_Interior
+</td>
+<td style="text-align:left;">
+Gobi_Interior
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+3.445710e+02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Gobi_Interior
+</td>
+<td style="text-align:left;">
+Gobi_Interior
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-8.210200e+03
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Huang_He
+</td>
+<td style="text-align:left;">
+Huang_He
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+8.056997e+02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Huang_He
+</td>
+<td style="text-align:left;">
+Huang_He
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-5.996119e+03
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tarim_Interior
+</td>
+<td style="text-align:left;">
+Tarim_Interior
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+6.324040e-02
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Tarim_Interior
+</td>
+<td style="text-align:left;">
+Tarim_Interior
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-1.179301e+04
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Yangtze
+</td>
+<td style="text-align:left;">
+Yangtze
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+1.607160e+03
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Yangtze
+</td>
+<td style="text-align:left;">
+Yangtze
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-3.097255e+03
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><strong>3. User Specified <code>subRegion</code> Scale</strong></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/helios" class="external-link">helios</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/JGCRI/rmap" class="external-link">rmap</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># example data: CMIP6 daily climate at 0.5 degree resolution</span></span>
+<span><span class="va">path_to_climate_ncdf</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># example data: population of 2020 at 0.125 degree resolution</span></span>
+<span><span class="va">path_to_population</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/pkg_example.html">pkg_example</a></span><span class="op">(</span><span class="st">'ssp1_2020_sub.nc'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># specify few province names to indicate calculate HDDCDD at province scale</span></span>
+<span><span class="va">scale_province</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>subRegion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'Shanghai'</span>, <span class="st">'Beijing'</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Calculate heating and coolong degrees for GCAM regions (e.g., part of China in the example)</span></span>
+<span><span class="va">hdcd</span> <span class="op">&lt;-</span> <span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/hdcd.html">hdcd</a></span><span class="op">(</span>ncdf <span class="op">=</span> <span class="va">path_to_climate_ncdf</span>,</span>
+<span>                     ncdf_var <span class="op">=</span> <span class="st">'tas'</span>,</span>
+<span>                     model <span class="op">=</span> <span class="st">'cmip'</span>,</span>
+<span>                     model_timestep <span class="op">=</span> <span class="st">'daily'</span>,</span>
+<span>                     population <span class="op">=</span> <span class="va">path_to_population</span>,</span>
+<span>                     spatial <span class="op">=</span> <span class="va">scale_province</span>,</span>
+<span>                     time_periods <span class="op">=</span> <span class="fl">2020</span>,</span>
+<span>                     dispatch_segment <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                     reference_temp_F <span class="op">=</span> <span class="fl">65</span>,</span>
+<span>                     folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
+<span>                     diagnostics <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                     xml <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>                     name_append <span class="op">=</span> <span class="st">''</span>,</span>
+<span>                     save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
+<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "........................................."</span></span>
+<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">##            map subRegNum rank</span></span>
+<span><span class="co">## 1    mapStates         2    9</span></span>
+<span><span class="co">## 2 mapStatesAlt         2   10</span></span>
+<span><span class="co">##            map subRegNum rank</span></span>
+<span><span class="co">## 1    mapStates         2    9</span></span>
+<span><span class="co">## 2 mapStatesAlt         2   10</span></span>
+<span><span class="co">## [1] "Starting population weighting ..."</span></span>
+<span><span class="co">## [1] "Completed population weighting."</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
+<table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
+<caption>
+Table. Annual heating and cooling degree-days for User Specified Scale.
+</caption>
+<thead><tr>
+<th style="text-align:left;">
+region
+</th>
+<th style="text-align:left;">
+subRegion
+</th>
+<th style="text-align:right;">
+year
+</th>
+<th style="text-align:left;">
+HDCD
+</th>
+<th style="text-align:left;">
+unit
+</th>
+<th style="text-align:right;">
+value
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Chongqing
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+1847.17094
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Chongqing
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-2784.02140
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Gansu
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+328.77998
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Gansu
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-6851.04096
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Hubei
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+1166.79647
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Hubei
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-3740.88599
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Inner Mongol
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+875.27854
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Inner Mongol
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-6874.16100
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Ningxia
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+692.73315
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Ningxia
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-6452.58165
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Qinghai
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+25.24867
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Qinghai
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-9417.88403
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Shaanxi
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+1163.61281
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Shaanxi
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-4720.13799
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Sichuan
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+CD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+1755.24761
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+China
+</td>
+<td style="text-align:left;">
+Sichuan
+</td>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+HD
+</td>
+<td style="text-align:left;">
+degree-days
+</td>
+<td style="text-align:right;">
+-2770.78425
+</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+</div>
+<div class="section level3">
 <h3 id="diagnostics">Diagnostics<a class="anchor" aria-label="anchor" href="#diagnostics"></a>
 </h3>
 <p>After getting the data table for heating and cooling degrees, users
 can perform diagnostics. The following example is only for demonstration
 of how to use <code><a href="../reference/diagnostics.html">helios::diagnostics</a></code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Perform diagnostic on monthly data</span></span>
 <span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span>hdcd_monthly <span class="op">=</span> <span class="va">hdcd_monthly</span>,</span>
 <span>                    min_diagnostic_months <span class="op">=</span> <span class="fl">6</span>,</span>
@@ -13554,7 +14293,7 @@ XML file:</p>
 function will automatically save the XML file to the output folder.</li>
 <li>Use <code><a href="../reference/save_xml.html">helios::save_xml</a></code> function.</li>
 </ul>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/save_xml.html">save_xml</a></span><span class="op">(</span>hdcd_gcam <span class="op">=</span> <span class="va">hdcd_gcam</span>,</span>
 <span>                 folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
 <span>                 name_append <span class="op">=</span> <span class="st">'cmip'</span><span class="op">)</span></span></code></pre></div>
