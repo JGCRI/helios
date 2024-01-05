@@ -5,20 +5,20 @@
 \title{save_xml}
 \usage{
 save_xml(
-  hdcd = tibble::tibble(),
-  folder = paste0(getwd()),
-  filename = "hdcd_xml",
+  hdcd_gcam = tibble::tibble(),
+  folder = file.path(getwd(), "output"),
+  filename = "hdcd",
   name_append = ""
 )
 }
 \arguments{
-\item{hdcd}{Default = tibble::tibble()}
+\item{hdcd_gcam}{Default = tibble::tibble(). hdcd output with GCAM required format}
 
-\item{folder}{Default = paste0(getwd()).}
+\item{folder}{Default = file.path(getwd(), 'output').}
 
-\item{filename}{Default = "hdcd_diagnostic".}
+\item{filename}{Default = 'hdcd_diagnostic'.}
 
-\item{name_append}{Default = "". Name to append to all filenames}
+\item{name_append}{Default = ''. Name to append to all filenames}
 }
 \description{
 Heating and Cooling Degree diagnostic scripts

@@ -32,6 +32,22 @@
 "L2441.HDDCDD_Fixed_gcamusa_seg"
 
 #.................................
+# L244.HDDCDD_building
+#................................
+
+#' L244.HDDCDD_building
+#'
+#' @source gcamdata/outputs/L244.HDDCDD_constdd_no_GCM.csv
+#' @format R dataframe
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  L244.HDDCDD_building <- helios::L244.HDDCDD_building
+#' }
+"L244.HDDCDD_building"
+
+
+#.................................
 # Copy of rmap::mapUS52 for local use in helios
 #................................
 
@@ -67,7 +83,7 @@
 
 #' mapping_wrf_us49
 #'
-#' @source
+#' @source wrf climate data wrfout_d01_2020-01-01_01%3A00%3A00.nc
 #' @format tibble
 #' @examples
 #' \dontrun{
@@ -75,6 +91,139 @@
 #'  mapping_wrf_us49 <- helios::mapping_wrf_us49
 #' }
 "mapping_wrf_us49"
+
+#.................................
+# 0.5 Grid to GCAM 32 region Mapping
+#................................
+
+#' mapping_grid_region
+#'
+#' @source rmap::mapping_tethys_grid_basin_region_country
+#' @format tibble
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  mapping_grid_region <- helios::mapping_grid_region
+#' }
+"mapping_grid_region"
+
+#.................................
+# Map 0.5 grid to GCAM 32 regions with 52 US states (all including AK, HI, DC and PR)
+#................................
+
+#' mapping_grid_region_US52
+#'
+#' @source rmap::mapping_tethys_grid_basin_region_country, metis::mapGCAMReg32US52
+#' @format tibble
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  mapping_grid_region_US52 <- helios::mapping_grid_region_US52
+#' }
+"mapping_grid_region_US52"
+
+#.................................
+# WRF Example Data
+#.................................
+
+#' example_wrf_usa_ncdf
+#'
+#' @source .inst/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc
+#' @format list
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_wrf_usa_ncdf <- helios::example_wrf_usa_ncdf
+#' }
+"example_wrf_usa_ncdf"
+
+#.................................
+# CMIP6 Example Data
+#.................................
+
+#' example_cmip6_china_ncdf
+#'
+#' @source .inst/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc
+#' @format list
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_cmip6_china_ncdf <- helios::example_cmip6_china_ncdf
+#' }
+"example_cmip6_china_ncdf"
+
+#.................................
+# Population NetCDF Example Data
+#.................................
+#' example_pop_china_ncdf
+#'
+#' @source .inst/extras/ssp1_2020_sub.nc
+#' @format list
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_pop_china_ncdf <- helios::example_pop_china_ncdf
+#' }
+"example_pop_china_ncdf"
+
+#.................................
+# Population CSV Example Data
+#.................................
+#' example_pop_usa_csv
+#'
+#' @source .inst/extras/population_conus_ssp2_2020wrf_wgs84.csv
+#' @format data.table
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_pop_usa_csv <- helios::example_pop_usa_csv
+#' }
+"example_pop_usa_csv"
+
+
+#.................................
+# HDCD Example Data by Segment
+#.................................
+#' example_hdcd_segment_usa
+#'
+#' @source .inst/extras/hdcd_diagnostic_2020-2100rcp45cooler_ssp3.csv
+#' @format data.table
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_hdcd_segment_usa <- helios::example_hdcd_segment_usa
+#' }
+"example_hdcd_segment_usa"
+
+
+#.................................
+# HDCD Example Data by Month
+#.................................
+#' example_hdcd_monthly_usa
+#'
+#' @source .inst/extras/monthly_ncdf_2020-2100_noaa_2000-2021rcp45cooler_ssp3.csv
+#' @format data.table
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  example_hdcd_monthly_usa <- helios::example_hdcd_monthly_usa
+#' }
+"example_hdcd_monthly_usa"
+
+#.................................
+# Available Spatial Options
+#.................................
+#' spatial_options
+#'
+#' @source tibble creation
+#' @format tibble::tribble
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  spatial_options <- helios::spatial_options
+#' }
+"spatial_options"
+
 
 #.................................
 # Pre-processed Population Files

@@ -7,6 +7,9 @@
 \format{
 tibble
 }
+\source{
+wrf climate data wrfout_d01_2020-01-01_01%3A00%3A00.nc
+}
 \usage{
 mapping_wrf_us49
 }

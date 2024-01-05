@@ -1,9 +1,10 @@
 <!-- badges: start -->
-[![build](https://github.com/JGCRI/helios/workflows/build/badge.svg)](https://github.com/JGCRI/helios/workflows/build/badge.svg)
+[![build](https://github.com/JGCRI/helios/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/build.yml)
 [![test_coverage](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml)
+[![docs](https://github.com/JGCRI/helios/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/docs.yaml)
 [![codecov](https://codecov.io/gh/JGCRI/helios/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/helios) 
-[![docs](https://github.com/JGCRI/helios/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/JGCRI/helios/actions/workflows/pkgdown.yaml)
 [![Github All Releases](https://img.shields.io/github/downloads/JGCRI/helios/total.svg)]()
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8170311.svg)](https://doi.org/10.5281/zenodo.8170311)
 <!-- badges: end -->
 
 
@@ -18,7 +19,8 @@
 <br>
 
 <p align="center">
-<a href="https://jgcri.github.io/helios/articles/vignette_helios.html" target="_blank"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" alt="https://jgcri.github.io/helios/articles/vignette_helios.html" height="60"/></a>
+<a href="https://jgcri.github.io/helios/" target="_blank"><img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_user_guide.PNG?raw=true" 
+alt="https://jgcri.github.io/helios/" height="60"/></a>
 <img src="https://github.com/JGCRI/jgcricolors/blob/main/vignettes/button_divider.PNG?raw=true" height="40"/>
 </p>
 
@@ -28,7 +30,7 @@
 <!-- ------------------------>
 <!-- ------------------------>
 
-Khan, Z., Dorheim, K., Wolfram, P., Vernon, C., 2021. helios - An R package to process heating and cooling degrees for GCAM. (In progress) Journal of Open Source Software, DOI: XXXX
+Zhao, M., Khan, Z., Dorheim, K., Vernon, C., 2023. helios - An R package to process heating and cooling degrees for GCAM. (In progress) Journal of Open Source Software, DOI: XXXX
 
 <!-- ------------------------>
 <!-- ------------------------>
@@ -47,12 +49,17 @@ Khan, Z., Dorheim, K., Wolfram, P., Vernon, C., 2021. helios - An R package to p
 install.packages("devtools")
 devtools::install_github("JGCRI/helios")
 ```
+or
+```r
+install.packages("remotes")
+remotes::install_github("JGCRI/helios")
+```
 
 Additional steps for UBUNTU from a terminal
 ```
 sudo add-apt-repository ppa:ubuntugis/ppa
 sudo apt-get update
-sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev
+sudo apt-get install libudunits2-dev libgdal-dev libgeos-dev libproj-dev libmagick++-dev
 ```
 
 Additional steps for MACOSX from a terminal
@@ -60,6 +67,18 @@ Additional steps for MACOSX from a terminal
 brew install pkg-config
 brew install gdal
 ```
+<br>
+
+<!-- ------------------------>
+<!-- ------------------------>
+# <a name="GettingStarted"></a>Getting Started
+<!-- ------------------------>
+<!-- ------------------------>
+
+`helios` is an R package that calculates heating and cooling degrees using high temporal and spatial resolution of climate data and population data. `helios` currently supports WRF data and ISIMIP-CMIP data, or same format with any of them. For more details:
+
+* [GCAM-Regions Tutorial](https://jgcri.github.io/helios/articles/vignette_gcam-regions.html) introduces how to use `helios` to calculate heating and cooling degree-days for 32 global regions in GCAM.
+* [GCAM-USA Tutorial](https://jgcri.github.io/helios/articles/vignette_gcam-usa.html) introduces how to use `helios` to calculate heating and cooling degree-hours for CONUS in GCAM-USA.
 
 <!-- ------------------------>
 <!-- ------------------------>

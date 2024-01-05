@@ -9,9 +9,13 @@ navbar:
   left:
     - icon: fa-home
       href: index.html
-    - text: "Guide"
+    - text: "Guides"
       icon: fas fa-book
-      href: articles/vignette_helios.html
+      menu:
+      - text: GCAM-USA
+        href: articles/vignette_gcam-usa.html
+      - text: GCAM-Regions
+        href: articles/vignette_gcam-regions.html
     - icon: fas fa-code-branch
       text: "Reference"
       href: reference/index.html
@@ -25,15 +29,32 @@ reference:
 - title: "Functions"
 - contents:
   - hdcd
+  - read_ncdf
+  - read_population
   - diagnostics
   - save_xml
+  - pkg_example
+  - create_name
+  - find_mapping_grid
+  - mapping_grid
+  - match_grids
 - title: "Pre-loaded Data"
 - contents:
   - L2441.HDDCDD_Fixed_gcamusa_seg
+  - L244.HDDCDD_building
+  - mapping_grid_region
+  - mapping_grid_region_US52
   - mapping_wrf_us49
   - mapUS52
   - noaa_hddcdd
   - segment_map_utc
+  - example_cmip6_china_ncdf
+  - example_wrf_usa_ncdf
+  - example_pop_china_ncdf
+  - example_pop_usa_csv
+  - example_hdcd_segment_usa
+  - example_hdcd_monthly_usa
+  - spatial_options
 - title: "Package File"
 - contents:
   - helios

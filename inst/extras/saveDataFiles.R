@@ -1,6 +1,17 @@
 
-library(tibble);library(dplyr);library(rgdal);library(devtools);library(rmap); library(raster);
-library(lubridate); library(httr); library(ggplot2); library(rchart); library(usethis)
+library(tibble)
+library(dplyr)
+library(rgdal)
+library(devtools)
+library(rmap)
+library(metis)
+library(raster)
+
+library(lubridate)
+library(httr)
+library(ggplot2)
+library(rchart)
+library(usethis)
 
 #-----------------
 # Initialize
@@ -49,7 +60,20 @@ L2441.HDDCDD_Fixed_gcamusa_seg <- L2441.HDDCDD_Fixed_gcamusa %>%
                                thermal.building.service.input)) %>%
   unique(); L2441.HDDCDD_Fixed_gcamusa_seg
 
-use_data(L2441.HDDCDD_Fixed_gcamusa_seg, version=3, overwrite=T)
+use_data(L2441.HDDCDD_Fixed_gcamusa_seg, version = 3, overwrite = T)
+
+#-----------------
+# L244.HDDCDD_constdd_no_GCM
+#----------------
+
+L244.HDDCDD_constdd_no_GCM <- read.csv(paste0(gcamdata_folder,"/outputs/L244.HDDCDD_constdd_no_GCM.csv"), comment.char = "#") %>% tibble::as_tibble()
+
+L244.HDDCDD_building <- L244.HDDCDD_constdd_no_GCM %>%
+  dplyr::select(-degree.days, -year) %>%
+  unique() %>%
+  dplyr::mutate(region = gsub('-', '_', region))
+
+use_data(L244.HDDCDD_building, version = 3, overwrite = T)
 
 #-----------------
 # US52 map from Rmap saved locally to remove dependency
@@ -251,3 +275,121 @@ mapping_wrf_us49 <- mapping_wrf_us49 %>%
   dplyr::left_join(nam_df, by = 'subRegion')
 
 usethis::use_data(mapping_wrf_us49, overwrite=T)
+
+
+#----------------------
+# Map 0.5 grid to GCAM regions
+#-----------------------
+mapping_grid_region <- rmap::mapping_tethys_grid_basin_region_country %>%
+  dplyr::select(lat, lon, region = regionName, subRegion = regionName, ID = regionID)
+
+usethis::use_data(mapping_grid_region, overwrite=T)
+
+#----------------------
+# Map 0.5 grid to GCAM 32 regions with 52 US states (all including AK, HI, DC and PR)
+#-----------------------
+gridTable <- data.frame(lat = rmap::mapping_tethys_grid_basin_region_country$lat,
+                        lon = rmap::mapping_tethys_grid_basin_region_country$lon)
+
+GCAMReg32US52_grid <- metis::metis.gridByPoly(gridTable = gridTable,
+                                              shape = metis::mapGCAMReg32US52,
+                                              colName = 'subRegion')
+
+mapping_grid_region_US52 <- GCAMReg32US52_grid %>%
+  dplyr::group_by(lat, lon) %>%
+  dplyr::mutate(max = max(gridCellAreaRatio)) %>%
+  dplyr::ungroup() %>%
+  dplyr::filter(gridCellAreaRatio == max) %>%
+  dplyr::select(lat, lon, subRegion) %>%
+  dplyr::left_join(rmap::mapping_tethys_grid_basin_region_country %>%
+                     dplyr::select(lat, lon, ID = regionID, region = regionName),
+                   by = c('lat', 'lon')) %>%
+  dplyr::mutate(subRegion = dplyr::if_else(region == 'Taiwan' & subRegion == 'China',
+                                           'Taiwan', subRegion),
+                region = dplyr::if_else(subRegion %in% us_states & region != 'USA',
+                                        'USA', region),
+                ID = ifelse(region == 'USA', 1, ID))
+
+usethis::use_data(mapping_grid_region_US52, overwrite = T)
+
+#-----------------------
+# WRF example data
+#-----------------------
+f_wrf_usa_ncdf<- system.file(
+  'extras',
+  'wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc',
+  package = 'helios')
+example_wrf_usa_ncdf <- ncdf4::nc_open(f_wrf_usa_ncdf)
+usethis::use_data(example_wrf_usa_ncdf, version=3, overwrite=T)
+
+#-----------------------
+# CMIP6 example data
+#-----------------------
+f_cmip6_china_ncdf <- system.file(
+  'extras',
+  'gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc',
+  package = 'helios')
+example_cmip6_china_ncdf <- ncdf4::nc_open(f_cmip6_china_ncdf)
+usethis::use_data(example_cmip6_china_ncdf, version=3, overwrite=T)
+
+#--------------------------------
+# Population NetCDF Example Data
+#--------------------------------
+f_pop_china_ncdf <- system.file(
+  'extras',
+  'ssp1_2020_sub.nc',
+  package = 'helios')
+example_pop_china_ncdf <- ncdf4::nc_open(f_pop_china_ncdf)
+usethis::use_data(example_pop_china_ncdf, version = 3, overwrite = T)
+
+#--------------------------------
+# Population CSV Example Data
+#--------------------------------
+f_pop_usa_csv <- system.file(
+  'extras',
+  'population_conus_ssp2_2020wrf_wgs84.csv',
+  package = 'helios')
+example_pop_usa_csv <- data.table::fread(f_pop_usa_csv)
+usethis::use_data(example_pop_usa_csv, version = 3, overwrite = T)
+
+
+#--------------------------------
+# HDCD Example Data by Segment
+#--------------------------------
+
+example_hdcd_segment_usa <- data.table::fread('inst/extras/hdcd_diagnostic_2020-2100rcp45cooler_ssp3.csv') %>%
+  dplyr::rename(HDCD = heatcool) %>%
+  dplyr::mutate(HDCD = gsub('heat', 'HD', HDCD),
+                HDCD = gsub('cool', 'CD', HDCD),
+                value = dplyr::if_else(HDCD == 'HD', -value, value)) %>%
+  dplyr::filter(year %in% seq(2020, 2050, 5))
+usethis::use_data(example_hdcd_segment_usa, version = 3, overwrite = T)
+
+
+#--------------------------------
+# HDCD Example Data by Month
+#--------------------------------
+
+example_hdcd_monthly_usa <- data.table::fread('inst/extras/monthly_ncdf_2020-2100_noaa_2000-2021rcp45cooler_ssp3.csv') %>%
+  dplyr::filter(year %in% seq(2020, 2050, 5),
+                scenario %in% 'ncdf') %>%
+  dplyr::select(subRegion, year, month = monthNums, HDCD = HDDCDD, value) %>%
+  dplyr::mutate(HDCD = gsub('HDD', 'HD', HDCD),
+                HDCD = gsub('CDD', 'CD', HDCD),
+                value = dplyr::if_else(HDCD == 'HD', -value, value))
+usethis::use_data(example_hdcd_monthly_usa, version = 3, overwrite = T)
+
+
+#--------------------------------
+# Available Spatial Options
+#--------------------------------
+
+spatial_options <- tibble::tribble(
+  ~spatial, ~description,
+  'gcam_us49', '49 U.S. States including D.C.and excluding Hawaii and Alaska',
+  'gcam_regions32', 'Global 32 GCAM Regions',
+  'gcam_regions31_us52', 'Global 31 GCAM Regions (excluding USA as one region) + 52 U.S. States including D.C, Puerto Rico',
+  'gcam_countries', 'Global 240 countries',
+  'gcam_basins', 'Global 235 GCAM water basins'
+)
+usethis::use_data(spatial_options, version = 3, overwrite = T)
