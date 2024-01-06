@@ -14,7 +14,7 @@
 <!-- ------------------------>
 <!-- ------------------------>
 
-`helios` is an R package to process heating and cooling degrees for GCAM from various sources such as WRF and CMIP.
+`helios` is an R package to process heating and cooling degrees for the Global Change Analysis Model (GCAM) from various sources such as WRF and CMIP.
 
 <br>
 
@@ -87,3 +87,12 @@ brew install gdal
 <!-- ------------------------>
 
 - Khan, Z., Iyer, G., Patel, P., Kim, S., Hejazi, M., Burleyson, C. and Wise, M., 2021. Impacts of long-term temperature change and variability on electricity investments. Nature communications, 12(1), pp.1-12.
+
+
+<!-- ------------------------>
+<!-- ------------------------>
+# <a name="Contributing"></a>Contributing
+<!-- ------------------------>
+<!-- ------------------------>
+
+Whether you find a typo in the documentation, find a bug, or want to develop functionality that you think will make `helios` more robust, you are welcome to contribute! The [contributing](https://github.com/JGCRI/helios/blob/main/CONTRIBUTING.md) page will walk you through processes to contribute to `helios`.
