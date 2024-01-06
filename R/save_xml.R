@@ -2,10 +2,10 @@
 #'
 #' Heating and Cooling Degree diagnostic scripts
 #'
-#' @param hdcd_gcam Default = tibble::tibble(). hdcd output with GCAM required format
-#' @param folder Default = file.path(getwd(), 'output').
-#' @param filename Default = 'hdcd_diagnostic'.
-#' @param name_append Default = ''. Name to append to all filenames
+#' @param hdcd_gcam Default = tibble::tibble(). helios hdcd output with GCAM required format.
+#' @param folder Default = file.path(getwd(), 'output'). String for output folder path.
+#' @param filename Default = 'hdcd_diagnostic'. String for file name.
+#' @param name_append Default = ''. String for the name to append to output file name.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export

@@ -2,7 +2,7 @@
 #'
 #' list example file paths
 #'
-#' @param path Default = NULL. Path to example files
+#' @param path Default = NULL. String for path to example files
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -22,8 +22,8 @@ pkg_example <- function(path = NULL) {
 #'
 #' create file names
 #'
-#' @param str_vec Default = NULL. vector of strings within the name
-#' @param file_ext Default = NULL. extension name of the file. If NULL, will be a folder name
+#' @param str_vec Default = NULL. Vector of strings to form the name.
+#' @param file_ext Default = NULL. Extension name of the file. If NULL, will be a folder name
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -45,8 +45,8 @@ create_name <- function(str_vec = NULL, file_ext = NULL) {
 #'
 #' map shape attributes (region names) to grid
 #'
-#'@param data Default = NULL. data frame with lat and lon
-#' @param spatial Default = NULL. Options: 'states_us_49', 'gcam_regions_32'. Aggregate to different spatial boundaries.
+#'@param data Default = NULL. Data frame with lat and lon column
+#' @param spatial Default = NULL. String for spatial aggregation boundaries. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52', 'gcam_countries', 'gcam_basins'.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -156,8 +156,8 @@ find_mapping_grid <- function(data = NULL, spatial = NULL) {
 #'
 #' Find region, subregion, and ID from sf multipolygons based on lat and lon
 #'
-#' @param grid Default = NULL. data frame with lon and lat columns
-#' @param shape Default = NULL. simple feature multipolygons object with region and subRegion information
+#' @param grid Default = NULL. Data frame with lon and lat columns
+#' @param shape Default = NULL. Simple feature multipolygons object with region and subRegion information
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -211,9 +211,9 @@ mapping_grid <- function(grid = NULL, shape = NULL){
 #'
 #' match population data to the same resolution and grids with climate data
 #'
-#' @param from_df Default = NULL. data frame with lat and lon columns to provide the original grids
-#' @param to_df Default = NULL. data frame with lat and lon columns to provide the base grids to convert to
-#' @param time_periods Defualt = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).
+#' @param from_df Default = NULL. Data frame with lat and lon columns to provide the original grids.
+#' @param to_df Default = NULL. Data frame with lat and lon columns to provide the base grids to convert to.
+#' @param time_periods Defualt = NULL. Integer vector for selected time periods to process. If not specified, use the whole time periods from the data.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export

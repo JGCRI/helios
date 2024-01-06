@@ -3,10 +3,10 @@
 #' Process standard NetCDF files from ISIMIP or WRF
 #' Read Temperature
 #'
-#' @param ncdf Default = NULL. Path to ncdf file
-#' @param model Default = NULL. Options are 'cmip' (ISIMIP based), 'wrf'
-#' @param var Default = NULL. Climate variable to extract. Temperature var is 'tas' for ISIMIP; 'T2' for WRF
-#' @param time_periods Default = NULL. Vector of years selected to process.
+#' @param ncdf Default = NULL. String for path to the NetCDF file.
+#' @param model Default = NULL. String for climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.
+#' @param var Default = NULL. String for variable name to extract from NetCDF file. Temperature var is 'tas' for CMIP models; 'T2' for WRF model.
+#' @param time_periods Default = NULL. Integer vector for selected time periods to process. If not specified, use the whole time periods from the data.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
