@@ -2,8 +2,8 @@
 #'
 #' Process population file depends on the input
 #'
-#' @param file Default = NULL. Path to population file. NetCDF or CSV
-#' @param time_periods Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).
+#' @param file Default = NULL. String for path to population files (NetCDF or CSV). The CSV file need to have columns latitude, longitude, and years. For example,  [latitude, longitude, 2020, 2021, ...]
+#' @param time_periods Default = NULL. Integer vector for selected time periods to process. If not specified, use the whole time periods from the data.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export

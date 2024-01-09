@@ -2,20 +2,20 @@
 #'
 #' Heating and Cooling Degree processing for GCAM from various sources such as WRF and CMIP
 #'
-#' @param ncdf Default = NULL. Path to ncdf file.
-#' @param ncdf_var Default = NULL. Variable to extract from NetCDF file.
-#' @param model Default = NULL. Climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.
+#' @param ncdf Default = NULL. String for path to the NetCDF file.
+#' @param ncdf_var Default = NULL. String for variable name to extract from NetCDF file. Temperature var is 'tas' for CMIP models; 'T2' for WRF model.
+#' @param model Default = NULL. String for climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.
 #' @param model_timestep Default = NULL. String for time step of input climate data. Options: 'hourly' or 'daily'
-#' @param population Default = NULL. Path to population files to population weight data.
-#' @param spatial Default = NULL. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52'. Aggregate to different spatial boundaries.
-#' @param time_periods Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).
-#' @param dispatch_segment Default = FALSE. TRUE if want to output degree-hours by GCAM-USA dispatch segment. This can only be TRUE when model time_step is set to 'hourly'.
-#' @param reference_temp_F Default = 65
-#' @param folder Default = paste0(getwd(),'/output').
-#' @param diagnostics Default = F.
-#' @param xml Default = F. Whether to create GCAM XML or not.
-#' @param save Default = T. Whether to save outputs or not.
-#' @param name_append Default = ''. Name to append to all filenames
+#' @param population Default = NULL. String for path to population files (NetCDF or CSV). The CSV file need to have columns latitude, longitude, and years. For example,  [latitude, longitude, 2020, 2021, ...]
+#' @param spatial Default = NULL. String for spatial aggregation boundaries. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52', 'gcam_countries', 'gcam_basins'.
+#' @param time_periods Default = NULL. Integer vector for selected time periods to process. If not specified, set to GCAM periods seq(2020, 2100, 5).
+#' @param dispatch_segment Default = FALSE. Set to TRUE to output degree-hours by GCAM-USA dispatch segment. This can only be TRUE when model time_step is set to 'hourly'.
+#' @param reference_temp_F Default = 65. Integer for comfort temperature in degree F. 65 degree F is the comfort baseline temperature typically used by NOAA. The comfort temperature can vary by regions.
+#' @param folder Default = paste0(getwd(),'/output'). String for output folder path.
+#' @param diagnostics Default = FALSE. Set to TRUE to create diagnostic figures.
+#' @param xml Default = FALSE. Set to TRUE to generate XML outputs for GCAM.
+#' @param save Default = TRUE. Set to TRUE to save outputs.
+#' @param name_append Default = ''. String for the name to append to output file name.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -458,7 +458,7 @@ hdcd <- function(ncdf = NULL,
       if (model_timestep == 'hourly' & dispatch_segment == TRUE){
         hdcd_comb_gcam <- hdcd_comb_gcam %>%
           dplyr::bind_rows(hdcd_region_bld %>%
-                             dplyr::mutate(unit = 'degree-hours')) %>%
+                             dplyr::mutate(unit = 'Fahrenheit degree-hours')) %>%
           dplyr::ungroup() %>%
           dplyr::group_by(region, subRegion, year, segment, gcam.consumer,
                           nodeInput, building.node.input,
@@ -472,7 +472,7 @@ hdcd <- function(ncdf = NULL,
                  (model_timestep == 'hourly' & dispatch_segment == FALSE)){
         hdcd_comb_gcam <- hdcd_comb_gcam %>%
           dplyr::bind_rows(hdcd_region_bld %>%
-                             dplyr::mutate(unit = 'degree-days')) %>%
+                             dplyr::mutate(unit = 'Fahrenheit degree-days')) %>%
           dplyr::ungroup() %>%
           dplyr::group_by(region, subRegion, year, gcam.consumer,
                           nodeInput, building.node.input,
@@ -513,7 +513,7 @@ hdcd <- function(ncdf = NULL,
 
       hdcd_comb_monthly <- hdcd_comb_monthly %>%
         dplyr::bind_rows(hdcd_region_monthly %>%
-                           dplyr::mutate(unit = 'degree-days')) %>%
+                           dplyr::mutate(unit = 'Fahrenheit degree-days')) %>%
         dplyr::ungroup() %>%
         dplyr::group_by(region, subRegion, year, month, HDCD, unit) %>%
         dplyr::summarize(value = sum(value, na.rm = T)) %>%
@@ -550,7 +550,7 @@ hdcd <- function(ncdf = NULL,
 
       hdcd_comb_annual <- hdcd_comb_annual %>%
         dplyr::bind_rows(hdcd_region_annual %>%
-                           dplyr::mutate(unit = 'degree-days')) %>%
+                           dplyr::mutate(unit = 'Fahrenheit degree-days')) %>%
         dplyr::ungroup() %>%
         dplyr::group_by(region, subRegion, year, HDCD, unit) %>%
         dplyr::summarize(value = sum(value, na.rm = T)) %>%

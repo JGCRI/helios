@@ -2,11 +2,11 @@
 #'
 #' Heating and Cooling Degree diagnostic scripts
 #'
-#' @param hdcd_segment Default = tibble::tibble(). hdcd output by segment
-#' @param hdcd_monthly Default = tibble::tibble(). hdcd output by month
-#' @param min_diagnostic_months Default = 6. Months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.
-#' @param folder Default = paste0(getwd()).
-#' @param name_append Default = ''. Name to append to all filenames
+#' @param hdcd_segment Default = tibble::tibble(). helios hdcd output by segment.
+#' @param hdcd_monthly Default = tibble::tibble(). helios hdcd output by month.
+#' @param min_diagnostic_months Default = 6. Integer for the number of months. The number of months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.
+#' @param folder Default = paste0(getwd()). String for the output folder path.
+#' @param name_append Default = ''. String for the name to append to output file name.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @importFrom grDevices colorRampPalette
