@@ -28,7 +28,7 @@ read_ncdf <- function(ncdf = NULL,
       var_names <- attributes(ncdf_in$var)$names
 
       # get unit
-      var_unit <- ncdf4::ncatt_get(ncdf_in, var_names)$unit[1]
+      var_unit <- ncdf4::ncatt_get(ncdf_in, var_names)$unit
 
       dims <- c(ncdf_in$var[[var]]$dim[[1]]$name,
                 ncdf_in$var[[var]]$dim[[2]]$name,
@@ -121,7 +121,7 @@ read_ncdf <- function(ncdf = NULL,
       var_names <- attributes(ncdf_in$var)$names
 
       # get unit
-      var_unit <- ncdf4::ncatt_get(ncdf_in, var_names)$unit[1]
+      var_unit <- ncdf4::ncatt_get(ncdf_in, var_names)$unit
 
       dims <- c(ncdf_in$var[[var]]$dim[[1]]$name,
                 ncdf_in$var[[var]]$dim[[2]]$name,
