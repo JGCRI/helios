@@ -51,7 +51,7 @@ hdcd_wrf <- helios::hdcd(
 )
 
 
-helios::save_xml(hdcd_gcam = hdcd_wrf$hdcd_comb,
+helios::save_xml(hdcd_gcam = hdcd_wrf$hdcd_comb_gcam,
                  folder = file.path(getwd(), 'output'))
 
 # # Test when spatial is a data frame with subRegions
@@ -117,7 +117,7 @@ hdcd_cmip <- helios::hdcd(
   save = T
 )
 
-helios::save_xml(hdcd_gcam = hdcd_cmip$hdcd_comb,
+helios::save_xml(hdcd_gcam = hdcd_cmip$hdcd_comb_gcam,
                  folder = file.path(getwd(), 'output'))
 
 # -----------------------------------------------------------
