@@ -27,9 +27,6 @@ read_ncdf <- function(ncdf = NULL,
       ncdf_in <- ncdf4::nc_open(ncdf)
       var_names <- attributes(ncdf_in$var)$names
 
-      # get unit
-      var_unit <- ncdf4::ncatt_get(ncdf_in, var_names)$unit
-
       dims <- c(ncdf_in$var[[var]]$dim[[1]]$name,
                 ncdf_in$var[[var]]$dim[[2]]$name,
                 ncdf_in$var[[var]]$dim[[3]]$name)
@@ -38,6 +35,9 @@ read_ncdf <- function(ncdf = NULL,
       if(!any(var %in% var_names)){
         stop('Climate variable name is not valid. Please provide valid ncdf_var name.')
       }
+
+      # get unit
+      var_unit <- ncdf4::ncatt_get(ncdf_in, var)$unit
 
       # get the data time series
       ncdf_brick <- raster::brick(ncdf, varname = var, ncdf = TRUE,
@@ -120,9 +120,6 @@ read_ncdf <- function(ncdf = NULL,
       ncdf_in <- ncdf4::nc_open(ncdf)
       var_names <- attributes(ncdf_in$var)$names
 
-      # get unit
-      var_unit <- ncdf4::ncatt_get(ncdf_in, var_names)$unit
-
       dims <- c(ncdf_in$var[[var]]$dim[[1]]$name,
                 ncdf_in$var[[var]]$dim[[2]]$name,
                 ncdf_in$var[[var]]$dim[[3]]$name)
@@ -131,6 +128,9 @@ read_ncdf <- function(ncdf = NULL,
       if(!any(var %in% var_names)){
         stop('Climate variable name is not valid. Please provide valid ncdf_var name.')
       }
+
+      # get unit
+      var_unit <- ncdf4::ncatt_get(ncdf_in, var)$unit
 
       ncdf_brick <- raster::brick(ncdf, varname = var, ncdf = TRUE,
                                   dims = dims_order, stopIfNotEqualSpaced = F)
