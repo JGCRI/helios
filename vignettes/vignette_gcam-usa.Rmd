@@ -33,7 +33,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 | Input Format | NetCDF File | CSV File |
 | Spatial Resolution | WRF Resolution: 12 x 12 km | WRF Resolution: 12 x 12 km |
 | Temporal Resolution | Hourly | Annual |
-| Required Variable | Temperature T2 (K) | Population (Capita) |
+| Required Variable | Temperature T2 (K) | Population (thousand capita) |
 | Cluster Location | (NERSC) /global/cfs/cdirs/m2702/gsharing/tgw-wrf-conus | (NERSC) /global/cfs/cdirs/m2702/gcamusa/hddcdd/pop_1km |
 | Full Dataset Download | N/A | (Pre-processed) https://zenodo.org/record/3756179#.Y5fLK3bMKUl |
 | Example Dataset | `helios::example_wrf_usa_ncdf` | `helios::example_pop_usa_csv` |

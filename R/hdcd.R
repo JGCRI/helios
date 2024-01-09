@@ -458,7 +458,7 @@ hdcd <- function(ncdf = NULL,
       if (model_timestep == 'hourly' & dispatch_segment == TRUE){
         hdcd_comb_gcam <- hdcd_comb_gcam %>%
           dplyr::bind_rows(hdcd_region_bld %>%
-                             dplyr::mutate(unit = 'degree-hours')) %>%
+                             dplyr::mutate(unit = 'Fahrenheit degree-hours')) %>%
           dplyr::ungroup() %>%
           dplyr::group_by(region, subRegion, year, segment, gcam.consumer,
                           nodeInput, building.node.input,
@@ -472,7 +472,7 @@ hdcd <- function(ncdf = NULL,
                  (model_timestep == 'hourly' & dispatch_segment == FALSE)){
         hdcd_comb_gcam <- hdcd_comb_gcam %>%
           dplyr::bind_rows(hdcd_region_bld %>%
-                             dplyr::mutate(unit = 'degree-days')) %>%
+                             dplyr::mutate(unit = 'Fahrenheit degree-days')) %>%
           dplyr::ungroup() %>%
           dplyr::group_by(region, subRegion, year, gcam.consumer,
                           nodeInput, building.node.input,
@@ -513,7 +513,7 @@ hdcd <- function(ncdf = NULL,
 
       hdcd_comb_monthly <- hdcd_comb_monthly %>%
         dplyr::bind_rows(hdcd_region_monthly %>%
-                           dplyr::mutate(unit = 'degree-days')) %>%
+                           dplyr::mutate(unit = 'Fahrenheit degree-days')) %>%
         dplyr::ungroup() %>%
         dplyr::group_by(region, subRegion, year, month, HDCD, unit) %>%
         dplyr::summarize(value = sum(value, na.rm = T)) %>%
@@ -550,7 +550,7 @@ hdcd <- function(ncdf = NULL,
 
       hdcd_comb_annual <- hdcd_comb_annual %>%
         dplyr::bind_rows(hdcd_region_annual %>%
-                           dplyr::mutate(unit = 'degree-days')) %>%
+                           dplyr::mutate(unit = 'Fahrenheit degree-days')) %>%
         dplyr::ungroup() %>%
         dplyr::group_by(region, subRegion, year, HDCD, unit) %>%
         dplyr::summarize(value = sum(value, na.rm = T)) %>%

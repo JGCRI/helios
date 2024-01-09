@@ -30,7 +30,7 @@ In this tutorial, we introduce how to use `helios` to calculate heating degree-d
 | Input Format | NetCDF File | NetCDF File |
 | Spatial Resolution | 0.5 degree | No Limit |
 | Temporal Resolution | Daily | Annual |
-| Required Variable | Temperature `tas` (K) | Population (Capita) |
+| Required Variable | Temperature `tas` (K) | Population (thousand capita) |
 | Full Dataset Download | [ISIMIP](https://data.isimip.org/) | [Jones and O'Neill, 2020](https://sedac.ciesin.columbia.edu/data/set/popdynamics-1-8th-pop-base-year-projection-ssp-2000-2100-rev01) |
 | Example Dataset | `helios::example_wrf_china_ncdf` | `helios::example_pop_china_ncdf` |
 

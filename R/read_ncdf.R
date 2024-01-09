@@ -27,6 +27,9 @@ read_ncdf <- function(ncdf = NULL,
       ncdf_in <- ncdf4::nc_open(ncdf)
       var_names <- attributes(ncdf_in$var)$names
 
+      # get unit
+      var_unit <- ncdf4::ncatt_get(ncdf_in, var_names)$unit[1]
+
       dims <- c(ncdf_in$var[[var]]$dim[[1]]$name,
                 ncdf_in$var[[var]]$dim[[2]]$name,
                 ncdf_in$var[[var]]$dim[[3]]$name)
@@ -101,9 +104,13 @@ read_ncdf <- function(ncdf = NULL,
         raster::as.data.frame(raster::extract(x = ncdf_brick, y = ncdf_dim,  sp = T))) %>%
         tibble::as_tibble()
 
+      # update names and set units
       ncdf_grid <- ncdf_brick_df %>%
         dplyr::rename(setNames(c(name_brick, 'lat', 'lon'),
                                c(ncdf_times, 'lat', 'lon')))
+
+      attr(ncdf_grid, 'metadata') <- paste0('unit: ', var_unit)
+
 
     } # end of isimip netcdf processing
 
@@ -112,6 +119,9 @@ read_ncdf <- function(ncdf = NULL,
 
       ncdf_in <- ncdf4::nc_open(ncdf)
       var_names <- attributes(ncdf_in$var)$names
+
+      # get unit
+      var_unit <- ncdf4::ncatt_get(ncdf_in, var_names)$unit[1]
 
       dims <- c(ncdf_in$var[[var]]$dim[[1]]$name,
                 ncdf_in$var[[var]]$dim[[2]]$name,
@@ -173,9 +183,12 @@ read_ncdf <- function(ncdf = NULL,
         dplyr::select(-x, -y) %>%
         dplyr::mutate(across(c(lat, lon), ~ round(., 5)))
 
+      # update names and set units
       ncdf_grid <- ncdf_brick_df %>%
         dplyr::rename(setNames(c(name_brick, 'lat', 'lon'),
                                c(ncdf_times, 'lat', 'lon')))
+
+      attr(ncdf_grid, 'metadata') <- paste0('unit: ', var_unit)
 
     }# end of wrf netcdf processing
 
