@@ -93,19 +93,19 @@ Read Temperature</p>
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ncdf</dt>
-<dd><p>Default = NULL. Path to ncdf file</p></dd>
+<dd><p>Default = NULL. String for path to the NetCDF file.</p></dd>
 
 
 <dt>model</dt>
-<dd><p>Default = NULL. Options are 'cmip' (ISIMIP based), 'wrf'</p></dd>
+<dd><p>Default = NULL. String for climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.</p></dd>
 
 
 <dt>var</dt>
-<dd><p>Default = NULL. Climate variable to extract. Temperature var is 'tas' for ISIMIP; 'T2' for WRF</p></dd>
+<dd><p>Default = NULL. String for variable name to extract from NetCDF file. Temperature var is 'tas' for CMIP models; 'T2' for WRF model.</p></dd>
 
 
 <dt>time_periods</dt>
-<dd><p>Default = NULL. Vector of years selected to process.</p></dd>
+<dd><p>Default = NULL. Integer vector for selected time periods to process. If not specified, use the whole time periods from the data.</p></dd>
 
 </dl></div>
 

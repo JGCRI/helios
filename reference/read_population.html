@@ -91,11 +91,11 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>file</dt>
-<dd><p>Default = NULL. Path to population file. NetCDF or CSV</p></dd>
+<dd><p>Default = NULL. String for path to population files (NetCDF or CSV). The CSV file need to have columns latitude, longitude, and years. For example,  [latitude, longitude, 2020, 2021, ...]</p></dd>
 
 
 <dt>time_periods</dt>
-<dd><p>Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).</p></dd>
+<dd><p>Default = NULL. Integer vector for selected time periods to process. If not specified, use the whole time periods from the data.</p></dd>
 
 </dl></div>
 
