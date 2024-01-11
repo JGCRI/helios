@@ -7,9 +7,9 @@
 find_mapping_grid(data = NULL, spatial = NULL)
 }
 \arguments{
-\item{data}{Default = NULL. data frame with lat and lon}
+\item{data}{Default = NULL. Data frame with lat and lon column}
 
-\item{spatial}{Default = NULL. Options: 'states_us_49', 'gcam_regions_32'. Aggregate to different spatial boundaries.}
+\item{spatial}{Default = NULL. String for spatial aggregation boundaries. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52', 'gcam_countries', 'gcam_basins'.}
 }
 \description{
 map shape attributes (region names) to grid

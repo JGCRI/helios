@@ -7,11 +7,11 @@
 match_grids(from_df = NULL, to_df = NULL, time_periods = NULL)
 }
 \arguments{
-\item{from_df}{Default = NULL. data frame with lat and lon columns to provide the original grids}
+\item{from_df}{Default = NULL. Data frame with lat and lon columns to provide the original grids.}
 
-\item{to_df}{Default = NULL. data frame with lat and lon columns to provide the base grids to convert to}
+\item{to_df}{Default = NULL. Data frame with lat and lon columns to provide the base grids to convert to.}
 
-\item{time_periods}{Defualt = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).}
+\item{time_periods}{Defualt = NULL. Integer vector for selected time periods to process. If not specified, use the whole time periods from the data.}
 }
 \description{
 match population data to the same resolution and grids with climate data

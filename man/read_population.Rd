@@ -7,9 +7,9 @@
 read_population(file = NULL, time_periods = NULL)
 }
 \arguments{
-\item{file}{Default = NULL. Path to population file. NetCDF or CSV}
+\item{file}{Default = NULL. String for path to population files (NetCDF or CSV). The CSV file need to have columns latitude, longitude, and years. For example,  [latitude, longitude, 2020, 2021, ...]}
 
-\item{time_periods}{Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).}
+\item{time_periods}{Default = NULL. Integer vector for selected time periods to process. If not specified, use the whole time periods from the data.}
 }
 \description{
 Process population file depends on the input

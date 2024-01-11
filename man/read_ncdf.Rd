@@ -7,13 +7,13 @@
 read_ncdf(ncdf = NULL, model = NULL, var = NULL, time_periods = NULL)
 }
 \arguments{
-\item{ncdf}{Default = NULL. Path to ncdf file}
+\item{ncdf}{Default = NULL. String for path to the NetCDF file.}
 
-\item{model}{Default = NULL. Options are 'cmip' (ISIMIP based), 'wrf'}
+\item{model}{Default = NULL. String for climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.}
 
-\item{var}{Default = NULL. Climate variable to extract. Temperature var is 'tas' for ISIMIP; 'T2' for WRF}
+\item{var}{Default = NULL. String for variable name to extract from NetCDF file. Temperature var is 'tas' for CMIP models; 'T2' for WRF model.}
 
-\item{time_periods}{Default = NULL. Vector of years selected to process.}
+\item{time_periods}{Default = NULL. Integer vector for selected time periods to process. If not specified, use the whole time periods from the data.}
 }
 \description{
 Process standard NetCDF files from ISIMIP or WRF
