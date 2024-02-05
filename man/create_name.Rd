@@ -7,9 +7,9 @@
 create_name(str_vec = NULL, file_ext = NULL)
 }
 \arguments{
-\item{str_vec}{Default = NULL. vector of strings within the name}
+\item{str_vec}{Default = NULL. Vector of strings to form the name.}
 
-\item{file_ext}{Default = NULL. extension name of the file. If NULL, will be a folder name}
+\item{file_ext}{Default = NULL. Extension name of the file. If NULL, will be a folder name}
 }
 \description{
 create file names

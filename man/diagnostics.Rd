@@ -13,15 +13,15 @@ diagnostics(
 )
 }
 \arguments{
-\item{hdcd_segment}{Default = tibble::tibble(). hdcd output by segment}
+\item{hdcd_segment}{Default = tibble::tibble(). helios hdcd output by segment.}
 
-\item{hdcd_monthly}{Default = tibble::tibble(). hdcd output by month}
+\item{hdcd_monthly}{Default = tibble::tibble(). helios hdcd output by month.}
 
-\item{min_diagnostic_months}{Default = 6. Months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.}
+\item{min_diagnostic_months}{Default = 6. Integer for the number of months. The number of months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.}
 
-\item{folder}{Default = paste0(getwd()).}
+\item{folder}{Default = paste0(getwd()). String for the output folder path.}
 
-\item{name_append}{Default = ''. Name to append to all filenames}
+\item{name_append}{Default = ''. String for the name to append to output file name.}
 }
 \description{
 Heating and Cooling Degree diagnostic scripts

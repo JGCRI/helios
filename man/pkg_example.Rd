@@ -7,7 +7,7 @@
 pkg_example(path = NULL)
 }
 \arguments{
-\item{path}{Default = NULL. Path to example files}
+\item{path}{Default = NULL. String for path to example files}
 }
 \description{
 list example file paths

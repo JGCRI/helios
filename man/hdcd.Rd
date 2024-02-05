@@ -22,33 +22,33 @@ hdcd(
 )
 }
 \arguments{
-\item{ncdf}{Default = NULL. Path to ncdf file.}
+\item{ncdf}{Default = NULL. String for path to the NetCDF file.}
 
-\item{ncdf_var}{Default = NULL. Variable to extract from NetCDF file.}
+\item{ncdf_var}{Default = NULL. String for variable name to extract from NetCDF file. Temperature var is 'tas' for CMIP models; 'T2' for WRF model.}
 
-\item{model}{Default = NULL. Climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.}
+\item{model}{Default = NULL. String for climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.}
 
 \item{model_timestep}{Default = NULL. String for time step of input climate data. Options: 'hourly' or 'daily'}
 
-\item{population}{Default = NULL. Path to population files to population weight data.}
+\item{population}{Default = NULL. String for path to population files (NetCDF or CSV). The CSV file need to have columns latitude, longitude, and years. For example,  [latitude, longitude, 2020, 2021, ...]}
 
-\item{spatial}{Default = NULL. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52'. Aggregate to different spatial boundaries.}
+\item{spatial}{Default = NULL. String for spatial aggregation boundaries. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52', 'gcam_countries', 'gcam_basins'.}
 
-\item{time_periods}{Default = NULL. integer vector. If not specified, set to GCAM periods seq(2020, 2100, 5).}
+\item{time_periods}{Default = NULL. Integer vector for selected time periods to process. If not specified, set to GCAM periods seq(2020, 2100, 5).}
 
-\item{dispatch_segment}{Default = FALSE. TRUE if want to output degree-hours by GCAM-USA dispatch segment. This can only be TRUE when model time_step is set to 'hourly'.}
+\item{dispatch_segment}{Default = FALSE. Set to TRUE to output degree-hours by GCAM-USA dispatch segment. This can only be TRUE when model time_step is set to 'hourly'.}
 
-\item{reference_temp_F}{Default = 65}
+\item{reference_temp_F}{Default = 65. Integer for comfort temperature in degree F. 65 degree F is the comfort baseline temperature typically used by NOAA. The comfort temperature can vary by regions.}
 
-\item{folder}{Default = paste0(getwd(),'/output').}
+\item{folder}{Default = paste0(getwd(),'/output'). String for output folder path.}
 
-\item{diagnostics}{Default = F.}
+\item{diagnostics}{Default = FALSE. Set to TRUE to create diagnostic figures.}
 
-\item{xml}{Default = F. Whether to create GCAM XML or not.}
+\item{xml}{Default = FALSE. Set to TRUE to generate XML outputs for GCAM.}
 
-\item{name_append}{Default = ''. Name to append to all filenames}
+\item{name_append}{Default = ''. String for the name to append to output file name.}
 
-\item{save}{Default = T. Whether to save outputs or not.}
+\item{save}{Default = TRUE. Set to TRUE to save outputs.}
 }
 \description{
 Heating and Cooling Degree processing for GCAM from various sources such as WRF and CMIP

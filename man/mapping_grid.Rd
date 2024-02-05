@@ -7,9 +7,9 @@
 mapping_grid(grid = NULL, shape = NULL)
 }
 \arguments{
-\item{grid}{Default = NULL. data frame with lon and lat columns}
+\item{grid}{Default = NULL. Data frame with lon and lat columns}
 
-\item{shape}{Default = NULL. simple feature multipolygons object with region and subRegion information}
+\item{shape}{Default = NULL. Simple feature multipolygons object with region and subRegion information}
 }
 \description{
 Find region, subregion, and ID from sf multipolygons based on lat and lon

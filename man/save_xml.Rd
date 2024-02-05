@@ -12,13 +12,13 @@ save_xml(
 )
 }
 \arguments{
-\item{hdcd_gcam}{Default = tibble::tibble(). hdcd output with GCAM required format}
+\item{hdcd_gcam}{Default = tibble::tibble(). helios hdcd output with GCAM required format.}
 
-\item{folder}{Default = file.path(getwd(), 'output').}
+\item{folder}{Default = file.path(getwd(), 'output'). String for output folder path.}
 
-\item{filename}{Default = 'hdcd_diagnostic'.}
+\item{filename}{Default = 'hdcd_diagnostic'. String for file name.}
 
-\item{name_append}{Default = ''. Name to append to all filenames}
+\item{name_append}{Default = ''. String for the name to append to output file name.}
 }
 \description{
 Heating and Cooling Degree diagnostic scripts
