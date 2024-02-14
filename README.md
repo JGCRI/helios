@@ -4,7 +4,7 @@
 [![docs](https://github.com/JGCRI/helios/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/docs.yaml)
 [![codecov](https://codecov.io/gh/JGCRI/helios/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/helios) 
 [![Github All Releases](https://img.shields.io/github/downloads/JGCRI/helios/total.svg)]()
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8170311.svg)](https://doi.org/10.5281/zenodo.8170311)
+[![DOI](https://zenodo.org/badge/429143355.svg)](https://zenodo.org/doi/10.5281/zenodo.8170310)
 <!-- badges: end -->
 
 
