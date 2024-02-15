@@ -18,7 +18,8 @@ hdcd(
   diagnostics = F,
   xml = F,
   name_append = "",
-  save = T
+  save = T,
+  im3_analysis = T
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ hdcd(
 \item{name_append}{Default = ''. String for the name to append to output file name.}
 
 \item{save}{Default = TRUE. Set to TRUE to save outputs.}
+
+\item{im3_analysis}{Default = T. Output annual HDCD at grid region scale for trend-representative year analysis}
 }
 \description{
 Heating and Cooling Degree processing for GCAM from various sources such as WRF and CMIP

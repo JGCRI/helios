@@ -224,6 +224,20 @@
 #' }
 "spatial_options"
 
+#--------------------------------
+# State to Grid Region Mapping
+#--------------------------------
+#' mapping_states_gridregion
+#'
+#' @source gcamdata/inst/extdata/gcam-usa/states_subregions.csv
+#' @format tibble::tribble
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  mapping_states_gridregion <- helios::mapping_states_gridregion
+#' }
+"mapping_states_gridregion"
+
 
 #.................................
 # Pre-processed Population Files

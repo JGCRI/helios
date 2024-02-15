@@ -143,11 +143,12 @@ hdcd_wrf_all <- helios::hdcd(
   time_periods = 2020,
   dispatch_segment = T,
   reference_temp_F = 65,
-  folder = file.path(getwd(), 'output'),
+  folder = file.path(getwd(), 'output_im3_test'),
   diagnostics = F,
   xml = F,
   name_append = '',
-  save = F
+  save = T,
+  im3_analysis = T
 )
 
 helios::diagnostics(

@@ -17,7 +17,7 @@ library(usethis)
 # Initialize
 #-----------------
 
-gcamdata_folder = "C:/Z/models/GCAMVersions/gcam-usa-im3/input/gcamdata"
+gcamdata_folder <- "C:/WorkSpace/GCAM-Models/gcam-usa-im3/input/gcamdata"
 
 #-----------------
 # Segment Map UTC for WRF data
@@ -393,3 +393,14 @@ spatial_options <- tibble::tribble(
   'gcam_basins', 'Global 235 GCAM water basins'
 )
 usethis::use_data(spatial_options, version = 3, overwrite = T)
+
+
+#--------------------------------
+# State to Grid Region Mapping
+#--------------------------------
+# read state to grid region mapping from gcamdata
+mapping_states_gridregion <- data.table::fread(
+  file.path(gcamdata_folder, 'inst/extdata/gcam-usa/states_subregions.csv')) %>%
+  dplyr::select(subRegion = state, grid_region)
+
+usethis::use_data(mapping_states_gridregion, version = 3, overwrite = T)

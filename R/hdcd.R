@@ -16,6 +16,7 @@
 #' @param xml Default = FALSE. Set to TRUE to generate XML outputs for GCAM.
 #' @param save Default = TRUE. Set to TRUE to save outputs.
 #' @param name_append Default = ''. String for the name to append to output file name.
+#' @param im3_analysis Default = T. Output annual HDCD at grid region scale for trend-representative year analysis
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -33,7 +34,8 @@ hdcd <- function(ncdf = NULL,
                  diagnostics = F,
                  xml = F,
                  name_append = '',
-                 save = T) {
+                 save = T,
+                 im3_analysis = T) {
 
   print('Starting function process_hdcd...')
 
@@ -65,7 +67,15 @@ hdcd <- function(ncdf = NULL,
     hdcd_comb_annual <- tibble::tibble()
     hdcd_region_bld <- tibble::tibble()
     hdcd_region_monthly <- tibble::tibble()
-    hdcd_region_annual<- tibble::tibble()
+    hdcd_region_annual <- tibble::tibble()
+
+    # for IM3 grid region analysis
+    if(im3_analysis){
+      hdcd_comb_gridregion_monthly <- tibble::tibble()
+      hdcd_comb_gridregion_annual <- tibble::tibble()
+    }
+
+
 
     # check population input format
     if (any(grepl('tbl_df|tbl|data.frame', class(population)))) {
@@ -208,6 +218,19 @@ hdcd <- function(ncdf = NULL,
               dplyr::ungroup() %>%
               dplyr::mutate(pop_weight = value / subRegion_total_value)
 
+            # for IM3 grid region analysis
+            if(im3_analysis){
+              population_j_weighted_gridregion <- population_j_grid %>%
+                dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
+                dplyr::mutate(subRegion = grid_region,
+                              ID = grid_region) %>%
+                dplyr::select(-grid_region) %>%
+                dplyr::group_by(region, ID, subRegion, year) %>%
+                dplyr::mutate(subRegion_total_value = sum(value, na.rm = T)) %>%
+                dplyr::ungroup() %>%
+                dplyr::mutate(pop_weight = value / subRegion_total_value)
+            }
+
             print('Completed population weighting.')
 
             #......................
@@ -222,6 +245,23 @@ hdcd <- function(ncdf = NULL,
                                by = c('ID', 'region', 'subRegion', 'lat', 'lon', 'year')) %>%
               dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
                             value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
+
+            # for IM3 grid region analysis
+            if(im3_analysis){
+
+              ncdf_pivot_gridregion <- ncdf_pivot %>%
+                dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
+                dplyr::mutate(subRegion = grid_region,
+                              ID = grid_region) %>%
+                dplyr::select(-grid_region)
+
+              ncdf_hdcd_pop_weighted_gridregion <- ncdf_pivot_gridregion %>%
+                dplyr::left_join(population_j_weighted_gridregion %>%
+                                   dplyr::select(-value, -subRegion_total_value),
+                                 by = c('ID', 'region', 'subRegion', 'lat', 'lon', 'year')) %>%
+                dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
+                              value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
+            }
 
           } else {
             print(paste0('Population data years: ', paste(names(population_j_grid)[!grepl('RID|lat|lon', names(population_j_grid))], collapse = ',')))
@@ -270,7 +310,7 @@ hdcd <- function(ncdf = NULL,
                             day = dplyr::if_else(day < 10, paste0('0', day), paste0(day)),
                             hour = dplyr::if_else(hour < 10, paste0('0', hour), paste0(hour)) )
 
-            # hdcd segments
+            # hdcd segments degree hours
             hdcd_region_segments <- hdcd_region %>%
               dplyr::left_join(temporal_subset, by = c('datetime', 'year')) %>%
               dplyr::left_join(helios::segment_map_utc,
@@ -278,7 +318,7 @@ hdcd <- function(ncdf = NULL,
               dplyr::group_by(region, subRegion, year, segment, HDCD) %>%
               dplyr::summarise(value = sum(value, na.rm = T))
 
-            # hdcd monthly
+            # hdcd monthly degree days
             hdcd_region_monthly <- hdcd_region %>%
               dplyr::left_join(temporal_subset, by = c('datetime', 'year')) %>%
               dplyr::group_by(region, subRegion, year, month, day) %>%
@@ -290,7 +330,7 @@ hdcd <- function(ncdf = NULL,
               dplyr::ungroup() %>%
               tidyr::gather(key = 'HDCD', value = 'value', HD, CD)
 
-            # hdcd annual
+            # hdcd annual degree days
             hdcd_region_annual <- hdcd_region %>%
               dplyr::left_join(temporal_subset, by = c('datetime', 'year')) %>%
               dplyr::group_by(region, subRegion, year, month, day) %>%
@@ -301,6 +341,73 @@ hdcd <- function(ncdf = NULL,
                                CD = sum(value[value > 0])) %>%
               dplyr::ungroup() %>%
               tidyr::gather(key = 'HDCD', value = 'value', HD, CD)
+
+
+            # for IM3 grid region analysis
+            if(im3_analysis){
+
+              # Equivalent to step 6: Aggregate to regions
+              hdcd_gridregion <- ncdf_hdcd_pop_weighted_gridregion %>%
+                dplyr::filter(!is.na(subRegion)) %>%
+                dplyr::select(-lat, -lon) %>%
+                dplyr::group_by(region, subRegion, ID, year, datetime) %>%
+                dplyr::summarise(value = dplyr::if_else(any(is.na(pop_weight)), mean(value), sum(value))) %>%
+                dplyr::ungroup()
+
+              # Assign HDCD categories
+              hdcd_gridregion <- hdcd_gridregion %>%
+                dplyr::mutate(HDCD = dplyr::if_else(value < 0, 'HD', 'CD')) %>%
+                dplyr::filter(value != 0)
+
+              #......................
+              # Step 6a: Aggregate over Segments, monthly and annual
+              #......................
+              #
+              # temporal_subset <- data.frame(ncdf_times = ncdf_times[index_subset],
+              #                               x = paste0('X', index_subset)) %>%
+              #   dplyr::mutate(datetime = as.POSIXct(ncdf_times, format = '%Y-%m-%d_%H:%M:%S', tz = 'UTC')) %>%
+              #   dplyr::mutate(year = lubridate::year(datetime),
+              #                 month = lubridate::month(datetime),
+              #                 day = lubridate::day(datetime),
+              #                 hour = lubridate::hour(datetime),
+              #                 timezone = lubridate::tz(datetime)) %>%
+              #   dplyr::mutate(month = dplyr::if_else(month < 10, paste0('0', month), paste0(month)),
+              #                 day = dplyr::if_else(day < 10, paste0('0', day), paste0(day)),
+              #                 hour = dplyr::if_else(hour < 10, paste0('0', hour), paste0(hour)) )
+              #
+              # # hdcd segments
+              # hdcd_region_segments <- hdcd_region %>%
+              #   dplyr::left_join(temporal_subset, by = c('datetime', 'year')) %>%
+              #   dplyr::left_join(helios::segment_map_utc,
+              #                    by = c('subRegion', 'month', 'day', 'hour')) %>%
+              #   dplyr::group_by(region, subRegion, year, segment, HDCD) %>%
+              #   dplyr::summarise(value = sum(value, na.rm = T))
+
+              # hdcd monthly **degree hours**
+              hdcd_gridregion_monthly <- hdcd_gridregion %>%
+                dplyr::left_join(temporal_subset, by = c('datetime', 'year')) %>%
+                # dplyr::group_by(region, subRegion, year, month, day) %>%
+                # dplyr::summarise(value = (max(value) + min(value)) / 2) %>%
+                # dplyr::ungroup() %>%
+                dplyr::group_by(region, subRegion, year, month) %>%
+                dplyr::summarise(HD = sum(value[value < 0]),
+                                 CD = sum(value[value > 0])) %>%
+                dplyr::ungroup() %>%
+                tidyr::gather(key = 'HDCD', value = 'value', HD, CD)
+
+              # hdcd annual **degree hours**
+              hdcd_gridregion_annual <- hdcd_gridregion %>%
+                dplyr::left_join(temporal_subset, by = c('datetime', 'year')) %>%
+                # dplyr::group_by(region, subRegion, year, month, day) %>%
+                # dplyr::summarise(value = (max(value) + min(value)) / 2) %>%
+                # dplyr::ungroup() %>%
+                dplyr::group_by(region, subRegion, year) %>%
+                dplyr::summarise(HD = sum(value[value < 0]),
+                                 CD = sum(value[value > 0])) %>%
+                dplyr::ungroup() %>%
+                tidyr::gather(key = 'HDCD', value = 'value', HD, CD)
+
+            }
 
 
             #......................
@@ -468,6 +575,9 @@ hdcd <- function(ncdf = NULL,
           dplyr::filter(!is.na(subRegion),
                         !is.na(year),
                         !is.na(segment))
+
+        hdcd_name <- 'hdhcdh'
+
       } else if ((model_timestep == 'daily' & dispatch_segment == FALSE) |
                  (model_timestep == 'hourly' & dispatch_segment == FALSE)){
         hdcd_comb_gcam <- hdcd_comb_gcam %>%
@@ -481,29 +591,30 @@ hdcd <- function(ncdf = NULL,
           dplyr::ungroup() %>%
           dplyr::filter(!is.na(subRegion),
                         !is.na(year))
+
+        hdcd_name <- 'hddcdd'
+
       } else {
         stop('Output by dispatch segment requires hourly climate data.')
       }
 
+      if(i == length(ncdf)){
 
-      year_min_i <- min(hdcd_comb_gcam$year, na.rm = T)
-      year_max_i <- max(hdcd_comb_gcam$year, na.rm = T)
+        year_min_i <- min(hdcd_comb_gcam$year, na.rm = T)
+        year_max_i <- max(hdcd_comb_gcam$year, na.rm = T)
 
-      if(i < length(ncdf)){
         filename_i <- file.path(
           folder,
-          helios::create_name(c('hdcd', model, 'intermediate_gcam', name_append), 'csv'))
-        } else {
-          filename_i <- file.path(
-            folder,
-            helios::create_name(c('hdcd', model, year_min_i, year_max_i, 'gcam', name_append), 'csv'))
-        }
+          helios::create_name(c(hdcd_name, model, year_min_i, year_max_i, 'gcam',
+                                gsub('_', '-', gsub('gcam_', '', spatial)), name_append), 'csv'))
 
-      if(save){
-        data.table::fwrite(hdcd_comb_gcam, file = filename_i)
-        print(paste0('File saved as : ', filename_i))
+        if(save){
+          data.table::fwrite(hdcd_comb_gcam, file = filename_i)
+          print(paste0('File saved as : ', filename_i))
         }
       }
+
+    }
 
     #......................
     # Step 9b: Save monthly as combined csv files
@@ -522,22 +633,53 @@ hdcd <- function(ncdf = NULL,
                       !is.na(year),
                       !is.na(month))
 
-      year_min_i <- min(hdcd_comb_monthly$year, na.rm = T)
-      year_max_i <- max(hdcd_comb_monthly$year, na.rm = T)
+      if(i == length(ncdf)){
 
-      if(i < length(ncdf)){
+        year_min_i <- min(hdcd_comb_monthly$year, na.rm = T)
+        year_max_i <- max(hdcd_comb_monthly$year, na.rm = T)
+
         filename_i_monthly <- file.path(
           folder,
-          helios::create_name(c('hdcd', model, 'intermediate_monthly', name_append), 'csv'))
-        } else {
-        filename_i_monthly <- file.path(
-          folder,
-          helios::create_name(c('hdcd', model, year_min_i, year_max_i, 'monthly', name_append), 'csv'))
+          helios::create_name(c('hddcdd', model, year_min_i, year_max_i, 'monthly',
+                                gsub('_', '-', gsub('gcam_', '', spatial)), name_append), 'csv'))
+
+        if(save){
+          data.table::fwrite(hdcd_comb_monthly, file = filename_i_monthly)
+          print(paste0('File saved as : ', filename_i_monthly))
+        }
+      }
+
+
+      # for IM3 grid region analysis
+      if(im3_analysis){
+
+        hdcd_comb_gridregion_monthly <- hdcd_comb_gridregion_monthly %>%
+          dplyr::bind_rows(hdcd_gridregion_monthly %>%
+                             dplyr::mutate(unit = 'Fahrenheit degree-hours')) %>%
+          dplyr::ungroup() %>%
+          dplyr::group_by(region, subRegion, year, month, HDCD, unit) %>%
+          dplyr::summarize(value = sum(value, na.rm = T)) %>%
+          dplyr::ungroup() %>%
+          dplyr::filter(!is.na(subRegion),
+                        !is.na(year),
+                        !is.na(month))
+
+        if(i == length(ncdf)){
+
+          year_min_i <- min(hdcd_comb_gridregion_monthly$year, na.rm = T)
+          year_max_i <- max(hdcd_comb_gridregion_monthly$year, na.rm = T)
+
+          filename_i_gridregion_monthly <- file.path(
+            folder,
+            helios::create_name(c('hdhcdh', model, year_min_i, year_max_i, 'monthly', 'gridregion', name_append), 'csv'))
+
+          if(save){
+            data.table::fwrite(hdcd_comb_gridregion_monthly, file = filename_i_gridregion_monthly)
+            print(paste0('File saved as : ', filename_i_gridregion_monthly))
+          }
         }
 
-      if(save){
-        data.table::fwrite(hdcd_comb_monthly, file = filename_i_monthly)
-        print(paste0('File saved as : ', filename_i_monthly))
+
       }
 
     }
@@ -558,22 +700,53 @@ hdcd <- function(ncdf = NULL,
         dplyr::filter(!is.na(subRegion),
                       !is.na(year))
 
-      year_min_i <- min(hdcd_comb_annual$year, na.rm = T)
-      year_max_i <- max(hdcd_comb_annual$year, na.rm = T)
+      if(i == length(ncdf)){
 
-      if(i < length(ncdf)){
+        year_min_i <- min(hdcd_comb_annual$year, na.rm = T)
+        year_max_i <- max(hdcd_comb_annual$year, na.rm = T)
+
         filename_i_annual <- file.path(
           folder,
-          helios::create_name(c('hdcd', model, 'intermediate_annual', name_append), 'csv'))
-        } else {
-        filename_i_annual <- file.path(
-          folder,
-          helios::create_name(c('hdcd', model, year_min_i, year_max_i, 'annual', name_append), 'csv'))
+          helios::create_name(c('hddcdd', model, year_min_i, year_max_i, 'annual',
+                                gsub('_', '-', gsub('gcam_', '', spatial)), name_append), 'csv'))
+
+        if(save){
+          data.table::fwrite(hdcd_comb_annual, file = filename_i_annual)
+          print(paste0('File saved as : ', filename_i_annual))
+        }
+      }
+
+
+      # for IM3 grid region analysis
+      if(im3_analysis){
+
+        hdcd_comb_gridregion_annual <- hdcd_comb_gridregion_annual %>%
+          dplyr::bind_rows(hdcd_gridregion_annual %>%
+                             dplyr::mutate(unit = 'Fahrenheit degree-hours')) %>%
+          dplyr::ungroup() %>%
+          dplyr::group_by(region, subRegion, year, HDCD, unit) %>%
+          dplyr::summarize(value = sum(value, na.rm = T)) %>%
+          dplyr::ungroup() %>%
+          dplyr::filter(!is.na(subRegion),
+                        !is.na(year))
+
+        if(i == length(ncdf)){
+
+          year_min_i <- min(hdcd_comb_gridregion_annual$year, na.rm = T)
+          year_max_i <- max(hdcd_comb_gridregion_annual$year, na.rm = T)
+
+          filename_i_gridregion_annual <- file.path(
+            folder,
+            helios::create_name(c('hdhcdh', model, year_min_i, year_max_i, 'annual', 'gridregion', name_append), 'csv'))
+
+          if(save){
+            data.table::fwrite(hdcd_comb_gridregion_annual, file = filename_i_gridregion_annual)
+            print(paste0('File saved as : ', filename_i_gridregion_annual))
+          }
         }
 
-      if(save){
-        data.table::fwrite(hdcd_comb_annual, file = filename_i_annual)
-        print(paste0('File saved as : ', filename_i_annual))
+
+
       }
 
     }
@@ -617,7 +790,9 @@ hdcd <- function(ncdf = NULL,
   # return data
   invisible(list(hdcd_comb_gcam = hdcd_comb_gcam,
                  hdcd_comb_monthly = hdcd_comb_monthly,
-                 hdcd_comb_annual = hdcd_comb_annual))
+                 hdcd_comb_annual = hdcd_comb_annual,
+                 hdcd_comb_gridregion_monthly = hdcd_comb_gridregion_monthly,
+                 hdcd_comb_gridregion_annual = hdcd_comb_gridregion_annual))
 
 } # Close process_hdcd
 
