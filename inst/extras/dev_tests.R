@@ -228,3 +228,15 @@ helios::diagnostics(
   folder = file.path(getwd(), 'output'),
   name_append = 'combined_hdhcdh_monthly_us49'
 )
+
+# Test diagnostics with NERSC output on monthly HDHCDH at Gridregion
+hdhcdh_gridregion <- data.table::fread(
+  'C:/WorkSpace/IM3/helios/hddcdd/nersc/combined_outputs_hdcd_rcp45cooler_ssp3/combined_hdhcdh_2020_2099_monthly_gridregion.csv'
+)
+
+helios::diagnostics(
+  hdcd_monthly = hdhcdh_gridregion,
+  min_diagnostic_months = 6,
+  folder = file.path(getwd(), 'output'),
+  name_append = 'combined_hdhcdh_monthly_gridregion'
+)

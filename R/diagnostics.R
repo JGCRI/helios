@@ -321,7 +321,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
             noaa_name <- paste('NOAA', noaa_year_i, sep = '-')
 
           } else {
-            scenario_sel <- paste('ncdf_', year_i)
+            scenario_sel <- paste0('ncdf_', year_i)
           }
 
           # filter year and format for plotting
