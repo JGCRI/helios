@@ -215,3 +215,16 @@ helios::diagnostics(
   name_append = 'wrf_rcp45cooler_ssp3'
 )
 
+
+
+# Test diagnostics with NERSC output on monthly HDHCDH at US49
+hdhcdh_us49 <- data.table::fread(
+  'C:/WorkSpace/IM3/helios/hddcdd/nersc/combined_outputs_hdcd_rcp45cooler_ssp3/combined_hdhcdh_2020_2099_monthly_us49.csv'
+)
+
+helios::diagnostics(
+  hdcd_monthly = hdhcdh_us49,
+  min_diagnostic_months = 6,
+  folder = file.path(getwd(), 'output'),
+  name_append = 'combined_hdhcdh_monthly_us49'
+)

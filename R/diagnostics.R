@@ -206,6 +206,8 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
       hdcd_monthly_year_range <- paste(unique(c(min(unique(hdcd_monthly$year)),
                                               max(unique(hdcd_monthly$year)))),
                                        collapse = '-')
+      # get the output unit
+      unit <- unique(hdcd_monthly$unit)
 
       # only plot when there are more than 4 months
       if(n_months >= min_diagnostic_months) {
@@ -250,7 +252,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
         # Find if there are regions matching NOAA regions
         subRegions <- unique(hdcd_comb_monthly_diagnostics$subRegion)
         subRegions_noaa <- unique(helios::noaa_hddcdd$stateCode)
-        use_noaa <- any(subRegions %in% subRegions_noaa)
+        use_noaa <- any((subRegions %in% subRegions_noaa) & (unit == 'Fahrenheit degree-days'))
 
         # Find closest matching years
         current_years <- as.integer(unique(hdcd_monthly$year))
@@ -314,19 +316,19 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
 
           if(use_noaa) {
             noaa_year_i <- noaa_years[which(abs(noaa_years - year_i) == min(abs(noaa_years - year_i)))]
-            year_sel <- unique(c(year_i, noaa_year_i))
+            scenario_sel <- c(paste0('ncdf_', year_i), paste0('noaa_', noaa_year_i))
 
             noaa_name <- paste('NOAA', noaa_year_i, sep = '-')
 
           } else {
-            year_sel <- year_i
+            scenario_sel <- paste('ncdf_', year_i)
           }
 
           # filter year and format for plotting
           hdcd_comb_monthly_diagnostics_i <- hdcd_comb_monthly_diagnostics %>%
-            dplyr::filter(year %in% year_sel) %>%
-            dplyr::mutate(scenario = paste0(scenario, '_', year),
-                          scenario_hdcd = paste0(scenario, '_', HDCD),
+            dplyr::mutate(scenario = paste0(scenario, '_', year)) %>%
+            dplyr::filter(scenario %in% scenario_sel) %>%
+            dplyr::mutate(scenario_hdcd = paste0(scenario, '_', HDCD),
                           month = factor(month, levels = months)) %>%
             dplyr::select(subRegion, scenario, scenario_hdcd, year, month, HDCD, value)
 
@@ -337,7 +339,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
                                linewidth = 1) +
             ggplot2::facet_wrap(subRegion ~ ., scales = 'free_y') +
             ggplot2::ggtitle(paste0('NCDF-', year_i, ' VS ', noaa_name)) +
-            ggplot2::ylab('Monthly Degree-Days') +
+            ggplot2::ylab(paste0('Monthly ', unit)) +
             ggplot2::scale_color_manual(values = c('HD' = '#1AB2FF',
                                                    'CD' = '#E61A33')) +
             ggplot2::scale_linetype_manual(values = c(1, 2)) +
@@ -393,7 +395,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
                 ggplot2::ggtitle('NCDF (all years)')
               }
             } +
-            ggplot2::ylab('Monthly Degree-Days') +
+            ggplot2::ylab(paste0('Monthly ', unit)) +
             ggplot2::scale_color_manual(values = pal,
                                         guide = ggplot2::guide_legend(title = 'NCDF (All Years)')) +
             ggplot2::scale_x_discrete(drop = FALSE) +
