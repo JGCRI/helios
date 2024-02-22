@@ -4,6 +4,7 @@
 [![docs](https://github.com/JGCRI/helios/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/docs.yaml)
 [![codecov](https://codecov.io/gh/JGCRI/helios/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/helios) 
 [![Github All Releases](https://img.shields.io/github/downloads/JGCRI/helios/total.svg)]()
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.06033/status.svg)](https://doi.org/10.21105/joss.06033)
 [![DOI](https://zenodo.org/badge/429143355.svg)](https://zenodo.org/doi/10.5281/zenodo.8170310)
 <!-- badges: end -->
 
@@ -30,7 +31,7 @@ alt="https://jgcri.github.io/helios/" height="60"/></a>
 <!-- ------------------------>
 <!-- ------------------------>
 
-Zhao, M., Khan, Z., Dorheim, K., Vernon, C., 2023. helios - An R package to process heating and cooling degrees for GCAM. (In progress) Journal of Open Source Software, DOI: XXXX
+Zhao, M., Khan, Z., Dorheim, K., Vernon, C., (2024). helios: An R package to process heating and cooling degrees for GCAM. Journal of Open Source Software, 9(94), 6033, https://doi.org/10.21105/joss.06033
 
 <!-- ------------------------>
 <!-- ------------------------>
