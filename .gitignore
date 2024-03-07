@@ -37,7 +37,7 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
-output
+output*
 inst/doc
 docs/
 tests/testthat/output/

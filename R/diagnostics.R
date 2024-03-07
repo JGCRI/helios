@@ -57,6 +57,27 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
                         'Nov_day', 'Nov_night', 'Dec_day', 'Dec_night',
                         'superpeak')
 
+    if(any(grepl('degree-hours', unique(hdcd_segment$unit)))){
+
+      # calculate the number of hours in each segment by state
+      segment_hours <- helios::segment_map_utc %>%
+        dplyr::group_by(subRegion, segment) %>%
+        dplyr::summarise(segment_hours = n()) %>%
+        dplyr::ungroup()
+
+      if(any(grepl('grid', unique(hdcd_segment$subRegion)))) {
+        # calculate the number of hours in each segment by grid region
+        segment_hours <- segment_hours %>%
+          dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
+          dplyr::select(-subRegion) %>%
+          dplyr::rename(subRegion = grid_region) %>%
+          dplyr::distinct()
+      }
+
+
+    }
+
+
     if(any(unique(hdcd_segment$segment) %in% segment_levels)) {
 
       # Check if the outputs cover a full year
@@ -89,6 +110,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
         # Individual Years
         for(year_i in (hdcd_comb_diagnostics$year) %>% unique()) {
 
+          # plot heating and cooling degree-hours ------------------------------
           data_plot <- hdcd_comb_diagnostics %>%
             dplyr::filter(year == year_i) %>%
             dplyr::mutate(segment = factor(segment, levels = segment_levels))
@@ -119,10 +141,46 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
                           height = 15)
 
           print(paste0('Diagnostic figure saved as : ', filename_diagnostics_i))
+
+          # plot heating and cooling degree-hours **load** ---------------------
+          data_plot <- hdcd_comb_diagnostics %>%
+            dplyr::filter(year == year_i) %>%
+            dplyr::left_join(segment_hours, by = c('subRegion', 'segment')) %>%
+            dplyr::mutate(value = value / segment_hours,
+                          segment = factor(segment, levels = segment_levels))
+
+          # plot
+          p <- ggplot2::ggplot(data = data_plot) +
+            ggplot2::aes(x = segment, y = value, group = heatcool) +
+            ggplot2::geom_line(ggplot2::aes(color = heatcool)) +
+            ggplot2::facet_wrap(subRegion ~ ., scales = 'free_y') +
+            ggplot2::ggtitle(paste0('HDCD Load at GCAM-USA Dispatch Segment in ', year_i)) +
+            ggplot2::ylab('Degree Load') +
+            ggplot2::scale_color_manual(values = c('heat' = '#1AB2FF',
+                                                   'cool' = '#E61A33')) +
+            ggplot2::scale_x_discrete(drop = FALSE) +
+            ggplot2::theme_bw() +
+            ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                                               vjust = 0.5))
+
+          # create plot name
+          filename_diagnostics_i <- file.path(
+            folder_diagnostics,
+            helios::create_name(c('segment_load', year_i, name_append), 'png'))
+
+          # save plot
+          ggplot2::ggsave(p,
+                          filename = filename_diagnostics_i,
+                          width = 25,
+                          height = 15)
+
+          print(paste0('Diagnostic figure saved as : ', filename_diagnostics_i))
         }
 
         # combined years with color gradients with free scale
         if(length(unique(hdcd_comb_diagnostics$year)) > 1){
+
+          # Plot all years for HDCD degree-hours by segment --------------------
           data_plot <- hdcd_comb_diagnostics %>%
             dplyr::mutate(segment = factor(segment, levels = segment_levels))
 
@@ -165,20 +223,49 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
 
           }
 
-        }
 
-        # combined years with color gradients with fixed scale
-        if(length(unique(hdcd_comb_diagnostics$year)) > 1){
+          # Plot all years for HDCD degree **load** by segment -----------------
           data_plot <- hdcd_comb_diagnostics %>%
-            dplyr::mutate(segment = factor(segment, levels = segment_levels))
+            dplyr::left_join(segment_hours, by = c('subRegion', 'segment')) %>%
+            dplyr::mutate(value = value / segment_hours,
+                          segment = factor(segment, levels = segment_levels))
 
-          n_color <- length(unique(hdcd_comb_diagnostics$year))
-          pal_hd <- colorRampPalette(RColorBrewer::brewer.pal(9, 'YlOrRd'))
-          pal_cd <-  colorRampPalette(RColorBrewer::brewer.pal(9, 'YlGnBu'))
-          pal <- c(rev(pal_hd(n_color)), rev(pal_cd(n_color)))
+          for (scale_i in c('free_y', 'fixed')){
 
+            scale_name <- dplyr::case_when(scale_i == 'free_y' ~ 'freeScale',
+                                           scale_i == 'fixed' ~ 'fixedScale')
+
+            # plot
+            p <- ggplot2::ggplot(data = data_plot) +
+              ggplot2::geom_line(ggplot2::aes(x = segment, y = value,
+                                              group = interaction(year, heatcool),
+                                              color = interaction(year, heatcool))) +
+              ggplot2::facet_wrap(subRegion ~ ., scales = scale_i) +
+              ggplot2::ggtitle(paste0('HDCD Load at GCAM-USA Dispatch Segment for ', hdcd_comb_year_range)) +
+              ggplot2::ylab('Degree Load') +
+              ggplot2::scale_color_manual(values = pal,
+                                          guide = ggplot2::guide_legend(title = 'HDCD (All Years)')) +
+              ggplot2::scale_x_discrete(drop = FALSE) +
+              ggplot2::theme_bw() +
+              ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
+                                                                 vjust = 0.5))
+
+            # create plot name
+            filename_diagnostics_i <- file.path(
+              folder_diagnostics,
+              helios::create_name(c('segment_load_allYears', scale_name, name_append), 'png'))
+
+            # save plot
+            ggplot2::ggsave(p,
+                            filename = filename_diagnostics_i,
+                            width = 25,
+                            height = 15)
+            print(paste0('Diagnostic figure saved as : ', filename_diagnostics_i))
+
+          }
 
         }
+
 
       } else {
         message(paste0('Data is less than ', min_diagnostic_months, ' months. No diagnostic plots by dispatch segment are created.'))
