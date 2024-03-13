@@ -20,7 +20,7 @@ library(usethis)
 gcamdata_folder <- "C:/WorkSpace/GCAM-Models/gcam-usa-im3/input/gcamdata"
 
 #-----------------
-# Segment Map UTC for WRF data
+# Segment Map UTC with default super peak for WRF data
 #-----------------
 
 # WRF data is in UTC
@@ -31,18 +31,43 @@ L102.date_load_curve_mapping_S_gcamusa <- read.csv(paste0(gcamdata_folder,"/outp
 # Convert GCAM segment data to UTC
 segment_map_utc <- L102.date_load_curve_mapping_S_gcamusa %>%
   dplyr::mutate(
-    date = gsub("Z","",gsub("T"," ",date)),
-    date = as.POSIXct(date, tz="EST"),
-    date = lubridate::force_tz(date,tz="EST"),
-    date = lubridate::with_tz(date,tz="UTC")) %>%
-  dplyr::mutate(year = substr(date,1,4),
-                segment = dplyr::if_else(is_super_peak,"superpeak",paste0(month,"_",day_night)),
-                month = substr(date,6,7),
-                day = substr(date,9,10),
-                hour = substr(date,12,13)) %>%
-  dplyr::select(subRegion=state,segment, month, day, hour); segment_map_utc
+    date = gsub("Z", "", gsub("T", " ", date)),
+    date = as.POSIXct(date, tz = "EST"),
+    date = lubridate::force_tz(date, tz = "EST"),
+    date = lubridate::with_tz(date, tz = "UTC")) %>%
+  dplyr::mutate(year = substr(date, 1, 4),
+                segment = dplyr::if_else(is_super_peak, "superpeak", paste0(month, "_", day_night)),
+                month = substr(date, 6, 7),
+                day = substr(date, 9, 10),
+                hour = substr(date, 12, 13)) %>%
+  dplyr::select(subRegion = state, segment, month, day, hour); segment_map_utc
 
-use_data(segment_map_utc, version=3, overwrite=T)
+use_data(segment_map_utc, version = 3, overwrite = T)
+
+#-----------------
+# Segment Map UTC without super peak for WRF data
+#-----------------
+
+# WRF data is in UTC
+# GCAM segment data is in ETC
+
+L102.date_load_curve_mapping_S_gcamusa <- read.csv(paste0(gcamdata_folder,"/outputs/L102.date_load_curve_mapping_S_gcamusa.csv"), comment.char = "#") %>% tibble::as_tibble()
+
+# Convert GCAM segment data to UTC
+segment_map_utc_no_superpeak <- L102.date_load_curve_mapping_S_gcamusa %>%
+  dplyr::mutate(
+    date = gsub("Z", "", gsub("T", " ", date)),
+    date = as.POSIXct(date, tz = "EST"),
+    date = lubridate::force_tz(date, tz = "EST"),
+    date = lubridate::with_tz(date, tz = "UTC")) %>%
+  dplyr::mutate(year = substr(date, 1, 4),
+                segment = paste0(month, "_", day_night),
+                month = substr(date, 6, 7),
+                day = substr(date, 9, 10),
+                hour = substr(date, 12, 13)) %>%
+  dplyr::select(subRegion = state, segment, month, day, hour); segment_map_utc_no_superpeak
+
+use_data(segment_map_utc_no_superpeak, version = 3, overwrite = T)
 
 #-----------------
 # L2441.HDDCDD_Fixed_gcamusa

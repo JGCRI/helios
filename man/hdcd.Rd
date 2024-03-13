@@ -19,11 +19,12 @@ hdcd(
   xml = F,
   name_append = "",
   save = T,
-  im3_analysis = T
+  im3_analysis = T,
+  elec_share = NULL
 )
 }
 \arguments{
-\item{ncdf}{Default = NULL. String for path to the NetCDF file.}
+\item{ncdf}{Default = NULL. String or vector for paths to the NetCDF file.}
 
 \item{ncdf_var}{Default = NULL. String for variable name to extract from NetCDF file. Temperature var is 'tas' for CMIP models; 'T2' for WRF model.}
 
@@ -52,6 +53,8 @@ hdcd(
 \item{save}{Default = TRUE. Set to TRUE to save outputs.}
 
 \item{im3_analysis}{Default = T. Output annual HDCD at grid region scale for trend-representative year analysis}
+
+\item{elec_share}{Default = NULL. data frame for the fraction of building heating and cooling energy consumption met by electricity at grid region scale. Column [subRegion, year, HDCD, elec_frac]. If elec_share is provided, helios will recalculate the super peak hours; Otherwise, helios will use the default super peak hours. Note, to get the correct super peak hours, the ncdf argument should include all files that cover full years.}
 }
 \description{
 Heating and Cooling Degree processing for GCAM from various sources such as WRF and CMIP

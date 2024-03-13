@@ -133,6 +133,16 @@ path_to_climate_ncdf <- file.path(data_dir, 'climate', 'wrfout_d01_2020-01-01_01
 path_to_population <- file.path(
   data_dir, 'population', 'population_conus_total_ssp2_2020-2100_wrf_wgs84.csv')
 
+elec_share <- data.table::fread(
+  'C:/WorkSpace/IM3/helios/hddcdd/constance/output/im3_bldg_hdcd_electricity_fraction.csv') %>%
+  dplyr::filter(scenario == 'rcp85hotter_ssp5')
+
+# test file list
+path_to_climate_ncdf <- c(
+  helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc'),
+  helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc')
+)
+
 hdcd_wrf_all <- helios::hdcd(
   ncdf = path_to_climate_ncdf,
   ncdf_var = 'T2',
@@ -148,7 +158,8 @@ hdcd_wrf_all <- helios::hdcd(
   xml = F,
   name_append = '',
   save = T,
-  im3_analysis = T
+  im3_analysis = T,
+  elec_share = elec_share
 )
 
 helios::diagnostics(
