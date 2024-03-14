@@ -404,14 +404,22 @@ hdcd <- function(ncdf = NULL,
         # calculate the HDCD
         hdcd_region_segments <- hdcd_region %>%
           dplyr::left_join(temporal_subset, by = c('datetime', 'year')) %>%
-          dplyr::left_join(helios::segment_map_utc_no_superpeak ,
+          dplyr::left_join(helios::segment_map_utc_no_superpeak,
                            by = c('subRegion', 'month', 'day', 'hour')) %>%
           dplyr::left_join(elec_share_region, by = c('subRegion', 'year', 'HDCD')) %>%
           dplyr::mutate(value_elec = abs(value * elec_frac)) %>%
           dplyr::group_by(region, subRegion, year) %>%
           dplyr::mutate(value_rank = order(order(value_elec, decreasing = TRUE)),
                         segment = ifelse(value_rank <= 10, 'superpeak', segment)) %>%
-          dplyr::ungroup() %>%
+          dplyr::ungroup()
+
+        # create new segment map
+        segment_map_utc_region <- hdcd_region_segments %>%
+          dplyr::select(subRegion, year, segment, month, day, hour) %>%
+          dplyr::distinct()
+
+        # aggregate by segment and HDCD
+        hdcd_region_segments <- hdcd_region_segments %>%
           dplyr::group_by(region, subRegion, year, segment, HDCD) %>%
           dplyr::summarise(value = sum(value, na.rm = T)) %>%
           dplyr::ungroup() %>%
@@ -524,7 +532,15 @@ hdcd <- function(ncdf = NULL,
             dplyr::group_by(region, subRegion, year) %>%
             dplyr::mutate(value_rank = order(order(value_elec, decreasing = TRUE)),
                           segment = ifelse(value_rank <= 10, 'superpeak', segment)) %>%
-            dplyr::ungroup() %>%
+            dplyr::ungroup()
+
+          # create new segment map
+          segment_map_utc_gridregion <- hdcd_gridregion_segments %>%
+            dplyr::select(subRegion, year, segment, month, day, hour) %>%
+            dplyr::distinct()
+
+          # aggregate by segment and HDCD
+          hdcd_gridregion_segments <- hdcd_gridregion_segments %>%
             dplyr::group_by(region, subRegion, year, segment, HDCD) %>%
             dplyr::summarise(value = sum(value, na.rm = T)) %>%
             dplyr::ungroup() %>%
@@ -1015,12 +1031,36 @@ hdcd <- function(ncdf = NULL,
         }
       }
 
-
-
     }
 
   }
 
+  #......................
+  # Step 9e: Save segment mapping with auto-pick super peak
+  #......................
+
+  if(im3_analysis){
+
+    # save us 49 segment mapping
+    filename_segment_map <- file.path(
+      folder,
+      helios::create_name(c('segment_map', year_min_i, year_max_i,
+                            gsub('_', '-', gsub('gcam_', '', spatial)), name_append), 'csv'))
+
+    data.table::fwrite(segment_map_utc_region,
+                       file = filename_segment_map)
+    print(paste0('File saved as : ', filename_segment_map))
+
+
+    # save grid region segement mapping
+    filename_segment_map <- file.path(
+      folder,
+      helios::create_name(c('segment_map', year_min_i, year_max_i, 'gridregion', name_append), 'csv'))
+
+    data.table::fwrite(segment_map_utc_gridregion,
+                       file = filename_segment_map)
+    print(paste0('File saved as : ', filename_segment_map))
+  }
 
   #......................
   # Step 10: Save XML

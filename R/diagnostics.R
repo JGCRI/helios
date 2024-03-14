@@ -122,8 +122,8 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
             ggplot2::facet_wrap(subRegion ~ ., scales = 'free_y') +
             ggplot2::ggtitle(paste0('HDCD at GCAM-USA Dispatch Segment in ', year_i)) +
             ggplot2::ylab('Degree-Hours') +
-            ggplot2::scale_color_manual(values = c('heat' = '#1AB2FF',
-                                                   'cool' = '#E61A33')) +
+            ggplot2::scale_color_manual(values = c('heat' = '#E61A33',
+                                                   'cool' = '#1AB2FF')) +
             ggplot2::scale_x_discrete(drop = FALSE) +
             ggplot2::theme_bw() +
             ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
@@ -156,8 +156,8 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
             ggplot2::facet_wrap(subRegion ~ ., scales = 'free_y') +
             ggplot2::ggtitle(paste0('HDCD Load at GCAM-USA Dispatch Segment in ', year_i)) +
             ggplot2::ylab('Degree Load') +
-            ggplot2::scale_color_manual(values = c('heat' = '#1AB2FF',
-                                                   'cool' = '#E61A33')) +
+            ggplot2::scale_color_manual(values = c('heat' = '#E61A33',
+                                                   'cool' = '#1AB2FF')) +
             ggplot2::scale_x_discrete(drop = FALSE) +
             ggplot2::theme_bw() +
             ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 90,
@@ -187,7 +187,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
           n_color <- length(unique(hdcd_comb_diagnostics$year))
           pal_hd <- colorRampPalette(RColorBrewer::brewer.pal(9, 'YlOrRd'))
           pal_cd <-  colorRampPalette(RColorBrewer::brewer.pal(9, 'YlGnBu'))
-          pal <- c(rev(pal_hd(n_color)), rev(pal_cd(n_color)))
+          pal <- c(rev(pal_cd(n_color)), rev(pal_hd(n_color)))
 
           for (scale_i in c('free_y', 'fixed')){
 
@@ -427,8 +427,8 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
             ggplot2::facet_wrap(subRegion ~ ., scales = 'free_y') +
             ggplot2::ggtitle(paste0('NCDF-', year_i, ' VS ', noaa_name)) +
             ggplot2::ylab(paste0('Monthly ', unit)) +
-            ggplot2::scale_color_manual(values = c('HD' = '#1AB2FF',
-                                                   'CD' = '#E61A33')) +
+            ggplot2::scale_color_manual(values = c('HD' = '#E61A33',
+                                                   'CD' = '#1AB2FF')) +
             ggplot2::scale_linetype_manual(values = c(1, 2)) +
             ggplot2::scale_x_discrete(drop = FALSE) +
             ggplot2::theme_bw() +
@@ -456,7 +456,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
           n_color <- length(unique(hdcd_comb_monthly_diagnostics_all$year))
           pal_hd <- colorRampPalette(RColorBrewer::brewer.pal(9, 'YlOrRd'))
           pal_cd <-  colorRampPalette(RColorBrewer::brewer.pal(9, 'YlGnBu'))
-          pal <- c(rev(pal_hd(n_color)), rev(pal_cd(n_color)))
+          pal <- c(rev(pal_cd(n_color)), rev(pal_hd(n_color)))
 
           # create file name to save
           filename_monthly_diagnostics_all <- file.path(
