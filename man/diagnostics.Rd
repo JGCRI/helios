@@ -7,6 +7,7 @@
 diagnostics(
   hdcd_segment = tibble::tibble(),
   hdcd_monthly = tibble::tibble(),
+  segment_map = NULL,
   min_diagnostic_months = 6,
   folder = paste0(getwd()),
   name_append = ""
@@ -16,6 +17,8 @@ diagnostics(
 \item{hdcd_segment}{Default = tibble::tibble(). helios hdcd output by segment.}
 
 \item{hdcd_monthly}{Default = tibble::tibble(). helios hdcd output by month.}
+
+\item{segment_map}{Default = NULL. table for segment map to month-day-hour. Provide when the super peak is calculated based on the data. The segment map should have the same subRegion as the input hdcd_segment}
 
 \item{min_diagnostic_months}{Default = 6. Integer for the number of months. The number of months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.}
 

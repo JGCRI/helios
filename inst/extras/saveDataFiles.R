@@ -26,7 +26,11 @@ gcamdata_folder <- "C:/WorkSpace/GCAM-Models/gcam-usa-im3/input/gcamdata"
 # WRF data is in UTC
 # GCAM segment data is in ETC
 
-L102.date_load_curve_mapping_S_gcamusa <- read.csv(paste0(gcamdata_folder,"/outputs/L102.date_load_curve_mapping_S_gcamusa.csv"), comment.char = "#") %>% tibble::as_tibble()
+# L102.date_load_curve_mapping_S_gcamusa <- read.csv(paste0(gcamdata_folder,"/outputs/L102.date_load_curve_mapping_S_gcamusa.csv"), comment.char = "#") %>% tibble::as_tibble()
+# Modified load curve: day/night/super peak mapping is the same for states within the same grid region
+L102.date_load_curve_mapping_S_gcamusa <-
+  read.csv('C:/WorkSpace/IM3/gcam-usa/gcam-usa-im3-v5p3/gcamdata/outputs/L102.date_load_curve_mapping_S_gcamusa_modified.csv') %>%
+  tibble::as_tibble()
 
 # Convert GCAM segment data to UTC
 segment_map_utc <- L102.date_load_curve_mapping_S_gcamusa %>%
@@ -51,7 +55,11 @@ use_data(segment_map_utc, version = 3, overwrite = T)
 # WRF data is in UTC
 # GCAM segment data is in ETC
 
-L102.date_load_curve_mapping_S_gcamusa <- read.csv(paste0(gcamdata_folder,"/outputs/L102.date_load_curve_mapping_S_gcamusa.csv"), comment.char = "#") %>% tibble::as_tibble()
+# L102.date_load_curve_mapping_S_gcamusa <- read.csv(paste0(gcamdata_folder,"/outputs/L102.date_load_curve_mapping_S_gcamusa.csv"), comment.char = "#") %>% tibble::as_tibble()
+# Modified load curve: day/night/super peak mapping is the same for states within the same grid region
+L102.date_load_curve_mapping_S_gcamusa <-
+  read.csv('C:/WorkSpace/IM3/gcam-usa/gcam-usa-im3-v5p3/gcamdata/outputs/L102.date_load_curve_mapping_S_gcamusa_modified.csv') %>%
+  tibble::as_tibble()
 
 # Convert GCAM segment data to UTC
 segment_map_utc_no_superpeak <- L102.date_load_curve_mapping_S_gcamusa %>%

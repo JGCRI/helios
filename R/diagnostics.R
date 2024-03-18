@@ -4,6 +4,7 @@
 #'
 #' @param hdcd_segment Default = tibble::tibble(). helios hdcd output by segment.
 #' @param hdcd_monthly Default = tibble::tibble(). helios hdcd output by month.
+#' @param segment_map Default = NULL. table for segment map to month-day-hour. Provide when the super peak is calculated based on the data. The segment map should have the same subRegion as the input hdcd_segment
 #' @param min_diagnostic_months Default = 6. Integer for the number of months. The number of months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.
 #' @param folder Default = paste0(getwd()). String for the output folder path.
 #' @param name_append Default = ''. String for the name to append to output file name.
@@ -14,6 +15,7 @@
 
 diagnostics <- function(hdcd_segment = tibble::tibble(),
                         hdcd_monthly = tibble::tibble(),
+                        segment_map = NULL,
                         min_diagnostic_months = 6,
                         folder = paste0(getwd()),
                         name_append = '') {
@@ -57,21 +59,31 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
                         'Nov_day', 'Nov_night', 'Dec_day', 'Dec_night',
                         'superpeak')
 
+
     if(any(grepl('degree-hours', unique(hdcd_segment$unit)))){
 
-      # calculate the number of hours in each segment by state
-      segment_hours <- helios::segment_map_utc %>%
-        dplyr::group_by(subRegion, segment) %>%
-        dplyr::summarise(segment_hours = n()) %>%
-        dplyr::ungroup()
+      if(is.null(segment_map)){
+        # calculate the number of hours in each segment by state
+        segment_hours <- helios::segment_map_utc %>%
+          dplyr::group_by(subRegion, segment) %>%
+          dplyr::summarise(segment_hours = n()) %>%
+          dplyr::ungroup()
 
-      if(any(grepl('grid', unique(hdcd_segment$subRegion)))) {
-        # calculate the number of hours in each segment by grid region
-        segment_hours <- segment_hours %>%
-          dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
-          dplyr::select(-subRegion) %>%
-          dplyr::rename(subRegion = grid_region) %>%
-          dplyr::distinct()
+        if(any(grepl('grid', unique(hdcd_segment$subRegion)))) {
+          # calculate the number of hours in each segment by grid region
+          segment_hours <- segment_hours %>%
+            dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
+            dplyr::select(-subRegion) %>%
+            dplyr::rename(subRegion = grid_region) %>%
+            dplyr::distinct()
+        }
+      } else {
+
+        segment_hours <- segment_map %>%
+          dplyr::group_by(subRegion, year, segment) %>%
+          dplyr::summarise(segment_hours = n()) %>%
+          dplyr::ungroup()
+
       }
 
 
@@ -145,7 +157,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
           # plot heating and cooling degree-hours **load** ---------------------
           data_plot <- hdcd_comb_diagnostics %>%
             dplyr::filter(year == year_i) %>%
-            dplyr::left_join(segment_hours, by = c('subRegion', 'segment')) %>%
+            dplyr::left_join(segment_hours) %>%
             dplyr::mutate(value = value / segment_hours,
                           segment = factor(segment, levels = segment_levels))
 
@@ -226,7 +238,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
 
           # Plot all years for HDCD degree **load** by segment -----------------
           data_plot <- hdcd_comb_diagnostics %>%
-            dplyr::left_join(segment_hours, by = c('subRegion', 'segment')) %>%
+            dplyr::left_join(segment_hours) %>%
             dplyr::mutate(value = value / segment_hours,
                           segment = factor(segment, levels = segment_levels))
 

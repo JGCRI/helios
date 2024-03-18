@@ -1080,12 +1080,38 @@ hdcd <- function(ncdf = NULL,
 
   if(diagnostics){
 
-    helios::diagnostics(
-      hdcd_segment = hdcd_comb_gcam,
-      hdcd_monthly = hdcd_comb_monthly,
-      min_diagnostic_months = length(unique(hdcd_comb_monthly$month)),
-      folder = folder,
-      name_append = model)
+    if(im3_analysis & !is.null(elec_share)){
+
+      helios::diagnostics(
+        hdcd_segment = hdcd_comb_gcam,
+        hdcd_monthly = hdcd_comb_monthly,
+        segment_map = segment_map_utc_region,
+        min_diagnostic_months = length(unique(hdcd_comb_monthly$month)),
+        folder = folder,
+        name_append = model)
+
+      helios::diagnostics(
+        hdcd_segment = hdcd_comb_gridregion_gcam,
+        hdcd_monthly = hdcd_comb_gridregion_monthly,
+        segment_map = segment_map_utc_gridregion,
+        min_diagnostic_months = length(unique(hdcd_comb_monthly$month)),
+        folder = folder,
+        name_append = model)
+
+
+    } else {
+
+      helios::diagnostics(
+        hdcd_segment = hdcd_comb_gcam,
+        hdcd_monthly = hdcd_comb_monthly,
+        segment_map = NULL,
+        min_diagnostic_months = length(unique(hdcd_comb_monthly$month)),
+        folder = folder,
+        name_append = model)
+
+    }
+
+
   }
 
 

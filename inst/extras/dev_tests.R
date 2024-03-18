@@ -263,3 +263,18 @@ helios::diagnostics(
   folder = file.path(getwd(), 'output'),
   name_append = 'combined_hdhcdh_gcam_us49'
 )
+
+
+# Test diagnostics with NERSC output on segment HDHCDH at US49
+hdhcdh_gridregion <- data.table::fread(
+  'C:/WorkSpace/IM3/helios/hddcdd/nersc/combined_outputs_hdcd_rcp45cooler_ssp3/combined_hdhcdh_2020_2099_gcam_gridregion.csv'
+)
+segment_map_gridregion <- data.table::fread('C:/WorkSpace/github/helios/output_im3_test/segment_map_2020_2020_gridregion.csv')
+
+helios::diagnostics(
+  hdcd_segment = hdhcdh_gridregion %>% dplyr::filter(year %in% seq(2020, 2025, 1)),
+  segment_map = segment_map_gridregion,
+  min_diagnostic_months = 6,
+  folder = file.path(getwd(), 'output'),
+  name_append = 'combined_hdhcdh_gcam_gridregion'
+)
