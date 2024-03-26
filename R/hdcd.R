@@ -143,43 +143,14 @@ hdcd <- function(ncdf = NULL,
       print('.........................................')
       print(paste0('Running hdcd for file: ', ncdf_i))
 
-      ncdf_grid <- helios::read_ncdf(ncdf = ncdf_i,
-                                     model = model,
-                                     var = ncdf_var,
-                                     time_periods = time_periods)
-
-      # find region and subRegion info based on data grid lat lon
-      ncdf_grid <- helios::find_mapping_grid(data = ncdf_grid,
-                                             spatial = spatial)
-
-      # get the actual datetime from the ncdf
-      ncdf_times <- names(ncdf_grid)[
-        !names(ncdf_grid) %in% c('lat', 'lon', 'region', 'subRegion', 'ID')]
-
-      indices <- as.integer(grepl(paste0(time_periods, collapse = '|'), ncdf_times))
-      index_subset <- c(1:length(ncdf_times)) * indices
-      index_subset <- index_subset[!index_subset %in% 0]
-      years <- unique(substr(ncdf_times, 1, 4))
-
-      if (model == 'wrf') {
-
-        ncdf_pivot <- ncdf_grid %>%
-          tidyr::pivot_longer(cols = dplyr::all_of(ncdf_times), names_to = 'datetime') %>%
-          dplyr::mutate(datetime = as.POSIXct(datetime,
-                                              format = '%Y-%m-%d_%H:%M:%S',
-                                              tz = 'UTC')) %>%
-          dplyr::mutate(year = lubridate::year(datetime))
-
-      } else if (model == 'cmip') {
-
-        ncdf_pivot <- ncdf_grid %>%
-          tidyr::pivot_longer(cols = dplyr::all_of(ncdf_times), names_to = 'datetime') %>%
-          dplyr::mutate(datetime = as.POSIXct(datetime,
-                                              format = '%Y-%m-%d',
-                                              tz = 'UTC')) %>%
-          dplyr::mutate(year = lubridate::year(datetime))
-
-      }
+      ncdf_list <- helios::process_temperature(ncdf = ncdf_i,
+                                               model = model,
+                                               ncdf_var = ncdf_var,
+                                               time_periods = time_periods,
+                                               spatial = spatial)
+      ncdf_pivot <- ncdf_list$ncdf_pivot
+      years <- ncdf_list$ncdf_years
+      index_subset <- ncdf_list$index_subset
 
 
       #......................
@@ -190,146 +161,66 @@ hdcd <- function(ncdf = NULL,
 
         population_j = population[[j]]
 
-        if (im3_analysis) {
+        # process population and match to ncdf lat and lons
+        pop_list <- helios::process_population(population = population_j,
+                                               coordinates = ncdf_pivot,
+                                               time_periods = time_periods,
+                                               climate_years = years,
+                                               spatial = spatial,
+                                               im3_analysis = im3_analysis)
 
-          # use the population at each time period for the HDCD years within that period
-          # (1) year 2020 for period 2020
-          # (2) year 2021 - 2025 for period 2025, ..., year 2091-2095 for period 2095
-          # (3) year 2096 - 2099 for period 2100
-          # get the trend-representative year for each 5-year period
-          periods <- c(as.Date("2020-01-01"),
-                       as.Date("2021-01-01"),
-                       seq(as.Date("2026-01-01"), as.Date("2101-01-01"), by= "5 years"))
-
-          mapping_time_period <- data.frame(year = time_periods) %>%
-            dplyr::mutate(date = as.Date(paste0(year, '-01-01')),
-                          period = cut(date, breaks = periods, right = FALSE, labels = periods[2:length(periods)]),
-                          period = lubridate::year(as.Date(period) - 1)) %>%
-            dplyr::select(-date)
-
-          # read population based on the population data type
-          # output from wrf resolution: ['ID', 'subRegion', 'lat', 'lon', 'year', 'value' ]
-          # output from 1/8th degree pop data: ['ID', 'subRegion', 'lat', 'lon', 'year', 'value' ]
-          population_j_grid <- helios::read_population(file = population_j,
-                                                       time_periods = unique(mapping_time_period$period))
-
-          # expand population data from 5-year period to annual based on the mapping_time_period
-          # the annual population for years within the period will be the same as the population for the period
-          # E.g., population from years 2021 - 2025 uses population in period 2025
-          population_j_grid <- population_j_grid %>%
-            tidyr::expand(tidyr::nesting(lat, lon),
-                          year = time_periods) %>%
-            dplyr::left_join(mapping_time_period, by = 'year') %>%
-            dplyr::left_join(population_j_grid, by = c('lat', 'lon', 'period' = 'year')) %>%
-            dplyr::select(-period)
-
-        } else {
-
-          # read population based on the population data type
-          # output from wrf resolution: ['ID', 'subRegion', 'lat', 'lon', 'year', 'value' ]
-          # output from 1/8th degree pop data: ['ID', 'subRegion', 'lat', 'lon', 'year', 'value' ]
-          population_j_grid <- helios::read_population(file = population_j,
-                                                       time_periods = time_periods)
-
-        }
-
-        population_j_grid <- helios::match_grids(from_df = population_j_grid,
-                                                 to_df = ncdf_pivot,
-                                                 time_periods = time_periods)
-
-        grid_intersect <- ncdf_pivot %>%
-          dplyr::select(lon, lat) %>%
-          dplyr::distinct() %>%
-          dplyr::inner_join(population_j_grid %>% dplyr::select(lon, lat),
-                            by = c('lon', 'lat'))
-        # check if population's grid matches climate data's grids
-        if(nrow(grid_intersect) == 0) {
-          stop('Climate and population data has different resolutions.')
-        }
-
-        population_j_grid <- helios::find_mapping_grid(data = population_j_grid,
-                                                       spatial = spatial)
+        population_j_weighted <- pop_list$population_weighted
+        population_j_weighted_gridregion <- pop_list$population_weighted_gridregion
 
 
-        # Create population weighted raster if any population years in ncdf years
-        if (any(unique(population_j_grid$year) %in% years)) {
-
-          # Weighted population tibble
-          print('Starting population weighting ...')
-
-          population_j_weighted <- population_j_grid %>%
-            dplyr::group_by(region, ID, subRegion, year) %>%
-            dplyr::mutate(subRegion_total_value = sum(value, na.rm = T)) %>%
-            dplyr::ungroup() %>%
-            dplyr::mutate(pop_weight = value / subRegion_total_value)
-
-          # for IM3 grid region analysis
-          if(im3_analysis){
-            population_j_weighted_gridregion <- population_j_grid %>%
-              dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
-              dplyr::mutate(subRegion = grid_region,
-                            ID = grid_region) %>%
-              dplyr::select(-grid_region) %>%
-              dplyr::group_by(region, ID, subRegion, year) %>%
-              dplyr::mutate(subRegion_total_value = sum(value, na.rm = T)) %>%
-              dplyr::ungroup() %>%
-              dplyr::mutate(pop_weight = value / subRegion_total_value)
-          }
-
-          print('Completed population weighting.')
-
-          #......................
-          # Step 3: Calculate Heating and Cooling Degrees (Kelvin to F)
-          # Step 4: Population weight for each grid for each year
-          #......................
+        #......................
+        # Step 3: Calculate Heating and Cooling Degrees (Kelvin to F)
+        # Step 4: Population weight for each grid for each year
+        #......................
 
 
-          ncdf_hdcd_pop_weighted <- ncdf_pivot %>%
-            dplyr::left_join(population_j_weighted %>%
+        ncdf_hdcd_pop_weighted <- ncdf_pivot %>%
+          dplyr::left_join(population_j_weighted %>%
+                             dplyr::select(-value, -subRegion_total_value),
+                           by = c('ID', 'region', 'subRegion', 'lat', 'lon', 'year')) %>%
+          dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
+                        value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
+
+        # aggregated to region, but leave the datetime for later segment, monthly, annual aggregation
+        hdcd_region_i <- ncdf_hdcd_pop_weighted %>%
+          dplyr::group_by(region, subRegion, ID, year, datetime) %>%
+          dplyr::summarise(value = dplyr::if_else(any(is.na(pop_weight)), mean(value), sum(value))) %>%
+          dplyr::ungroup()
+
+        # combine results from all the input ncdf_i
+        hdcd_region <- dplyr::bind_rows(hdcd_region, hdcd_region_i)
+
+        # for IM3 grid region analysis
+        if(im3_analysis){
+
+          ncdf_pivot_gridregion <- ncdf_pivot %>%
+            dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
+            dplyr::mutate(subRegion = grid_region,
+                          ID = grid_region) %>%
+            dplyr::select(-grid_region)
+
+          ncdf_hdcd_pop_weighted_gridregion <- ncdf_pivot_gridregion %>%
+            dplyr::left_join(population_j_weighted_gridregion %>%
                                dplyr::select(-value, -subRegion_total_value),
                              by = c('ID', 'region', 'subRegion', 'lat', 'lon', 'year')) %>%
             dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
                           value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
 
           # aggregated to region, but leave the datetime for later segment, monthly, annual aggregation
-          hdcd_region_i <- ncdf_hdcd_pop_weighted %>%
+          hdcd_gridregion_i <- ncdf_hdcd_pop_weighted_gridregion %>%
             dplyr::group_by(region, subRegion, ID, year, datetime) %>%
             dplyr::summarise(value = dplyr::if_else(any(is.na(pop_weight)), mean(value), sum(value))) %>%
             dplyr::ungroup()
 
-          # combine results from all the input ncdf_i
-          hdcd_region <- dplyr::bind_rows(hdcd_region, hdcd_region_i)
-
-          # for IM3 grid region analysis
-          if(im3_analysis){
-
-            ncdf_pivot_gridregion <- ncdf_pivot %>%
-              dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
-              dplyr::mutate(subRegion = grid_region,
-                            ID = grid_region) %>%
-              dplyr::select(-grid_region)
-
-            ncdf_hdcd_pop_weighted_gridregion <- ncdf_pivot_gridregion %>%
-              dplyr::left_join(population_j_weighted_gridregion %>%
-                                 dplyr::select(-value, -subRegion_total_value),
-                               by = c('ID', 'region', 'subRegion', 'lat', 'lon', 'year')) %>%
-              dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
-                            value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
-
-            # aggregated to region, but leave the datetime for later segment, monthly, annual aggregation
-            hdcd_gridregion_i <- ncdf_hdcd_pop_weighted_gridregion %>%
-              dplyr::group_by(region, subRegion, ID, year, datetime) %>%
-              dplyr::summarise(value = dplyr::if_else(any(is.na(pop_weight)), mean(value), sum(value))) %>%
-              dplyr::ungroup()
-
-            hdcd_gridregion <- dplyr::bind_rows(hdcd_gridregion, hdcd_gridregion_i)
-          }
-
-        } else {
-          print(paste0('Population data years: ', paste(names(population_j_grid)[!grepl('RID|lat|lon', names(population_j_grid))], collapse = ',')))
-          print(paste0('ncdf data years: ', as.character(years)))
-          stop('Population data provided does not contain data for any of the years in the ncdf data.')
+          hdcd_gridregion <- dplyr::bind_rows(hdcd_gridregion, hdcd_gridregion_i)
         }
+
+
       } else {
         stop('Please provide valide population file path.')
       }
@@ -381,6 +272,21 @@ hdcd <- function(ncdf = NULL,
 
       # hdcd segments degree hours
       if(!is.null(elec_share) & im3_analysis){
+
+        # use the population at each time period for the HDCD years within that period
+        # (1) year 2020 for period 2020
+        # (2) year 2021 - 2025 for period 2025, ..., year 2091-2095 for period 2095
+        # (3) year 2096 - 2099 for period 2100
+        # get the trend-representative year for each 5-year period
+        periods <- c(as.Date("2020-01-01"),
+                     as.Date("2021-01-01"),
+                     seq(as.Date("2026-01-01"), as.Date("2101-01-01"), by= "5 years"))
+
+        mapping_time_period <- data.frame(year = time_periods) %>%
+          dplyr::mutate(date = as.Date(paste0(year, '-01-01')),
+                        period = cut(date, breaks = periods, right = FALSE, labels = periods[2:length(periods)]),
+                        period = lubridate::year(as.Date(period) - 1)) %>%
+          dplyr::select(-date)
 
         # if elec_share is provided, calculate the super peak hours that have
         # the 10 highest HDH (or CDH)

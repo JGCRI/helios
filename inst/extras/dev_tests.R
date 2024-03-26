@@ -28,6 +28,19 @@ ncdf_grid <- helios::read_ncdf(ncdf = path_to_climate_ncdf,
 
 pop <- helios::read_population(path_to_population, time_periods = 2020)
 
+ncdf_pivot <- helios::process_temperature(ncdf = path_to_climate_ncdf,
+                                          model = 'wrf',
+                                          ncdf_var = 'T2',
+                                          time_periods = 2020,
+                                          spatial = 'gcam_us49')
+
+pop_grid <- helios::process_population(population = path_to_population,
+                                       coordinates = ncdf_pivot,
+                                       time_periods = 2020,
+                                       climate_years = NULL,
+                                       spatial = 'gcam_us49',
+                                       im3_analysis = TRUE)
+
 # check mapping grid
 mapping <- helios::find_mapping_grid(data = pop,
                                      spatial = 'gcam_regions31_us52')
@@ -138,10 +151,10 @@ elec_share <- data.table::fread(
   dplyr::filter(scenario == 'rcp85hotter_ssp5')
 
 # test file list
-path_to_climate_ncdf <- c(
-  helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc'),
-  helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc')
-)
+# path_to_climate_ncdf <- c(
+#   helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc'),
+#   helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc')
+# )
 
 hdcd_wrf_all <- helios::hdcd(
   ncdf = path_to_climate_ncdf,
