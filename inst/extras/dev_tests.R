@@ -28,7 +28,7 @@ ncdf_grid <- helios::read_ncdf(ncdf = path_to_climate_ncdf,
 
 pop <- helios::read_population(path_to_population, time_periods = 2020)
 
-ncdf_pivot <- helios::process_temperature(ncdf = path_to_climate_ncdf,
+ncdf_grid <- helios::process_temperature(ncdf = path_to_climate_ncdf,
                                           model = 'wrf',
                                           ncdf_var = 'T2',
                                           time_periods = 2020,

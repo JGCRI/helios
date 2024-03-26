@@ -9,7 +9,8 @@ process_temperature(
   ncdf_var = NULL,
   model = NULL,
   spatial = NULL,
-  time_periods = NULL
+  time_periods = NULL,
+  reference_temp_F = 65
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ process_temperature(
 \item{spatial}{Default = NULL. String for spatial aggregation boundaries. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52', 'gcam_countries', 'gcam_basins'.}
 
 \item{time_periods}{Default = NULL. Integer vector for selected time periods to process. If not specified, set to GCAM periods seq(2020, 2100, 5).}
+
+\item{reference_temp_F}{Default = 65. Integer for comfort temperature in degree F. 65 degree F is the comfort baseline temperature typically used by NOAA. The comfort temperature can vary by regions.}
 }
 \description{
 Process temperature netCDF and output standard temperature structure

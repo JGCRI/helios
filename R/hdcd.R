@@ -143,14 +143,42 @@ hdcd <- function(ncdf = NULL,
       print('.........................................')
       print(paste0('Running hdcd for file: ', ncdf_i))
 
-      ncdf_list <- helios::process_temperature(ncdf = ncdf_i,
+      ncdf_grid <- helios::process_temperature(ncdf = ncdf_i,
                                                model = model,
                                                ncdf_var = ncdf_var,
                                                time_periods = time_periods,
-                                               spatial = spatial)
-      ncdf_pivot <- ncdf_list$ncdf_pivot
-      years <- ncdf_list$ncdf_years
-      index_subset <- ncdf_list$index_subset
+                                               spatial = spatial,
+                                               reference_temp_F = reference_temp_F)
+
+
+      # get the actual datetime from the ncdf
+      ncdf_times <- names(ncdf_grid)[
+        !names(ncdf_grid) %in% c('lat', 'lon', 'region', 'subRegion', 'ID')]
+
+      indices <- as.integer(grepl(paste0(time_periods, collapse = '|'), ncdf_times))
+      index_subset <- c(1:length(ncdf_times)) * indices
+      index_subset <- index_subset[!index_subset %in% 0]
+      years <- unique(substr(ncdf_times, 1, 4))
+
+      if (model == 'wrf') {
+
+        ncdf_pivot <- ncdf_grid %>%
+          tidyr::pivot_longer(cols = dplyr::all_of(ncdf_times), names_to = 'datetime') %>%
+          dplyr::mutate(datetime = as.POSIXct(datetime,
+                                              format = '%Y-%m-%d_%H:%M:%S',
+                                              tz = 'UTC')) %>%
+          dplyr::mutate(year = lubridate::year(datetime))
+
+      } else if (model == 'cmip') {
+
+        ncdf_pivot <- ncdf_grid %>%
+          tidyr::pivot_longer(cols = dplyr::all_of(ncdf_times), names_to = 'datetime') %>%
+          dplyr::mutate(datetime = as.POSIXct(datetime,
+                                              format = '%Y-%m-%d',
+                                              tz = 'UTC')) %>%
+          dplyr::mutate(year = lubridate::year(datetime))
+
+      }
 
 
       #......................
@@ -183,8 +211,7 @@ hdcd <- function(ncdf = NULL,
           dplyr::left_join(population_j_weighted %>%
                              dplyr::select(-value, -subRegion_total_value),
                            by = c('ID', 'region', 'subRegion', 'lat', 'lon', 'year')) %>%
-          dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
-                        value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
+          dplyr::mutate(value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
 
         # aggregated to region, but leave the datetime for later segment, monthly, annual aggregation
         hdcd_region_i <- ncdf_hdcd_pop_weighted %>%
