@@ -3,6 +3,7 @@
 export(create_name)
 export(diagnostics)
 export(find_mapping_grid)
+export(format_temperature)
 export(hdcd)
 export(mapping_grid)
 export(match_grids)

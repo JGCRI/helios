@@ -34,6 +34,10 @@ ncdf_grid <- helios::process_temperature(ncdf = path_to_climate_ncdf,
                                           time_periods = 2020,
                                           spatial = 'gcam_us49')
 
+ncdf_format <- helios::format_temperature(ncdf_grid = ncdf_grid,
+                                          model = 'wrf',
+                                          to_year = 2045)$ncdf_pivot
+
 pop_grid <- helios::process_population(population = path_to_population,
                                        coordinates = ncdf_pivot,
                                        time_periods = 2020,
@@ -172,7 +176,8 @@ hdcd_wrf_all <- helios::hdcd(
   name_append = '',
   save = T,
   im3_analysis = T,
-  elec_share = elec_share
+  elec_share = elec_share,
+  to_year = 2045
 )
 
 helios::diagnostics(

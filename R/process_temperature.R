@@ -2,7 +2,7 @@
 #'
 #' Process temperature netCDF and output standard temperature structure
 #'
-#' @param ncdf Default = NULL. String of path to the NetCDF file.
+#' @param ncdf Default = NULL. String or vector for paths to the NetCDF or CSV file. Or data table with the same output format from the process_temperature.
 #' @param ncdf_var Default = NULL. String for variable name to extract from NetCDF file. Temperature var is 'tas' for CMIP models; 'T2' for WRF model.
 #' @param model Default = NULL. String for climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.
 #' @param spatial Default = NULL. String for spatial aggregation boundaries. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52', 'gcam_countries', 'gcam_basins'.
@@ -19,21 +19,38 @@ process_temperature <- function(ncdf = NULL,
                                 time_periods = NULL,
                                 reference_temp_F = 65){
 
-  # read ncdf file
-  ncdf_grid <- helios::read_ncdf(ncdf = ncdf,
-                                 model = model,
-                                 var = ncdf_var,
-                                 time_periods = time_periods)
+  if (is.data.frame(ncdf)){
 
-  # find region and subRegion info based on data grid lat lon
-  ncdf_grid <- helios::find_mapping_grid(data = ncdf_grid,
-                                         spatial = spatial)
+     ncdf_grid <- ncdf
 
-  # calculate heating and cooling degrees
-  ncdf_grid <- ncdf_grid %>%
-    dplyr::mutate(across(c(-lat, -lon, -region, -subRegion, -ID),
-                         ~ round((((. - 273.15) * 9/5) + 32) - reference_temp_F, 2)))
+  } else {
 
+    file_ext <- strsplit(basename(ncdf), '\\.')[[1]][-1]
+
+    if(file_ext == 'nc'){
+
+      # read ncdf file
+      ncdf_grid <- helios::read_ncdf(ncdf = ncdf,
+                                     model = model,
+                                     var = ncdf_var,
+                                     time_periods = time_periods)
+
+      # find region and subRegion info based on data grid lat lon
+      ncdf_grid <- helios::find_mapping_grid(data = ncdf_grid,
+                                             spatial = spatial)
+
+      # calculate heating and cooling degrees
+      ncdf_grid <- ncdf_grid %>%
+        dplyr::mutate(across(c(-lat, -lon, -region, -subRegion, -ID),
+                             ~ round((((. - 273.15) * 9/5) + 32) - reference_temp_F, 2)))
+
+    } else if (file_ext == 'csv') {
+
+      ncdf_grid <- data.table::fread(file = ncdf)
+
+    }
+
+  }
 
 
   return(ncdf_grid)

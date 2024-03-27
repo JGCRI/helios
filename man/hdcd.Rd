@@ -20,7 +20,8 @@ hdcd(
   name_append = "",
   save = T,
   im3_analysis = T,
-  elec_share = NULL
+  elec_share = NULL,
+  to_year = NULL
 )
 }
 \arguments{
@@ -55,6 +56,8 @@ hdcd(
 \item{im3_analysis}{Default = T. Output annual HDCD at grid region scale for trend-representative year analysis}
 
 \item{elec_share}{Default = NULL. data frame for the fraction of building heating and cooling energy consumption met by electricity at grid region scale. Column [subRegion, year, HDCD, elec_frac]. If elec_share is provided, helios will recalculate the super peak hours; Otherwise, helios will use the default super peak hours. Note, to get the correct super peak hours, the ncdf argument should include all files that cover full years.}
+
+\item{to_year}{Default = NULL. Integer for the time step the design year/representative year is for.}
 }
 \description{
 Heating and Cooling Degree processing for GCAM from various sources such as WRF and CMIP

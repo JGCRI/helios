@@ -2,7 +2,7 @@
 #'
 #' Heating and Cooling Degree processing for GCAM from various sources such as WRF and CMIP
 #'
-#' @param ncdf Default = NULL. String or vector for paths to the NetCDF file.
+#' @param ncdf Default = NULL. String or vector for paths to the NetCDF or CSV file. Or data table with the same output format from the process_temperature.
 #' @param ncdf_var Default = NULL. String for variable name to extract from NetCDF file. Temperature var is 'tas' for CMIP models; 'T2' for WRF model.
 #' @param model Default = NULL. String for climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.
 #' @param model_timestep Default = NULL. String for time step of input climate data. Options: 'hourly' or 'daily'
@@ -18,6 +18,7 @@
 #' @param name_append Default = ''. String for the name to append to output file name.
 #' @param im3_analysis Default = T. Output annual HDCD at grid region scale for trend-representative year analysis
 #' @param elec_share Default = NULL. data frame for the fraction of building heating and cooling energy consumption met by electricity at grid region scale. Column [subRegion, year, HDCD, elec_frac]. If elec_share is provided, helios will recalculate the super peak hours; Otherwise, helios will use the default super peak hours. Note, to get the correct super peak hours, the ncdf argument should include all files that cover full years.
+#' @param to_year Default = NULL. Integer for the time step the design year/representative year is for.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -37,7 +38,8 @@ hdcd <- function(ncdf = NULL,
                  name_append = '',
                  save = T,
                  im3_analysis = T,
-                 elec_share = NULL) {
+                 elec_share = NULL,
+                 to_year = NULL) {
 
   print('Starting function process_hdcd...')
 
@@ -143,6 +145,7 @@ hdcd <- function(ncdf = NULL,
       print('.........................................')
       print(paste0('Running hdcd for file: ', ncdf_i))
 
+      # read temperature data and calculate gridded HD and CD
       ncdf_grid <- helios::process_temperature(ncdf = ncdf_i,
                                                model = model,
                                                ncdf_var = ncdf_var,
@@ -150,35 +153,14 @@ hdcd <- function(ncdf = NULL,
                                                spatial = spatial,
                                                reference_temp_F = reference_temp_F)
 
+      # format ncdf_grid
+      ncdf_format <- helios::format_temperature(ncdf_grid = ncdf_grid,
+                                                model = model,
+                                                to_year = to_year)
 
-      # get the actual datetime from the ncdf
-      ncdf_times <- names(ncdf_grid)[
-        !names(ncdf_grid) %in% c('lat', 'lon', 'region', 'subRegion', 'ID')]
-
-      indices <- as.integer(grepl(paste0(time_periods, collapse = '|'), ncdf_times))
-      index_subset <- c(1:length(ncdf_times)) * indices
-      index_subset <- index_subset[!index_subset %in% 0]
-      years <- unique(substr(ncdf_times, 1, 4))
-
-      if (model == 'wrf') {
-
-        ncdf_pivot <- ncdf_grid %>%
-          tidyr::pivot_longer(cols = dplyr::all_of(ncdf_times), names_to = 'datetime') %>%
-          dplyr::mutate(datetime = as.POSIXct(datetime,
-                                              format = '%Y-%m-%d_%H:%M:%S',
-                                              tz = 'UTC')) %>%
-          dplyr::mutate(year = lubridate::year(datetime))
-
-      } else if (model == 'cmip') {
-
-        ncdf_pivot <- ncdf_grid %>%
-          tidyr::pivot_longer(cols = dplyr::all_of(ncdf_times), names_to = 'datetime') %>%
-          dplyr::mutate(datetime = as.POSIXct(datetime,
-                                              format = '%Y-%m-%d',
-                                              tz = 'UTC')) %>%
-          dplyr::mutate(year = lubridate::year(datetime))
-
-      }
+      ncdf_pivot <- ncdf_format$ncdf_pivot
+      index_subset <- ncdf_format$index_subset
+      years <- ncdf_format$years
 
 
       #......................
