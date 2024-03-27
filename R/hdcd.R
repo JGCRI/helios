@@ -217,8 +217,7 @@ hdcd <- function(ncdf = NULL,
             dplyr::left_join(population_j_weighted_gridregion %>%
                                dplyr::select(-value, -subRegion_total_value),
                              by = c('ID', 'region', 'subRegion', 'lat', 'lon', 'year')) %>%
-            dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
-                          value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
+            dplyr::mutate(value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
 
           # aggregated to region, but leave the datetime for later segment, monthly, annual aggregation
           hdcd_gridregion_i <- ncdf_hdcd_pop_weighted_gridregion %>%

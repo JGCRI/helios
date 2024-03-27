@@ -160,6 +160,8 @@ elec_share <- data.table::fread(
 #   helios::pkg_example('wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc')
 # )
 
+# path_to_climate_ncdf <- file.path('C:/WorkSpace/IM3/helios/hddcdd/nersc/output/wrf_temperature/rcp85hotter_2020_2099/t2_rcp85hotter_2020.csv')
+
 hdcd_wrf_all <- helios::hdcd(
   ncdf = path_to_climate_ncdf,
   ncdf_var = 'T2',
@@ -177,14 +179,14 @@ hdcd_wrf_all <- helios::hdcd(
   save = T,
   im3_analysis = T,
   elec_share = elec_share,
-  to_year = 2045
+  to_year = NULL
 )
 
 helios::diagnostics(
   hdcd_segment = hdcd_wrf_all$hdcd_comb_gcam,
   hdcd_monthly = hdcd_wrf_all$hdcd_comb_monthly,
   min_diagnostic_months = 1,
-  folder = file.path(getwd(), 'output'),
+  folder = file.path(getwd(), 'output_im3_test'),
   name_append = 'wrf_all'
 )
 

@@ -27,5 +27,5 @@ process_temperature(
 \item{reference_temp_F}{Default = 65. Integer for comfort temperature in degree F. 65 degree F is the comfort baseline temperature typically used by NOAA. The comfort temperature can vary by regions.}
 }
 \description{
-Process temperature netCDF and output standard temperature structure
+Process temperature netCDF and output standard HDCD in degree F
 }
