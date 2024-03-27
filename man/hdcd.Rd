@@ -25,7 +25,7 @@ hdcd(
 )
 }
 \arguments{
-\item{ncdf}{Default = NULL. String or vector for paths to the NetCDF file.}
+\item{ncdf}{Default = NULL. String or vector for paths to the NetCDF or CSV file. Or data table with the same output format from the process_temperature.}
 
 \item{ncdf_var}{Default = NULL. String for variable name to extract from NetCDF file. Temperature var is 'tas' for CMIP models; 'T2' for WRF model.}
 
