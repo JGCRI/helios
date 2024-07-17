@@ -8,6 +8,7 @@
 #' @param climate_years Default = NULL. Integer vector of years that is covered by the climate data to check if the population years overlap with the climate years. If Null, skip the check.
 #' @param spatial Default = NULL. String for spatial aggregation boundaries. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52', 'gcam_countries', 'gcam_basins'.
 #' @param im3_analysis Default = TRUE. Output annual HDCD at grid region scale for trend-representative year analysis
+#' @param use_elec_interconnect Default = F. Set to TRUE to output degree-days and degree-hours at electricity interconnection level (instead of grid region level). IM3 analysis enabled only.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -17,7 +18,8 @@ process_population <- function(population = NULL,
                                time_periods = NULL,
                                climate_years = NULL,
                                spatial = NULL,
-                               im3_analysis = TRUE){
+                               im3_analysis = TRUE,
+                               use_elec_interconnect = FALSE){
 
   if (im3_analysis) {
 
@@ -96,8 +98,15 @@ process_population <- function(population = NULL,
 
     # for IM3 grid region analysis
     if(im3_analysis){
+
+      if(use_elec_interconnect){
+        mapping_elec_subregion <- helios::mapping_states_interconnect
+      } else {
+        mapping_elec_subregion <- helios::mapping_states_gridregion
+      }
+
       population_weighted_gridregion <- population_grid %>%
-        dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
+        dplyr::left_join(mapping_elec_subregion, by = 'subRegion') %>%
         dplyr::mutate(subRegion = grid_region,
                       ID = grid_region) %>%
         dplyr::select(-grid_region) %>%

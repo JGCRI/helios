@@ -10,7 +10,8 @@ process_population(
   time_periods = NULL,
   climate_years = NULL,
   spatial = NULL,
-  im3_analysis = TRUE
+  im3_analysis = TRUE,
+  use_elec_interconnect = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ process_population(
 \item{spatial}{Default = NULL. String for spatial aggregation boundaries. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52', 'gcam_countries', 'gcam_basins'.}
 
 \item{im3_analysis}{Default = TRUE. Output annual HDCD at grid region scale for trend-representative year analysis}
+
+\item{use_elec_interconnect}{Default = F. Set to TRUE to output degree-days and degree-hours at electricity interconnection level (instead of grid region level). IM3 analysis enabled only.}
 }
 \description{
 Process population and output standard population structure given the spatial scale

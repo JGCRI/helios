@@ -437,3 +437,19 @@ mapping_states_gridregion <- data.table::fread(
   dplyr::select(subRegion = state, grid_region)
 
 usethis::use_data(mapping_states_gridregion, version = 3, overwrite = T)
+
+
+#--------------------------------
+# State to Grid Region Mapping
+#--------------------------------
+# read state to grid region mapping from gcamdata
+mapping_states_interconnect <- data.table::fread(
+  file.path('C:/WorkSpace/github/helios/inst/extras/GCAM-USA_interconnections.csv')) %>%
+  dplyr::left_join(rmap::mapUS52 %>% tibble::as_tibble() %>% dplyr::select(state_name = subRegionAlt, state = subRegion),
+                   by = 'state_name') %>%
+  dplyr::mutate(interconnect = ifelse(interconnect == 'n/a', NA, interconnect),
+                interconnect = ifelse(interconnect == 'Eastern Interconnection', 'EI', interconnect),
+                interconnect = ifelse(is.na(interconnect), state, interconnect)) %>%
+  dplyr::select(subRegion = state, grid_region = interconnect)
+
+usethis::use_data(mapping_states_interconnect, version = 3, overwrite = T)

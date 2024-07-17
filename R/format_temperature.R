@@ -6,7 +6,7 @@
 #' @param ncdf_grid Default = NULL. output from process_temperature.
 #' @param model Default = NULL. String for climate model that generates the ncdf file. Options: 'wrf' or 'cmip'.
 #' @param time_periods Default = NULL. Integer vector for selected time periods to process. If not specified, set to GCAM periods seq(2020, 2100, 5).
-#' @param to_year Default = NULL. Integer for the time step the design year/representative year is for.
+#' @param to_year Default = NULL. Integer for renaming the time step the design year/representative year is for.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -32,7 +32,7 @@ format_temperature <- function(ncdf_grid = NULL,
     ncdf_times_update <- gsub(years, to_year, ncdf_times)
 
     ncdf_grid <- ncdf_grid %>%
-      dplyr::rename_at(vars(ncdf_times), ~ ncdf_times_update)
+      dplyr::rename_at(dplyr::vars(ncdf_times), ~ ncdf_times_update)
 
     ncdf_times <- ncdf_times_update
 

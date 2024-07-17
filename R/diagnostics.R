@@ -66,7 +66,7 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
         # calculate the number of hours in each segment by state
         segment_hours <- helios::segment_map_utc %>%
           dplyr::group_by(subRegion, segment) %>%
-          dplyr::summarise(segment_hours = n()) %>%
+          dplyr::summarise(segment_hours = dplyr::n()) %>%
           dplyr::ungroup()
 
         if(any(grepl('grid', unique(hdcd_segment$subRegion)))) {
@@ -77,11 +77,31 @@ diagnostics <- function(hdcd_segment = tibble::tibble(),
             dplyr::rename(subRegion = grid_region) %>%
             dplyr::distinct()
         }
+
+        if(any(grepl('WECC', unique(hdcd_segment$subRegion)))) {
+          # calculate the number of hours in each segment by electricity interconnection region
+          # if at electricity interconnection level, select Central Northeast grid region (e.g., Montana) as the
+          # Eastern interconnection's segment time
+          # Note: The eastern interconnection is not suppose to be used in GO-CERF-GO (WECC is the one to be used)
+          segment_hours_temp <- segment_hours %>%
+            dplyr::filter(subRegion == 'MO') %>%
+            dplyr::mutate(subRegion = 'EI')
+
+          segment_hours <- segment_hours %>%
+            dplyr::left_join(helios::mapping_states_interconnect, by = 'subRegion') %>%
+            dplyr::select(-subRegion) %>%
+            dplyr::distinct() %>%
+            dplyr::rename(subRegion = grid_region) %>%
+            dplyr::filter(!subRegion == 'EI') %>%
+            dplyr::bind_rows(segment_hours_temp)
+
+        }
+
       } else {
 
         segment_hours <- segment_map %>%
           dplyr::group_by(subRegion, year, segment) %>%
-          dplyr::summarise(segment_hours = n()) %>%
+          dplyr::summarise(segment_hours = dplyr::n()) %>%
           dplyr::ungroup()
 
       }

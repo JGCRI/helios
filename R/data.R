@@ -238,6 +238,20 @@
 #' }
 "mapping_states_gridregion"
 
+#--------------------------------
+# State to Electricity Interconnection Mapping
+#--------------------------------
+#' mapping_states_interconnect
+#'
+#' @source electricity trade update from Matthew Binsted
+#' @format tibble::tribble
+#' @examples
+#' \dontrun{
+#'  library(helios);
+#'  mapping_states_interconnect <- helios::mapping_states_interconnect
+#' }
+"mapping_states_interconnect"
+
 
 #.................................
 # Pre-processed Population Files

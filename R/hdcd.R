@@ -19,6 +19,7 @@
 #' @param im3_analysis Default = T. Output annual HDCD at grid region scale for trend-representative year analysis
 #' @param elec_share Default = NULL. data frame for the fraction of building heating and cooling energy consumption met by electricity at grid region scale. Column [subRegion, year, HDCD, elec_frac]. If elec_share is provided, helios will recalculate the super peak hours; Otherwise, helios will use the default super peak hours. Note, to get the correct super peak hours, the ncdf argument should include all files that cover full years.
 #' @param to_year Default = NULL. Integer for the time step the design year/representative year is for.
+#' @param use_elec_interconnect Default = F. Set to TRUE to output degree-days and degree-hours at electricity interconnection level (instead of grid region level). IM3 analysis enabled only.
 #' @importFrom magrittr %>%
 #' @importFrom data.table :=
 #' @export
@@ -39,7 +40,8 @@ hdcd <- function(ncdf = NULL,
                  save = T,
                  im3_analysis = T,
                  elec_share = NULL,
-                 to_year = NULL) {
+                 to_year = NULL,
+                 use_elec_interconnect = F) {
 
   print('Starting function process_hdcd...')
 
@@ -177,7 +179,8 @@ hdcd <- function(ncdf = NULL,
                                                time_periods = time_periods,
                                                climate_years = years,
                                                spatial = spatial,
-                                               im3_analysis = im3_analysis)
+                                               im3_analysis = im3_analysis,
+                                               use_elec_interconnect = use_elec_interconnect)
 
         population_j_weighted <- pop_list$population_weighted
         population_j_weighted_gridregion <- pop_list$population_weighted_gridregion
@@ -207,8 +210,15 @@ hdcd <- function(ncdf = NULL,
         # for IM3 grid region analysis
         if(im3_analysis){
 
+          if(use_elec_interconnect){
+            mapping_elec_subregion <- helios::mapping_states_interconnect
+          } else {
+            mapping_elec_subregion <- helios::mapping_states_gridregion
+          }
+
+
           ncdf_pivot_gridregion <- ncdf_pivot %>%
-            dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
+            dplyr::left_join(mapping_elec_subregion, by = 'subRegion') %>%
             dplyr::mutate(subRegion = grid_region,
                           ID = grid_region) %>%
             dplyr::select(-grid_region)
@@ -311,7 +321,7 @@ hdcd <- function(ncdf = NULL,
           dplyr::select(grid_region = subRegion, year, HDCD, elec_frac)
 
         # for state level calculation
-        elec_share_region <- helios::mapping_states_gridregion %>%
+        elec_share_region <- mapping_elec_subregion %>%
           dplyr::left_join(elec_share_region, by = c('grid_region')) %>%
           dplyr::select(subRegion, year, HDCD, elec_frac)
 
@@ -430,11 +440,32 @@ hdcd <- function(ncdf = NULL,
             dplyr::select(subRegion, year, HDCD, elec_frac)
 
           # segment map for grid regions
-          segment_map_utc_no_superpeak_gridregion <- helios::segment_map_utc_no_superpeak %>%
-            dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
-            dplyr::select(-subRegion) %>%
-            dplyr::distinct() %>%
-            dplyr::rename(subRegion = grid_region)
+          if(use_elec_interconnect){
+            # if at electricity interconnection level, select Central Northeast grid region (e.g., Montana) as the
+            # Eastern interconnection's segment time
+            # Note: The eastern interconnection is not suppose to be used in GO-CERF-GO (WECC is the one to be used)
+            segment_map_utc_no_superpeak_gridregion_temp <-  helios::segment_map_utc_no_superpeak %>%
+              dplyr::filter(subRegion == 'MO') %>%
+              dplyr::mutate(subRegion = 'EI')
+
+            segment_map_utc_no_superpeak_gridregion <- helios::segment_map_utc_no_superpeak %>%
+              dplyr::left_join(mapping_elec_subregion, by = 'subRegion') %>%
+              dplyr::select(-subRegion) %>%
+              dplyr::distinct() %>%
+              dplyr::rename(subRegion = grid_region) %>%
+              dplyr::filter(!subRegion == 'EI') %>%
+              dplyr::bind_rows(segment_map_utc_no_superpeak_gridregion_temp)
+
+          } else {
+
+            segment_map_utc_no_superpeak_gridregion <- helios::segment_map_utc_no_superpeak %>%
+              dplyr::left_join(mapping_elec_subregion, by = 'subRegion') %>%
+              dplyr::select(-subRegion) %>%
+              dplyr::distinct() %>%
+              dplyr::rename(subRegion = grid_region)
+
+          }
+
 
           # calculate the HDCD
           hdcd_gridregion_segments <- hdcd_gridregion %>%
@@ -465,7 +496,7 @@ hdcd <- function(ncdf = NULL,
 
           # segment map for grid regions
           segment_map_utc_gridregion <- helios::segment_map_utc %>%
-            dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
+            dplyr::left_join(mapping_elec_subregion, by = 'subRegion') %>%
             dplyr::select(-subRegion) %>%
             dplyr::distinct() %>%
             dplyr::rename(subRegion = grid_region)
@@ -532,7 +563,7 @@ hdcd <- function(ncdf = NULL,
 
             # create building service structure for grid region
             L2441.HDDCDD_Fixed_gcamusa_seg_gridregion <- helios::L2441.HDDCDD_Fixed_gcamusa_seg %>%
-              dplyr::left_join(helios::mapping_states_gridregion, by = 'subRegion') %>%
+              dplyr::left_join(mapping_elec_subregion, by = 'subRegion') %>%
               dplyr::select(-subRegion) %>%
               dplyr::rename(subRegion = grid_region) %>%
               dplyr::distinct()

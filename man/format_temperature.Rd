@@ -18,7 +18,7 @@ format_temperature(
 
 \item{time_periods}{Default = NULL. Integer vector for selected time periods to process. If not specified, set to GCAM periods seq(2020, 2100, 5).}
 
-\item{to_year}{Default = NULL. Integer for the time step the design year/representative year is for.}
+\item{to_year}{Default = NULL. Integer for renaming the time step the design year/representative year is for.}
 }
 \description{
 Format gridded temperature data and pivot it longer

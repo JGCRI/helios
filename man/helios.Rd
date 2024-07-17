@@ -2,6 +2,7 @@
 % Please edit documentation in R/helios.R
 \docType{package}
 \name{helios}
+\alias{helios-package}
 \alias{helios}
 \title{helios}
 \description{
@@ -11,4 +12,23 @@ Heating and Cooling Degree processing for GCAM from various sources such as WRF 
 \itemize{
 \item Github: https://github.com/JGCRI/helios
 \item Webpage: https://jgcri.github.io/helios}
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/JGCRI/helios}
+  \item Report bugs at \url{https://github.com/JGCRI/helios/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Mengqi Zhao \email{mengqi.zhao@pnnl.gov} (\href{https://orcid.org/0000-0001-5385-2758}{ORCID})
+
+Authors:
+\itemize{
+  \item Zarrar Khan \email{zarrar.khan@pnnl.gov} (\href{https://orcid.org/0000-0002-8147-8553}{ORCID})
+  \item Kalyn Dorheim (\href{https://orcid.org/0000-0001-8093-8397}{ORCID})
+  \item Chris Vernon (\href{https://orcid.org/0000-0002-3406-6214}{ORCID})
+}
+
 }

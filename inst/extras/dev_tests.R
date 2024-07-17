@@ -39,11 +39,12 @@ ncdf_format <- helios::format_temperature(ncdf_grid = ncdf_grid,
                                           to_year = 2045)$ncdf_pivot
 
 pop_grid <- helios::process_population(population = path_to_population,
-                                       coordinates = ncdf_pivot,
+                                       coordinates = ncdf_format,
                                        time_periods = 2020,
                                        climate_years = NULL,
                                        spatial = 'gcam_us49',
-                                       im3_analysis = TRUE)
+                                       im3_analysis = TRUE,
+                                       use_elec_interconnect = TRUE)
 
 # check mapping grid
 mapping <- helios::find_mapping_grid(data = pop,
@@ -150,8 +151,14 @@ path_to_climate_ncdf <- file.path(data_dir, 'climate', 'wrfout_d01_2020-01-01_01
 path_to_population <- file.path(
   data_dir, 'population', 'population_conus_total_ssp2_2020-2100_wrf_wgs84.csv')
 
+# for grid region
 elec_share <- data.table::fread(
   'C:/WorkSpace/IM3/helios/hddcdd/constance/output/im3_bldg_hdcd_electricity_fraction.csv') %>%
+  dplyr::filter(scenario == 'rcp85hotter_ssp5')
+
+# for electricity interconnection
+elec_share <- data.table::fread(
+  'C:/WorkSpace/IM3/helios/hddcdd/constance/output/im3_bldg_hdcd_electricity_intensity_interconnection.csv') %>%
   dplyr::filter(scenario == 'rcp85hotter_ssp5')
 
 # test file list
@@ -175,11 +182,12 @@ hdcd_wrf_all <- helios::hdcd(
   folder = file.path(getwd(), 'output_im3_test'),
   diagnostics = F,
   xml = F,
-  name_append = '',
+  name_append = 'interconnection',
   save = T,
   im3_analysis = T,
   elec_share = elec_share,
-  to_year = NULL
+  to_year = NULL,
+  use_elec_interconnect = T
 )
 
 helios::diagnostics(
@@ -187,7 +195,7 @@ helios::diagnostics(
   hdcd_monthly = hdcd_wrf_all$hdcd_comb_monthly,
   min_diagnostic_months = 1,
   folder = file.path(getwd(), 'output_im3_test'),
-  name_append = 'wrf_all'
+  name_append = 'interconnection'
 )
 
 
@@ -207,6 +215,10 @@ ncdf_grid <- helios::read_ncdf(ncdf = path_to_climate_ncdf,
                                var = 'tas',
                                time_periods = 2020)
 population_j_grid <- helios::read_population(path_to_population, time_periods = 2020)
+
+ncdf_format <- helios::format_temperature(ncdf_grid = ncdf_grid,
+                                          model = 'cmip',
+                                          to_year = NULL)$ncdf_pivot
 
 hdcd_cmip_all <- helios::hdcd(
   ncdf = path_to_climate_ncdf,
