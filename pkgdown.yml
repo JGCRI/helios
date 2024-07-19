@@ -1,8 +1,7 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.1.0
 pkgdown_sha: ~
 articles:
   vignette_gcam-regions: vignette_gcam-regions.html
   vignette_gcam-usa: vignette_gcam-usa.html
-last_built: 2024-02-22T20:38Z
-
+last_built: 2024-07-19T01:40Z

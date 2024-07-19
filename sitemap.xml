@@ -1,111 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/CONTRIBUTING.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/vignette_gcam-regions.html</loc>
-  </url>
-  <url>
-    <loc>/articles/vignette_gcam-usa.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/L244.HDDCDD_building.html</loc>
-  </url>
-  <url>
-    <loc>/reference/L2441.HDDCDD_Fixed_gcamusa_seg.html</loc>
-  </url>
-  <url>
-    <loc>/reference/create_name.html</loc>
-  </url>
-  <url>
-    <loc>/reference/diagnostics.html</loc>
-  </url>
-  <url>
-    <loc>/reference/example_cmip6_china_ncdf.html</loc>
-  </url>
-  <url>
-    <loc>/reference/example_hdcd_monthly_usa.html</loc>
-  </url>
-  <url>
-    <loc>/reference/example_hdcd_segment_usa.html</loc>
-  </url>
-  <url>
-    <loc>/reference/example_pop_china_ncdf.html</loc>
-  </url>
-  <url>
-    <loc>/reference/example_pop_usa_csv.html</loc>
-  </url>
-  <url>
-    <loc>/reference/example_wrf_usa_ncdf.html</loc>
-  </url>
-  <url>
-    <loc>/reference/find_mapping_grid.html</loc>
-  </url>
-  <url>
-    <loc>/reference/hdcd.html</loc>
-  </url>
-  <url>
-    <loc>/reference/helios.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mapUS52.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mapping_grid.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mapping_grid_region.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mapping_grid_region_US52.html</loc>
-  </url>
-  <url>
-    <loc>/reference/mapping_wrf_us49.html</loc>
-  </url>
-  <url>
-    <loc>/reference/match_grids.html</loc>
-  </url>
-  <url>
-    <loc>/reference/noaa_hddcdd.html</loc>
-  </url>
-  <url>
-    <loc>/reference/pkg_example.html</loc>
-  </url>
-  <url>
-    <loc>/reference/read_ncdf.html</loc>
-  </url>
-  <url>
-    <loc>/reference/read_population.html</loc>
-  </url>
-  <url>
-    <loc>/reference/save_xml.html</loc>
-  </url>
-  <url>
-    <loc>/reference/segment_map_utc.html</loc>
-  </url>
-  <url>
-    <loc>/reference/spatial_options.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/CONTRIBUTING.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/vignette_gcam-regions.html</loc></url>
+<url><loc>/articles/vignette_gcam-usa.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/L244.HDDCDD_building.html</loc></url>
+<url><loc>/reference/L2441.HDDCDD_Fixed_gcamusa_seg.html</loc></url>
+<url><loc>/reference/create_name.html</loc></url>
+<url><loc>/reference/diagnostics.html</loc></url>
+<url><loc>/reference/example_cmip6_china_ncdf.html</loc></url>
+<url><loc>/reference/example_hdcd_monthly_usa.html</loc></url>
+<url><loc>/reference/example_hdcd_segment_usa.html</loc></url>
+<url><loc>/reference/example_pop_china_ncdf.html</loc></url>
+<url><loc>/reference/example_pop_usa_csv.html</loc></url>
+<url><loc>/reference/example_wrf_usa_ncdf.html</loc></url>
+<url><loc>/reference/find_mapping_grid.html</loc></url>
+<url><loc>/reference/hdcd.html</loc></url>
+<url><loc>/reference/helios.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/mapUS52.html</loc></url>
+<url><loc>/reference/mapping_grid.html</loc></url>
+<url><loc>/reference/mapping_grid_region.html</loc></url>
+<url><loc>/reference/mapping_grid_region_US52.html</loc></url>
+<url><loc>/reference/mapping_wrf_us49.html</loc></url>
+<url><loc>/reference/match_grids.html</loc></url>
+<url><loc>/reference/noaa_hddcdd.html</loc></url>
+<url><loc>/reference/pkg_example.html</loc></url>
+<url><loc>/reference/read_ncdf.html</loc></url>
+<url><loc>/reference/read_population.html</loc></url>
+<url><loc>/reference/save_xml.html</loc></url>
+<url><loc>/reference/segment_map_utc.html</loc></url>
+<url><loc>/reference/spatial_options.html</loc></url>
 </urlset>
+
