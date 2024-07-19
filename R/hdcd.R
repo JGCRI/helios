@@ -204,7 +204,8 @@ hdcd <- function(ncdf = NULL,
 
             population_j_weighted <- population_j_grid %>%
               dplyr::group_by(region, ID, subRegion, year) %>%
-              dplyr::mutate(subRegion_total_value = sum(value, na.rm = T)) %>%
+              dplyr::mutate(subRegion_total_value = sum(value, na.rm = T),
+                            value = ifelse(is.na(value), 0, value)) %>%
               dplyr::ungroup() %>%
               dplyr::mutate(pop_weight = value / subRegion_total_value)
 
