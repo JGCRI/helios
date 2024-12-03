@@ -203,6 +203,8 @@ hdcd <- function(ncdf = NULL,
             print('Starting population weighting ...')
 
             population_j_weighted <- population_j_grid %>%
+              dplyr::filter(lat %in% grid_intersect$lat,
+                            lon %in% grid_intersect$lon) %>%
               dplyr::group_by(region, ID, subRegion, year) %>%
               dplyr::mutate(subRegion_total_value = sum(value, na.rm = T),
                             value = ifelse(is.na(value), 0, value)) %>%
@@ -221,8 +223,9 @@ hdcd <- function(ncdf = NULL,
               dplyr::left_join(population_j_weighted %>%
                                  dplyr::select(-value, -subRegion_total_value),
                                by = c('ID', 'region', 'subRegion', 'lat', 'lon', 'year')) %>%
-              dplyr::mutate(value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
-                            value = dplyr::if_else(is.na(pop_weight), value, value * pop_weight))
+              dplyr::mutate(pop_weight = ifelse(is.na(pop_weight), 0, pop_weight),
+                            value = (((value - 273.15) * 9/5) + 32) - reference_temp_F,
+                            value = value * pop_weight)
 
           } else {
             print(paste0('Population data years: ', paste(names(population_j_grid)[!grepl('RID|lat|lon', names(population_j_grid))], collapse = ',')))
@@ -246,13 +249,10 @@ hdcd <- function(ncdf = NULL,
             hdcd_region <- ncdf_hdcd_pop_weighted %>%
               dplyr::filter(!is.na(subRegion)) %>%
               dplyr::select(-lat, -lon) %>%
-              dplyr::group_by(region, subRegion, ID, year, datetime) %>%
-              dplyr::summarise(value = dplyr::if_else(any(is.na(pop_weight)), mean(value), sum(value))) %>%
-              dplyr::ungroup()
-
-            # Assign HDCD categories
-            hdcd_region <- hdcd_region %>%
               dplyr::mutate(HDCD = dplyr::if_else(value < 0, 'HD', 'CD')) %>%
+              dplyr::group_by(region, subRegion, ID, year, datetime, HDCD) %>%
+              dplyr::summarise(value = sum(value)) %>%
+              dplyr::ungroup() %>%
               dplyr::filter(value != 0)
 
             #......................
