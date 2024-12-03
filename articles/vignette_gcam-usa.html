@@ -118,7 +118,7 @@
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs/divider.png"></p>
+<img src="vignetteFigs%2Fdivider.png"></p>
 <p><code>helios</code> is an R package that calculates heating and
 cooling degrees based on high temporal and spatial resolution of climate
 data (hourly and 12km resolution) and population data (yearly and 12km
@@ -201,7 +201,7 @@ for large dataset.</p>
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs/divider.png"></p>
+<img src="vignetteFigs%2Fdivider.png"></p>
 <p><code>helios</code> includes 6 major steps in the workflow for CONUS
 heating- and cooling-degrees calculation (<a href="#figure1">Figure
 1</a>),</p>
@@ -225,7 +225,7 @@ Feb-day, Feb-night, etc), plus a “super-peak” segment that has the top
 specifically used in GCAM-USA.</p>
 <p><br></p>
 <p align="center">
-<img src="vignetteFigs/helios_gcam-usa_workflow.jpg"></p>
+<img src="vignetteFigs%2Fhelios_gcam-usa_workflow.jpg"></p>
 <a name="figure1"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 1:</strong> Helios workflow for CONUS heating and cooling
@@ -313,7 +313,7 @@ cooling, residential heating, and residential cooling.</p>
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs/divider.png"></p>
+<img src="vignetteFigs%2Fdivider.png"></p>
 <div class="section level3">
 <h3 id="example-climate-and-population-data">Example climate and population data<a class="anchor" aria-label="anchor" href="#example-climate-and-population-data"></a>
 </h3>
@@ -6266,8 +6266,8 @@ supports dispatch segment.</li>
 <span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
 <span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named west_east BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
 <span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named south_north BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
-<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
-<span><span class="co">## [1] "Starting population weighting ..."</span></span>
+<span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span></code></pre>
+<pre><code><span><span class="co">## [1] "Starting population weighting ..."</span></span>
 <span><span class="co">## [1] "Completed population weighting."</span></span>
 <span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
 <span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_gcam.csv"</span></span>
@@ -6294,7 +6294,7 @@ example).</li>
 <p><br></p>
 <p><strong>1. By GCAM-USA Dispatch Segment and Building Thermal
 Service</strong></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-hours by dispatch segment and by building thermal service for CONUS</span></span>
 <span><span class="va">hdcd_segment</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_gcam</span></span></code></pre></div>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
@@ -6364,7 +6364,7 @@ comm heating Dec_day
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--0.0114599
+-59.35209
 </td>
 </tr>
 <tr>
@@ -6396,7 +6396,7 @@ resid heating Dec_day
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--0.0114599
+-59.35209
 </td>
 </tr>
 <tr>
@@ -6428,7 +6428,7 @@ comm heating Dec_night
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--0.0414882
+-214.87109
 </td>
 </tr>
 <tr>
@@ -6460,7 +6460,7 @@ resid heating Dec_night
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--0.0414882
+-214.87109
 </td>
 </tr>
 <tr>
@@ -6492,7 +6492,7 @@ comm heating Jan_day
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--0.3393844
+-1757.70399
 </td>
 </tr>
 <tr>
@@ -6524,7 +6524,7 @@ resid heating Jan_day
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--0.3393844
+-1757.70399
 </td>
 </tr>
 <tr>
@@ -6556,7 +6556,7 @@ comm heating Jan_night
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--0.6256360
+-3240.22847
 </td>
 </tr>
 <tr>
@@ -6588,7 +6588,7 @@ resid heating Jan_night
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--0.6256360
+-3240.22847
 </td>
 </tr>
 <tr>
@@ -6620,7 +6620,7 @@ comm heating Dec_day
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--1.0170742
+-52.61460
 </td>
 </tr>
 <tr>
@@ -6652,7 +6652,7 @@ resid heating Dec_day
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--1.0170742
+-52.61460
 </td>
 </tr>
 <tr>
@@ -6684,7 +6684,7 @@ comm heating Dec_night
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--3.7933185
+-196.23341
 </td>
 </tr>
 <tr>
@@ -6716,7 +6716,7 @@ resid heating Dec_night
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--3.7933185
+-196.23341
 </td>
 </tr>
 <tr>
@@ -6748,7 +6748,7 @@ comm heating Jan_day
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--30.8660315
+-1596.74080
 </td>
 </tr>
 <tr>
@@ -6780,7 +6780,7 @@ resid heating Jan_day
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--30.8660315
+-1596.74080
 </td>
 </tr>
 <tr>
@@ -6812,7 +6812,7 @@ comm heating Jan_night
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--57.7348273
+-2986.69928
 </td>
 </tr>
 <tr>
@@ -6844,14 +6844,14 @@ resid heating Jan_night
 Fahrenheit degree-hours
 </td>
 <td style="text-align:right;">
--57.7348273
+-2986.69928
 </td>
 </tr>
 </tbody>
 </table>
 <p><br></p>
 <p><strong>2. By Month</strong></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at monthly scale for CONUS</span></span>
 <span><span class="va">hdcd_monthly</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_monthly</span></span></code></pre></div>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
@@ -6902,7 +6902,7 @@ CD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
-0.0000000
+0.0000
 </td>
 </tr>
 <tr>
@@ -6925,7 +6925,7 @@ HD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
--0.0483388
+-250.3510
 </td>
 </tr>
 <tr>
@@ -6948,7 +6948,7 @@ CD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
-0.0000000
+0.0000
 </td>
 </tr>
 <tr>
@@ -6971,14 +6971,14 @@ HD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
--4.3027594
+-222.5875
 </td>
 </tr>
 </tbody>
 </table>
 <p><br></p>
 <p><strong>3. By Year</strong></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at annual scale for CONUS</span></span>
 <span><span class="va">hdcd_annual</span> <span class="op">&lt;-</span> <span class="va">hdcd_usa</span><span class="op">$</span><span class="va">hdcd_comb_annual</span></span></code></pre></div>
 <table class="table table table-striped" style="margin-left: auto; margin-right: auto;">
@@ -7023,7 +7023,7 @@ CD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
-0.0000000
+0.0000
 </td>
 </tr>
 <tr>
@@ -7043,7 +7043,7 @@ HD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
--0.0483388
+-250.3510
 </td>
 </tr>
 <tr>
@@ -7063,7 +7063,7 @@ CD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
-0.0000000
+0.0000
 </td>
 </tr>
 <tr>
@@ -7083,7 +7083,7 @@ HD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
--4.3027594
+-222.5875
 </td>
 </tr>
 </tbody>
@@ -7334,7 +7334,7 @@ constraint on numbers of months in the data using argument
 data coverage. The followings show how to use diagnostics with example
 outputs of heating and cooling degrees at both segment and monthly time
 step.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Perform diagnostic on monthly data</span></span>
 <span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span>hdcd_monthly <span class="op">=</span> <span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_hdcd_monthly_usa.html">example_hdcd_monthly_usa</a></span>,</span>
 <span>                    min_diagnostic_months <span class="op">=</span> <span class="fl">6</span>,</span>
@@ -7342,7 +7342,7 @@ step.</p>
 <span>                    name_append <span class="op">=</span> <span class="st">'monthly'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p align="center">
-<img src="vignetteFigs/monthly_allYears_noaa-2021_wrf_rcp45cooler_ssp3.png"></p>
+<img src="vignetteFigs%2Fmonthly_allYears_noaa-2021_wrf_rcp45cooler_ssp3.png"></p>
 <a name="figure2"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 2:</strong> Diagnostics for monthly heating and cooling
@@ -7559,7 +7559,7 @@ HD
 </tr>
 </tfoot>
 </table>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Perform diagnostic on segment data</span></span>
 <span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/diagnostics.html">diagnostics</a></span><span class="op">(</span>hdcd_segment <span class="op">=</span> <span class="fu">helios</span><span class="fu">::</span><span class="va"><a href="../reference/example_hdcd_segment_usa.html">example_hdcd_segment_usa</a></span>,</span>
 <span>                    min_diagnostic_months <span class="op">=</span> <span class="fl">6</span>,</span>
@@ -7567,7 +7567,7 @@ HD
 <span>                    name_append <span class="op">=</span> <span class="st">'segment'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p align="center">
-<img src="vignetteFigs/segment_allYears_freeScale_wrf_rcp45cooler_ssp3.png"></p>
+<img src="vignetteFigs%2Fsegment_allYears_freeScale_wrf_rcp45cooler_ssp3.png"></p>
 <a name="figure3"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 3:</strong> Diagnostics for heating and cooling
@@ -7587,7 +7587,7 @@ XML file:</p>
 function will automatically save the XML file to the output folder.</li>
 <li>Use <code><a href="../reference/save_xml.html">helios::save_xml</a></code> function.</li>
 </ul>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">helios</span><span class="fu">::</span><span class="fu"><a href="../reference/save_xml.html">save_xml</a></span><span class="op">(</span>hdcd_gcam <span class="op">=</span> <span class="va">hdcd_segment</span>,</span>
 <span>                 folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
 <span>                 name_append <span class="op">=</span> <span class="st">'wrf'</span><span class="op">)</span></span></code></pre></div>
@@ -7614,7 +7614,7 @@ function will automatically save the XML file to the output folder.</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
       </footer>
