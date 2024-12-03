@@ -1,6 +1,6 @@
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/JGCRI/helios/actions/workflows/R-CDM-check.yaml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/R-CDM-check.yaml)
-[![test-coverage](https://github.com/JGCRI/helios/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/JGCRI/helios/actions/workflows/test-coverage.yaml)
+[![R-CMD-check](https://github.com/JGCRI/helios/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JGCRI/helios/actions/workflows/R-CMD-check.yaml)
+[![test_coverage](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yaml/badge.svg)](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yaml)
 [![docs](https://github.com/JGCRI/helios/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/docs.yaml)
 [![codecov](https://codecov.io/gh/JGCRI/helios/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/helios) 
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06033/status.svg)](https://doi.org/10.21105/joss.06033)
