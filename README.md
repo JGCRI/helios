@@ -1,9 +1,8 @@
 <!-- badges: start -->
-[![build](https://github.com/JGCRI/helios/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/build.yml)
-[![test_coverage](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/test_coverage.yml)
+[![R-CMD-check](https://github.com/JGCRI/helios/actions/workflows/R-CDM-check.yaml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/R-CDM-check.yaml)
+[![test-coverage](https://github.com/JGCRI/helios/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/JGCRI/helios/actions/workflows/test-coverage.yaml)
 [![docs](https://github.com/JGCRI/helios/actions/workflows/docs.yaml/badge.svg?branch=main)](https://github.com/JGCRI/helios/actions/workflows/docs.yaml)
 [![codecov](https://codecov.io/gh/JGCRI/helios/branch/main/graph/badge.svg?token=XQ913U4IYM)](https://codecov.io/gh/JGCRI/helios) 
-[![Github All Releases](https://img.shields.io/github/downloads/JGCRI/helios/total.svg)]()
 [![DOI](https://joss.theoj.org/papers/10.21105/joss.06033/status.svg)](https://doi.org/10.21105/joss.06033)
 [![DOI](https://zenodo.org/badge/429143355.svg)](https://zenodo.org/doi/10.5281/zenodo.8170310)
 <!-- badges: end -->
