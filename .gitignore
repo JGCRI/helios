@@ -42,3 +42,4 @@ inst/doc
 docs/
 tests/testthat/output/
 tests/testthat/_snaps
+.positai

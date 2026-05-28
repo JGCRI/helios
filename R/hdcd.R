@@ -16,8 +16,6 @@
 #' @param xml Default = FALSE. Set to TRUE to generate XML outputs for GCAM.
 #' @param save Default = TRUE. Set to TRUE to save outputs.
 #' @param name_append Default = ''. String for the name to append to output file name.
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 hdcd <- function(ncdf = NULL,

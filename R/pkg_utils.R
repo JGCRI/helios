@@ -3,8 +3,6 @@
 #' list example file paths
 #'
 #' @param path Default = NULL. String for path to example files
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 pkg_example <- function(path = NULL) {
@@ -24,8 +22,6 @@ pkg_example <- function(path = NULL) {
 #'
 #' @param str_vec Default = NULL. Vector of strings to form the name.
 #' @param file_ext Default = NULL. Extension name of the file. If NULL, will be a folder name
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 create_name <- function(str_vec = NULL, file_ext = NULL) {
@@ -47,8 +43,6 @@ create_name <- function(str_vec = NULL, file_ext = NULL) {
 #'
 #'@param data Default = NULL. Data frame with lat and lon column
 #' @param spatial Default = NULL. String for spatial aggregation boundaries. Options: check helios::spatial_options. 'gcam_us49', 'gcam_regions32', 'gcam_regions31_us52', 'gcam_countries', 'gcam_basins'.
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 find_mapping_grid <- function(data = NULL, spatial = NULL) {
@@ -158,8 +152,6 @@ find_mapping_grid <- function(data = NULL, spatial = NULL) {
 #'
 #' @param grid Default = NULL. Data frame with lon and lat columns
 #' @param shape Default = NULL. Simple feature multipolygons object with region and subRegion information
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 mapping_grid <- function(grid = NULL, shape = NULL){
@@ -214,8 +206,6 @@ mapping_grid <- function(grid = NULL, shape = NULL){
 #' @param from_df Default = NULL. Data frame with lat and lon columns to provide the original grids.
 #' @param to_df Default = NULL. Data frame with lat and lon columns to provide the base grids to convert to.
 #' @param time_periods Defualt = NULL. Integer vector for selected time periods to process. If not specified, use the whole time periods from the data.
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
 #' @export
 
 match_grids <- function(from_df = NULL, to_df = NULL, time_periods = NULL){
@@ -243,7 +233,7 @@ match_grids <- function(from_df = NULL, to_df = NULL, time_periods = NULL){
     from_ras <- terra::rast(from_grid)
     from_res <- unique(terra::res(from_ras))
 
-    if(to_res != from_res){
+    if(!isTRUE(all.equal(to_res, from_res))) {
 
       out <- data.frame()
 
@@ -257,18 +247,20 @@ match_grids <- function(from_df = NULL, to_df = NULL, time_periods = NULL){
 
         from_ras <- terra::rast(from_grid)
 
-        if(to_res > from_res){
+        if(all(to_res > from_res)) {
 
           agg <- terra::aggregate(from_ras, fact = to_res / from_res, fun = sum)
 
           agg_resample <- terra::resample(agg, to_ras, method = 'bilinear')
 
-        } else {
+        } else if (all(from_res > to_res)) {
 
           agg <- terra::disagg(from_ras, fact = from_res / to_res, fun = sum) / (from_res / to_res)^2
 
           agg_resample <- terra::resample(agg, to_ras, method = 'bilinear')
 
+        } else {
+          stop("Incompatible raster resolutions: one axis is finer and the other is coarser.")
         }
 
         temp <- terra::as.data.frame(agg_resample, xy = TRUE, na.rm = FALSE) %>%

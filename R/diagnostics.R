@@ -7,9 +7,6 @@
 #' @param min_diagnostic_months Default = 6. Integer for the number of months. The number of months in the outputs need to exceed this limit to trigger diagnostic plots. Max months is 12.
 #' @param folder Default = paste0(getwd()). String for the output folder path.
 #' @param name_append Default = ''. String for the name to append to output file name.
-#' @importFrom magrittr %>%
-#' @importFrom data.table :=
-#' @importFrom grDevices colorRampPalette
 #' @export
 
 diagnostics <- function(hdcd_segment = tibble::tibble(),
