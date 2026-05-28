@@ -118,7 +118,7 @@
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <p>In this tutorial, we introduce how to use <code>helios</code> to
 calculate heating degree-days (HDD) and cooling degree-days (CDD) for
 the whole globe. The annual HDD and CDD with global coverage can be used
@@ -189,7 +189,7 @@ for large dataset.</p>
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <p><code>helios</code> includes 6 major steps in the workflow for global
 heating and cooling degree-days calculation (<a href="#figure1">Figure
 1</a>),</p>
@@ -208,7 +208,7 @@ format.</li>
 </ul>
 <p><br></p>
 <p align="center">
-<img src="vignetteFigs%2Fhelios_gcam-regions_workflow.jpg"></p>
+<img src="vignetteFigs/helios_gcam-regions_workflow.jpg"></p>
 <a name="figure1"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 1:</strong> Helios workflow for global heating and
@@ -224,7 +224,7 @@ cooling degree-days for general GCAM.
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <p><code>helios</code> calculates heating and cooling degree-days for
 the Global implementation. <a href="#table2">Table 2</a> shows more
 details of the method</p>
@@ -294,7 +294,7 @@ cooling, residential heating, and residential cooling.</p>
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <div class="section level3">
 <h3 id="example-climate-and-population-data">Example climate and population data<a class="anchor" aria-label="anchor" href="#example-climate-and-population-data"></a>
 </h3>
@@ -12763,15 +12763,15 @@ scale. Annual HDD/CDD is the common input time step for GCAM core.</li>
 <span>                           name_append <span class="op">=</span> <span class="st">''</span>,</span>
 <span>                           save <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
-<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing files provided: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
 <span><span class="co">## [1] "........................................."</span></span>
-<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span></code></pre>
+<span><span class="co">## [1] "Running hdcd for file: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span></code></pre>
 <pre><code><span><span class="co">## [1] "Starting population weighting ..."</span></span>
 <span><span class="co">## [1] "Completed population weighting."</span></span>
-<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_cmip_2020_2020_gcam.csv"</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_cmip_2020_2020_monthly.csv"</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_cmip_2020_2020_annual.csv"</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_cmip_2020_2020_gcam.csv"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_cmip_2020_2020_monthly.csv"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_cmip_2020_2020_annual.csv"</span></span>
 <span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
 <p><br></p>
 <p>The output is a list containing three tables. All outputs are in
@@ -13573,12 +13573,12 @@ need to provide this in the format of data frame or tibble.</li>
 <span>                     name_append <span class="op">=</span> <span class="st">''</span>,</span>
 <span>                     save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
-<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing files provided: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
 <span><span class="co">## [1] "........................................."</span></span>
-<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span></code></pre>
+<span><span class="co">## [1] "Running hdcd for file: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span></code></pre>
 <pre><code><span><span class="co">## [1] "Starting population weighting ..."</span></span>
 <span><span class="co">## [1] "Completed population weighting."</span></span>
-<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
 <span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at annual scale</span></span>
@@ -13677,12 +13677,12 @@ Fahrenheit degree-days
 <span>                     name_append <span class="op">=</span> <span class="st">''</span>,</span>
 <span>                     save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
-<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing files provided: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
 <span><span class="co">## [1] "........................................."</span></span>
-<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span></code></pre>
+<span><span class="co">## [1] "Running hdcd for file: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span></code></pre>
 <pre><code><span><span class="co">## [1] "Starting population weighting ..."</span></span>
 <span><span class="co">## [1] "Completed population weighting."</span></span>
-<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
 <span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at annual scale</span></span>
@@ -13729,7 +13729,7 @@ CD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
-3.445710e+02
+3.884003e+02
 </td>
 </tr>
 <tr>
@@ -13749,7 +13749,7 @@ HD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
--8.210200e+03
+-8.223217e+03
 </td>
 </tr>
 <tr>
@@ -13769,7 +13769,7 @@ CD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
-8.056997e+02
+8.073251e+02
 </td>
 </tr>
 <tr>
@@ -13789,7 +13789,7 @@ HD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
--5.996119e+03
+-5.972360e+03
 </td>
 </tr>
 <tr>
@@ -13809,7 +13809,7 @@ CD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
-6.324040e-02
+7.997120e-02
 </td>
 </tr>
 <tr>
@@ -13829,7 +13829,7 @@ HD
 Fahrenheit degree-days
 </td>
 <td style="text-align:right;">
--1.179301e+04
+-1.109893e+04
 </td>
 </tr>
 <tr>
@@ -13905,9 +13905,9 @@ Fahrenheit degree-days
 <span>                     name_append <span class="op">=</span> <span class="st">''</span>,</span>
 <span>                     save <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
-<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing files provided: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
 <span><span class="co">## [1] "........................................."</span></span>
-<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span></code></pre>
+<span><span class="co">## [1] "Running hdcd for file: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span></code></pre>
 <pre><code><span><span class="co">##            map subRegNum rank</span></span>
 <span><span class="co">## 1    mapStates         2    9</span></span>
 <span><span class="co">## 2 mapStatesAlt         2   10</span></span></code></pre>
@@ -13916,7 +13916,7 @@ Fahrenheit degree-days
 <span><span class="co">## 2 mapStatesAlt         2   10</span></span></code></pre>
 <pre><code><span><span class="co">## [1] "Starting population weighting ..."</span></span>
 <span><span class="co">## [1] "Completed population weighting."</span></span>
-<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /home/runner/work/_temp/Library/helios/extras/gfdl-esm4_r1i1p1f1_w5e5_ssp126_tas_global_daily_2015_2020_sub.nc"</span></span>
 <span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Heating and cooling degree-days at annual scale</span></span>
@@ -14307,8 +14307,8 @@ function will automatically save the XML file to the output folder.</li>
 <span>                 folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
 <span>                 name_append <span class="op">=</span> <span class="st">'cmip'</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function save_xml..."</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_cmip_xml.csv"</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_cmip.xml"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_cmip_xml.csv"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_cmip.xml"</span></span>
 <span><span class="co">## [1] "save_xml complete."</span></span></code></pre>
 </div>
 </div>
@@ -14329,7 +14329,7 @@ function will automatically save the XML file to the output folder.</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

@@ -118,7 +118,7 @@
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <p><code>helios</code> is an R package that calculates heating and
 cooling degrees based on high temporal and spatial resolution of climate
 data (hourly and 12km resolution) and population data (yearly and 12km
@@ -201,7 +201,7 @@ for large dataset.</p>
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <p><code>helios</code> includes 6 major steps in the workflow for CONUS
 heating- and cooling-degrees calculation (<a href="#figure1">Figure
 1</a>),</p>
@@ -225,7 +225,7 @@ Feb-day, Feb-night, etc), plus a “super-peak” segment that has the top
 specifically used in GCAM-USA.</p>
 <p><br></p>
 <p align="center">
-<img src="vignetteFigs%2Fhelios_gcam-usa_workflow.jpg"></p>
+<img src="vignetteFigs/helios_gcam-usa_workflow.jpg"></p>
 <a name="figure1"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 1:</strong> Helios workflow for CONUS heating and cooling
@@ -313,7 +313,7 @@ cooling, residential heating, and residential cooling.</p>
 <!-------------------------->
 <!-------------------------->
 <p align="center">
-<img src="vignetteFigs%2Fdivider.png"></p>
+<img src="vignetteFigs/divider.png"></p>
 <div class="section level3">
 <h3 id="example-climate-and-population-data">Example climate and population data<a class="anchor" aria-label="anchor" href="#example-climate-and-population-data"></a>
 </h3>
@@ -6255,9 +6255,9 @@ supports dispatch segment.</li>
 <span>                         name_append <span class="op">=</span> <span class="st">''</span>,</span>
 <span>                         save <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function process_hdcd..."</span></span>
-<span><span class="co">## [1] "Processing files provided: /Users/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
+<span><span class="co">## [1] "Processing files provided: /home/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
 <span><span class="co">## [1] "........................................."</span></span>
-<span><span class="co">## [1] "Running hdcd for file: /Users/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
+<span><span class="co">## [1] "Running hdcd for file: /home/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
 <span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named west_east BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
 <span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named south_north BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
 <span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span>
@@ -6269,10 +6269,10 @@ supports dispatch segment.</li>
 <span><span class="co">## [1] "vobjtovarid4: **** WARNING **** I was asked to get a varid for dimension named Time BUT this dimension HAS NO DIMVAR! Code will probably fail at this point"</span></span></code></pre>
 <pre><code><span><span class="co">## [1] "Starting population weighting ..."</span></span>
 <span><span class="co">## [1] "Completed population weighting."</span></span>
-<span><span class="co">## [1] "Processing hdcd completed for file: /Users/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_gcam.csv"</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_monthly.csv"</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_annual.csv"</span></span>
+<span><span class="co">## [1] "Processing hdcd completed for file: /home/runner/work/_temp/Library/helios/extras/wrfout_d01_2020-01-01_01%3A00%3A00_sub.nc"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_gcam.csv"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_monthly.csv"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_wrf_2020_2020_annual.csv"</span></span>
 <span><span class="co">## [1] "process_hdcd completed."</span></span></code></pre>
 <p><br></p>
 <p>The output is a list containing three tables. Please note the
@@ -7342,7 +7342,7 @@ step.</p>
 <span>                    name_append <span class="op">=</span> <span class="st">'monthly'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p align="center">
-<img src="vignetteFigs%2Fmonthly_allYears_noaa-2021_wrf_rcp45cooler_ssp3.png"></p>
+<img src="vignetteFigs/monthly_allYears_noaa-2021_wrf_rcp45cooler_ssp3.png"></p>
 <a name="figure2"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 2:</strong> Diagnostics for monthly heating and cooling
@@ -7567,7 +7567,7 @@ HD
 <span>                    name_append <span class="op">=</span> <span class="st">'segment'</span><span class="op">)</span></span></code></pre></div>
 <p><br></p>
 <p align="center">
-<img src="vignetteFigs%2Fsegment_allYears_freeScale_wrf_rcp45cooler_ssp3.png"></p>
+<img src="vignetteFigs/segment_allYears_freeScale_wrf_rcp45cooler_ssp3.png"></p>
 <a name="figure3"></a>
 <p align="left" style="font-size:14px;">
 <strong>Figure 3:</strong> Diagnostics for heating and cooling
@@ -7592,8 +7592,8 @@ function will automatically save the XML file to the output folder.</li>
 <span>                 folder <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">'output'</span><span class="op">)</span>,</span>
 <span>                 name_append <span class="op">=</span> <span class="st">'wrf'</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Starting function save_xml..."</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf_xml.csv"</span></span>
-<span><span class="co">## [1] "File saved as : /Users/runner/work/helios/helios/vignettes/output/hdcd_wrf.xml"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_wrf_xml.csv"</span></span>
+<span><span class="co">## [1] "File saved as : /home/runner/work/helios/helios/vignettes/output/hdcd_wrf.xml"</span></span>
 <span><span class="co">## [1] "save_xml complete."</span></span></code></pre>
 </div>
 </div>
@@ -7614,7 +7614,7 @@ function will automatically save the XML file to the output folder.</li>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>
